@@ -37,6 +37,9 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=sha,format=long
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v3
@@ -75,5 +78,5 @@ jobs:
         namespace=${{ env.OPENSHIFT_NAMESPACE }}
         helm dep up
         helm upgrade --install --atomic sso-aggregator . -n ${namespace} \
-        -f values.yaml -f "values-${namespace}.yaml"
+        -f values.yaml -f "values-${namespace}.yaml" --set image.tag=${{ github.sha }}
       working-directory: ./helm/aggregator
