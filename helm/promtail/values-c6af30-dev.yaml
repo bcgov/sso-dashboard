@@ -1,0 +1,45 @@
+extraVolumes:
+  - name: logs-volume
+    persistentVolumeClaim:
+      claimName: sso-keycloak-logs
+
+extraVolumeMounts:
+  - mountPath: /keycloak/logs
+    name: logs-volume
+
+# see https://grafana.com/docs/loki/latest/clients/promtail/configuration/#supported-contents-and-default-values-of-configyaml
+config:
+  logLevel: info
+  clients:
+    - url: http://loki.c6af30-test.svc.cluster.local:3100/loki/api/v1/push
+  snippets:
+    scrapeConfigs: |
+      - job_name: local
+        static_configs:
+        - targets:
+            - localhost
+          labels:
+            job: keycloak
+            __path__: /keycloak/logs/*.log
+        pipeline_stages:
+        - match:
+            selector: '{job="keycloak"}'
+            stages:
+            - json:
+                expressions:
+                  timestamp: '"@timestamp"'
+                  level: level
+            - labels:
+                level:
+            - timestamp:
+                format: RFC3339Nano
+                source: timestamp
+        - match:
+            selector: '{job="keycloak"}'
+            stages:
+            - regex:
+                expression: "type=(?P<type>\\S+),.*realmId=(?P<realm_id>\\S+),.*clientId=(?P<client_id>\\S+),"
+            - labels:
+                event_type: type
+                realm_id:
+                client_id:
