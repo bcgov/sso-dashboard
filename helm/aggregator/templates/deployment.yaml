@@ -37,6 +37,31 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          env:
+            - name: DB_HOSTNAME
+              value: {{ .Values.postgres.host }}
+            - name: DB_PORT
+              value: {{ .Values.postgres.port | quote }}
+            - name: DB_USERNAME
+              {{- if and .Values.postgres.credentials.secret .Values.postgres.credentials.usernameKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.credentials.secret }}
+                  key: {{ .Values.postgres.credentials.usernameKey }}
+              {{- else -}}
+              value: {{ .Values.postgres.credentials.username }}
+              {{- end }}
+            - name: DB_PASSWORD
+              {{- if and .Values.postgres.credentials.secret .Values.postgres.credentials.passwordKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.credentials.secret }}
+                  key: {{ .Values.postgres.credentials.passwordKey }}
+              {{- else -}}
+              value: {{ .Values.postgres.credentials.password }}
+              {{- end }}
+            - name: DB_DATABASE
+              value: {{ .Values.postgres.database }}
           livenessProbe:
             httpGet:
               path: /

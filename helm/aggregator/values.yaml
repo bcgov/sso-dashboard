@@ -6,8 +6,8 @@ image:
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
-nameOverride: "sso-aggregator"
-fullnameOverride: "sso-aggregator"
+nameOverride: sso-aggregator
+fullnameOverride: sso-aggregator
 
 podAnnotations: {}
 
@@ -50,3 +50,30 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+postgres:
+  host: sso-aggregator-patroni
+  database: aggregation
+  port: 5432
+  credentials:
+    secret: sso-aggregator-patroni-appusers
+    usernameKey: username-appuser1
+    passwordKey: password-appuser1
+
+patroni:
+  replicaCount: 2
+  image:
+    repository: registry.opensource.zalan.do/acid/spilo-14:2.1-p7
+    tag: 2.1-p7
+
+  postgresMajorVersion: 14
+
+  nameOverride: sso-aggregator-patroni
+  fullnameOverride: sso-aggregator-patroni
+
+  additionalCredentials:
+    - username: aggregation
+      password:
+
+  persistentVolume:
+    size: 10Gi
