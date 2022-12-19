@@ -1,0 +1,10 @@
+apiVersion: v2
+name: aggregator
+description: A Helm chart for Keycloak event log aggregator
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+dependencies:
+  - name: patroni
+    version: 1.5.1
+    repository: https://bcgov.github.io/sso-helm-charts
