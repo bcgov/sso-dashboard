@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "promtail.fullname" . }}-positions
+  labels: {{ include "promtail.labels" . | nindent 4 }}
+  annotations: {{- toYaml .Values.persistentVolume.annotations | nindent 4 }}
+spec:
+  accessModes: {{- toYaml .Values.persistentVolume.accessModes | nindent 4 }}
+  storageClassName: {{ .Values.persistentVolume.storageClass | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolume.size | quote }}
