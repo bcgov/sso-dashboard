@@ -1,0 +1,36 @@
+name: Publish Promtail in Prod
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - helm/promtail/**
+    - .github/workflows/publish-promtail-prod.yml
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
+    strategy:
+      matrix:
+        namespace: [eb75ad-dev, eb75ad-test, eb75ad-prod]
+
+    steps:
+    - uses: hmarr/debug-action@v2
+    - uses: actions/checkout@v3
+
+    - name: Authenticate and set context
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ secrets.PROD_OPENSHIFT_SERVER }}
+        openshift_token: ${{ secrets.PROD_OPENSHIFT_TOKEN }}
+        namespace: ${{ matrix.namespace }}
+        insecure_skip_tls_verify: true
+
+    - name: Deploy promtail with Helm chart
+      run: |
+        make upgrade NAMESPACE=${{ matrix.namespace }}
+      working-directory: ./helm/promtail

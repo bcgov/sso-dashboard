@@ -116,10 +116,10 @@ tolerations: []
 
 persistentVolume:
   size: 100Mi
-  storageClass: netapp-block-standard
+  storageClass: netapp-file-standard
   annotations: {}
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
 
 # Extra volumes to be added in addition to those specified under `defaultVolumes`.
 extraVolumes: []

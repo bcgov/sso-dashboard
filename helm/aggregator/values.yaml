@@ -72,7 +72,7 @@ postgres:
 patroni:
   replicaCount: 2
   image:
-    repository: registry.opensource.zalan.do/acid/spilo-14:2.1-p7
+    repository: registry.opensource.zalan.do/acid/spilo-14
     tag: 2.1-p7
 
   postgresMajorVersion: 14

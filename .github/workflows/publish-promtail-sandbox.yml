@@ -1,0 +1,36 @@
+name: Publish Promtail in Sandbox
+
+on:
+  push:
+    branches:
+    - dev
+    paths:
+    - helm/promtail/**
+    - .github/workflows/publish-promtail-sandbox.yml
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
+    strategy:
+      matrix:
+        namespace: [c6af30-dev]
+
+    steps:
+    - uses: hmarr/debug-action@v2
+    - uses: actions/checkout@v3
+
+    - name: Authenticate and set context
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
+        openshift_token: ${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
+        namespace: ${{ matrix.namespace }}
+        insecure_skip_tls_verify: true
+
+    - name: Deploy promtail with Helm chart
+      run: |
+        make upgrade NAMESPACE=${{ matrix.namespace }}
+      working-directory: ./helm/promtail

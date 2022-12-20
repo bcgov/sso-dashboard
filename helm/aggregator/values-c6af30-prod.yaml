@@ -1,0 +1,4 @@
+patroni:
+  replicaCount: 2
+  persistentVolume:
+    size: 2Gi
