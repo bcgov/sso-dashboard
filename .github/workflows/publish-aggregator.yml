@@ -78,7 +78,5 @@ jobs:
     - name: Deploy aggregator with Helm chart
       run: |
         namespace=${{ env.OPENSHIFT_NAMESPACE }}
-        helm dep up
-        helm upgrade --install --atomic sso-aggregator . -n ${namespace} \
-        -f values.yaml -f "values-${namespace}.yaml" --set image.tag=${{ github.sha }}
+        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} IMAGE_TAG=${{ github.sha }}
       working-directory: ./helm/aggregator
