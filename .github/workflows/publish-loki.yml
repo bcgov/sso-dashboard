@@ -51,10 +51,8 @@ jobs:
 
     - name: Deploy loki with Helm chart
       run: |
-        namespace=${{ env.OPENSHIFT_NAMESPACE }}
-        helm dep up
-        helm upgrade --install --atomic sso-loki . -n ${namespace} \
-        -f values.yaml -f "values-${namespace}.yaml" \
-        --set loki.storage.s3.access_key_id=${{ env.S3_ACCESS_KEY_ID }} \
-        --set loki.storage.s3.secret_access_key=${{ env.S3_SECRET_ACCESS_KEY }}
+        make upgrade \
+        NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} \
+        S3_ACCESS_KEY_ID=${{ env.S3_ACCESS_KEY_ID }} \
+        S3_SECRET_ACCESS_KEY=${{ env.S3_SECRET_ACCESS_KEY }}
       working-directory: ./helm/loki

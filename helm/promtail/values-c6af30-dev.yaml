@@ -1,3 +1,5 @@
+environment: dev
+
 extraVolumes:
   - name: logs-volume
     persistentVolumeClaim:
@@ -20,6 +22,7 @@ config:
             - localhost
           labels:
             job: keycloak
+            environment: {{ .Values.environment }}
             __path__: /keycloak/logs/*.log
         pipeline_stages:
         - match:

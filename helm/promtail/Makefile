@@ -1,9 +1,14 @@
 SHELL := /usr/bin/env bash
 NAMESPACE=""
+NAME=sso-promtail
 
 ifndef NAMESPACE
 $(error NAMESPACE is not set)
 endif
+
+define arguments
+	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml"
+endef
 
 .PHONY: helm-dep
 helm-dep:
@@ -12,22 +17,22 @@ helm-dep:
 .PHONY: install
 install: helm-dep
 install:
-	helm install sso-promtail . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml"
+	helm install $(call arguments)
 
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
-	helm upgrade --install sso-promtail . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml"
+	helm upgrade --install $(call arguments)
 
 .PHONY: lint
 lint: helm-dep
 lint:
-	helm upgrade --dry-run --install sso-promtail -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml"
+	helm upgrade --dry-run --install $(call arguments)
 
 .PHONY: uninstall
 uninstall: helm-dep
 uninstall:
-	helm uninstall sso-promtail -n ${NAMESPACE}
+	helm uninstall ${NAME} -n ${NAMESPACE}
 
 .PHONY: force-install
 force-install: uninstall

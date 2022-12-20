@@ -55,12 +55,10 @@ jobs:
 
     - name: Deploy grafana with Helm chart
       run: |
-        namespace=${{ env.OPENSHIFT_NAMESPACE }}
-        helm dep up
-        helm upgrade --install --atomic sso-grafana . -n ${namespace} \
-        -f values.yaml -f "values-${namespace}.yaml" \
-        --set grafana.ini.auth.generic_oauth.client_id=${{ env.SSO_CLIENT_ID }} \
-        --set grafana.ini.auth.generic_oauth.client_secret=${{ env.SSO_CLIENT_SECRET }} \
-        --set grafana.ini.auth.generic_oauth.auth_url=${{ env.SSO_AUTH_URL }} \
-        --set grafana.ini.auth.generic_oauth.token_url=${{ env.SSO_TOKEN_URL }}
+        make upgrade \
+        NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} \
+        SSO_CLIENT_ID=${{ env.SSO_CLIENT_ID }} \
+        SSO_CLIENT_SECRET=${{ env.SSO_CLIENT_SECRET }} \
+        SSO_AUTH_URL=${{ env.SSO_AUTH_URL }} \
+        SSO_TOKEN_URL=${{ env.SSO_TOKEN_URL }}
       working-directory: ./helm/grafana
