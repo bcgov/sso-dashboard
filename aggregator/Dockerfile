@@ -15,11 +15,12 @@ RUN apt-get update -q && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY requirements.txt .
+COPY ["docker-entrypoint.sh", "requirements.txt", "alembic.ini", "config.py", "models.py", "database.py", "./"]
+COPY alembic ./alembic
+
 RUN pip install -r requirements.txt
 
 COPY --from=builder /app/build/main /app/main
-COPY docker-entrypoint.sh docker-entrypoint.sh
 
 ENV PORT 8080
 EXPOSE 8080
