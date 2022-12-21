@@ -25,6 +25,9 @@ jobs:
     - uses: hmarr/debug-action@v2
     - uses: actions/checkout@v3
 
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
     - name: Log in to the GitHub Container registry
       uses: docker/login-action@v2
       with:

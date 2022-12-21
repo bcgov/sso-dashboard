@@ -13,7 +13,7 @@ extraVolumeMounts:
 config:
   logLevel: info
   clients:
-    - url: http://loki.c6af30-test.svc.cluster.local:3100/loki/api/v1/push
+    - url: http://sso-loki-gateway.c6af30-prod.svc.cluster.local/loki/api/v1/push
   snippets:
     scrapeConfigs: |
       - job_name: local
