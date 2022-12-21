@@ -1,37 +1,10 @@
 loki:
-  storage:
-    type: s3
-    # see https://grafana.com/docs/loki/latest/configuration/#s3_storage_config
-    s3:
-      bucketnames: xgr00q-dev-sso-loki
-      region: ca-central-1
-      access_key_id: <please-replace-me>
-      secret_access_key: <please-replace-me>
-      s3forcepathstyle: true
-
-  storage_config:
-    boltdb_shipper:
-      active_index_directory: /var/loki/active
-      shared_store: s3
-      cache_location: /var/loki/cache
-      cache_ttl: 24h
-
-  schemaConfig:
-    configs:
-      - from: 2020-10-24
-        store: boltdb-shipper
-        object_store: s3
-        schema: v11
-        index:
-          prefix: index_
-          period: 24h
-
   write:
+    replicas: 2
     persistence:
-      size: 2Gi
-      storageClass: netapp-block-standard
+      size: 1Gi
 
   read:
+    replicas: 1
     persistence:
-      size: 2Gi
-      storageClass: netapp-block-standard
+      size: 1Gi
