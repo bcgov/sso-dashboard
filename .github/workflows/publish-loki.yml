@@ -29,8 +29,10 @@ jobs:
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
         OPENSHIFT_NAMESPACE=${{ secrets.SANDBOX_OPENSHIFT_NAMESPACE }}
-        S3_ACCESS_KEY_ID=${{ secrets.SANDBOX_S3_ACCESS_KEY_ID }}
-        S3_SECRET_ACCESS_KEY=${{ secrets.SANDBOX_S3_SECRET_ACCESS_KEY }}
+        MINIO_USER=${{ secrets.SANDBOX_MINIO_USER }}
+        MINIO_PASS=${{ secrets.SANDBOX_MINIO_PASS }}
+        SSO_CLIENT_ID=${{ secrets.SANDBOX_SSO_CLIENT_ID }}
+        SSO_CLIENT_SECRET=${{ secrets.SANDBOX_SSO_CLIENT_SECRET }}
         EOF
 
     - name: Set env to Production
@@ -40,8 +42,10 @@ jobs:
         OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
         OPENSHIFT_NAMESPACE=${{ secrets.PROD_OPENSHIFT_NAMESPACE }}
-        S3_ACCESS_KEY_ID=${{ secrets.PROD_S3_ACCESS_KEY_ID }}
-        S3_SECRET_ACCESS_KEY=${{ secrets.PROD_S3_SECRET_ACCESS_KEY }}
+        MINIO_USER=${{ secrets.PROD_MINIO_USER }}
+        MINIO_PASS=${{ secrets.PROD_MINIO_PASS }}
+        SSO_CLIENT_ID=${{ secrets.PROD_SSO_CLIENT_ID }}
+        SSO_CLIENT_SECRET=${{ secrets.SSO_CLIENT_SECRET }}
         EOF
 
     - name: Authenticate and set context
@@ -56,6 +60,8 @@ jobs:
       run: |
         make upgrade \
         NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} \
-        S3_ACCESS_KEY_ID=${{ env.S3_ACCESS_KEY_ID }} \
-        S3_SECRET_ACCESS_KEY=${{ env.S3_SECRET_ACCESS_KEY }}
+        MINIO_USER=${{ env.MINIO_USER }} \
+        MINIO_PASS=${{ env.MINIO_PASS }} \
+        SSO_CLIENT_ID=${{ env.SSO_CLIENT_ID }} \
+        SSO_CLIENT_SECRET=${{ env.SSO_CLIENT_SECRET }}
       working-directory: ./helm/loki
