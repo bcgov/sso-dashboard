@@ -8,3 +8,8 @@ loki:
     replicas: 1
     persistence:
       size: 1Gi
+
+routes:
+  minio:
+    enabled: true
+    host: sso-minio-sandbox.apps.gold.devops.gov.bc.ca

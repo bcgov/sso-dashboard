@@ -8,6 +8,9 @@ metadata:
     haproxy.router.openshift.io/disable_cookies: 'true'
     haproxy.router.openshift.io/timeout: '30'
 spec:
+  {{- if .Values.routes.minio.host }}
+  host: {{ .Values.routes.minio.host }}
+  {{- end }}
   tls:
     insecureEdgeTerminationPolicy: Redirect
     termination: edge
