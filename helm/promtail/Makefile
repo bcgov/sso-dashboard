@@ -34,6 +34,11 @@ uninstall: helm-dep
 uninstall:
 	helm uninstall ${NAME} -n ${NAMESPACE}
 
+.PHONY: template
+template: helm-dep
+template:
+	helm template $(call arguments) > template.yaml
+
 .PHONY: force-install
 force-install: uninstall
 force-install: install

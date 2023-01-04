@@ -29,7 +29,6 @@ grafana:
 
   securityContext:
   containerSecurityContext:
-
   resources: {}
   #  limits:
   #    cpu: 100m
@@ -41,9 +40,9 @@ grafana:
   persistence:
     type: pvc
     enabled: true
-    storageClassName: netapp-block-standard
+    storageClassName: netapp-file-standard
     accessModes:
-      - ReadWriteOnce
+      - ReadWriteMany
     size: 5Gi
 
   initChownData:
