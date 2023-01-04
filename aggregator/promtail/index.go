@@ -52,6 +52,11 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
+		// only collect event logs but system logs
+		if eventType == "" {
+			continue
+		}
+
 		for _, entry := range stream.Entries {
 			year, month, day := entry.Timestamp.Date()
 			date = time.Date(year, month, day, 0, 0, 0, 0, time.UTC)

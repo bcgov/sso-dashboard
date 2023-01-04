@@ -15,6 +15,9 @@ loki:
         accessKeyId: <please-replace-me>
         secretAccessKey: <please-replace-me>
 
+    limits_config:
+      retention_period: 8760h # 1year
+
 root-minio:
   enabled: true
   replicas: 2

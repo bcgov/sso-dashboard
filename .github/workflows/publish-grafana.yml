@@ -31,8 +31,8 @@ jobs:
         OPENSHIFT_NAMESPACE=${{ secrets.SANDBOX_OPENSHIFT_NAMESPACE }}
         SSO_CLIENT_ID=${{ secrets.SANDBOX_SSO_CLIENT_ID }}
         SSO_CLIENT_SECRET=${{ secrets.SANDBOX_SSO_CLIENT_SECRET }}
-        SSO_AUTH_URL=https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
-        SSO_TOKEN_URL=https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
+        AGGREGATION_DB_USER=${{ secrets.SANDBOX_AGGREGATION_DB_USER }}
+        AGGREGATION_DB_PASS=${{ secrets.SANDBOX_AGGREGATION_DB_PASS }}
         EOF
 
     - name: Set env to Production
@@ -44,8 +44,8 @@ jobs:
         OPENSHIFT_NAMESPACE=${{ secrets.PROD_OPENSHIFT_NAMESPACE }}
         SSO_CLIENT_ID=${{ secrets.PROD_SSO_CLIENT_ID }}
         SSO_CLIENT_SECRET=${{ secrets.PROD_SSO_CLIENT_SECRET }}
-        SSO_AUTH_URL=https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
-        SSO_TOKEN_URL=https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
+        AGGREGATION_DB_USER=${{ secrets.PROD_AGGREGATION_DB_USER }}
+        AGGREGATION_DB_PASS=${{ secrets.PROD_AGGREGATION_DB_PASS }}
         EOF
 
     - name: Authenticate and set context

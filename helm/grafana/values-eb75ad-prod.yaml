@@ -1,27 +1,15 @@
 grafana:
+  replicas: 2
   persistence:
     size: 5Gi
 
   grafana.ini:
+    server:
+      domain: sso-grafana.apps.gold.devops.gov.bc.ca
+      root_url: https://sso-grafana.apps.gold.devops.gov.bc.ca
     auth.generic_oauth:
-      enabled: true
-      name: Keycloak
-      icon: signin
-      scopes: openid
-      empty_scopes: false
-      client_id: <please-replace-me>
-      client_secret: <please-replace-me>
-      auth_url: <please-replace-me>
-      token_url: <please-replace-me>
-      api_url:
-      allowed_domains:
-      allow_sign_up: true
-      tls_skip_verify_insecure: true
-      tls_client_cert:
-      tls_client_key:
-      tls_client_ca:
-      use_pkce: true
-      login_attribute_path: preferred_username
+      auth_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
+      token_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
 
 route:
   enabled: true
