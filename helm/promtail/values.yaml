@@ -1,7 +1,7 @@
 # see https://github.com/grafana/helm-charts/blob/main/charts/promtail/values.yaml
 promtail:
-  nameOverride: null
-  fullnameOverride: null
+  nameOverride: sso-promtail
+  fullnameOverride: sso-promtail
 
   daemonset:
     enabled: false
@@ -42,6 +42,8 @@ promtail:
   serviceAccount:
     create: false
 
+  podSecurityPolicy:
+
   defaultVolumes:
     - name: positions
       persistentVolumeClaim:
@@ -51,7 +53,46 @@ promtail:
     - name: positions
       mountPath: /run/promtail
 
-  podSecurityPolicy:
+  extraVolumes:
+    - name: logs-volume
+      persistentVolumeClaim:
+        claimName: sso-keycloak-logs
+
+  extraVolumeMounts:
+    - mountPath: /keycloak/logs
+      name: logs-volume
+
+  ssoScrapeConfigs: |
+    - job_name: local
+      static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: keycloak
+          environment: {{ .Values.environment }}
+          __path__: /keycloak/logs/*.log
+      pipeline_stages:
+      - match:
+          selector: '{job="keycloak"}'
+          stages:
+          - json:
+              expressions:
+                timestamp: '"@timestamp"'
+                level: level
+          - labels:
+              level:
+          - timestamp:
+              format: RFC3339Nano
+              source: timestamp
+      - match:
+          selector: '{job="keycloak"}'
+          stages:
+          - regex:
+              expression: "type=(?P<type>\\S+),.*realmId=(?P<realm_id>\\S+),.*clientId=(?P<client_id>\\S+),"
+          - labels:
+              event_type: type
+              realm_id:
+              client_id:
 
 persistentVolume:
   size: 100Mi
