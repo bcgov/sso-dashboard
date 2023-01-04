@@ -2,8 +2,8 @@ SHELL := /usr/bin/env bash
 NAMESPACE=
 SSO_CLIENT_ID=
 SSO_CLIENT_SECRET=
-SSO_AUTH_URL=
-SSO_TOKEN_URL=
+AGGREGATION_DB_USER=
+AGGREGATION_DB_PASS=
 NAME=sso-grafana
 
 ifndef NAMESPACE
@@ -14,8 +14,8 @@ define arguments
 	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
 	--set grafana."grafana\.ini"."auth\.generic_oauth".client_id=${SSO_CLIENT_ID} \
 	--set grafana."grafana\.ini"."auth\.generic_oauth".client_secret=${SSO_CLIENT_SECRET} \
-	--set grafana."grafana\.ini"."auth\.generic_oauth".auth_url=${SSO_AUTH_URL} \
-	--set grafana."grafana\.ini"."auth\.generic_oauth".token_url=${SSO_TOKEN_URL}
+	--set grafana.datasources."datasources\.yaml".datasources[1].user=${AGGREGATION_DB_USER} \
+	--set grafana.datasources."datasources\.yaml".datasources[1].secureJsonData.password=${AGGREGATION_DB_PASS}
 endef
 
 .PHONY: helm-dep
