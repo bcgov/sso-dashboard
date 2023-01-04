@@ -11,6 +11,7 @@ dependencies:
     repository: https://grafana.github.io/helm-charts
   - name: minio
     alias: root-minio
-    version: 5.0.3
+    # see https://github.com/minio/minio/tree/master/helm-releases
+    version: 5.0.4
     repository: https://charts.min.io/
     condition: root-minio.enabled

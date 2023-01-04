@@ -8,3 +8,26 @@ loki:
     replicas: 1
     persistence:
       size: 1Gi
+
+  loki:
+    storage:
+      s3:
+        accessKeyId: <please-replace-me>
+        secretAccessKey: <please-replace-me>
+
+root-minio:
+  enabled: true
+  replicas: 2
+  rootUser: <please-replace-me>
+  rootPassword: <please-replace-me>
+  oidc:
+    configUrl: "https://dev.loginproxy.gov.bc.ca/auth/realms/standard/.well-known/openid-configuration"
+    clientId: <please-replace-me>
+    clientSecret: <please-replace-me>
+    claimName: "client_roles"
+    scopes: "openid"
+    redirectUri: "https://sso-minio-sandbox.apps.gold.devops.gov.bc.ca/oauth_callback"
+routes:
+  minio:
+    enabled: true
+    host: sso-minio-sandbox.apps.gold.devops.gov.bc.ca

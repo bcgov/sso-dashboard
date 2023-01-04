@@ -42,8 +42,8 @@ jobs:
         OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
         OPENSHIFT_NAMESPACE=${{ secrets.PROD_OPENSHIFT_NAMESPACE }}
-        SSO_CLIENT_ID=${{ secrets.SANDBOX_SSO_CLIENT_ID }}
-        SSO_CLIENT_SECRET=${{ secrets.SANDBOX_SSO_CLIENT_SECRET }}
+        SSO_CLIENT_ID=${{ secrets.PROD_SSO_CLIENT_ID }}
+        SSO_CLIENT_SECRET=${{ secrets.PROD_SSO_CLIENT_SECRET }}
         SSO_AUTH_URL=https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
         SSO_TOKEN_URL=https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
         EOF

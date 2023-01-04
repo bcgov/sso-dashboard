@@ -126,6 +126,10 @@ root-minio:
   replicas: 2
   nameOverride: sso-minio
   fullnameOverride: sso-minio
+  image:
+    repository: quay.io/minio/minio
+    tag: RELEASE.2023-01-02T09-40-09Z
+  pullPolicy: IfNotPresent
   rootUser: admin
   rootPassword: adminadmin
   securityContext:
@@ -141,7 +145,7 @@ root-minio:
       policy: none
       purge: false
   persistence:
-    size: 4Gi
+    size: 2Gi
     storageClass: netapp-block-standard
   resources:
     limits:
@@ -150,13 +154,22 @@ root-minio:
     requests:
       cpu: 250m
       memory: 800Mi
-
   serviceAccount:
     create: false
   certsPath: /tmp/minio/certs/
   configPathmc: /tmp/minio/mc/
+  oidc:
+    enabled: true
+    configUrl: "https://identity-provider-url/.well-known/openid-configuration"
+    clientId: "minio"
+    clientSecret: ""
+    # please assign admin user to 'consoleAdmin' role for admin access via CSS app
+    claimName: "client_roles"
+    scopes: "openid"
+    redirectUri: "https://console-endpoint-url/oauth_callback"
 
 routes:
   minio:
     enabled: true
+    host:
     serviceName: sso-minio-console
