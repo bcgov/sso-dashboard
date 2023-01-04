@@ -19,7 +19,7 @@ func UpsertClientEvent(environment string, realmID string, clientID string, even
 	defer db.Close()
 
 	var clientEvent ClientEvent
-	query := "INSERT INTO client_events (environment, realm_id, client_id, event_type, date, count) VALUES(?, ?,?,?,?,1) ON CONFLICT (realm_id, client_id, event_type, date) DO UPDATE SET count = client_events.count + 1"
+	query := "INSERT INTO client_events (environment, realm_id, client_id, event_type, date, count) VALUES(?,?,?,?,?,1) ON CONFLICT (environment, realm_id, client_id, event_type, date) DO UPDATE SET count = client_events.count + 1"
 	_, err := db.Query(&clientEvent, query, environment, realmID, clientID, eventType, date)
 
 	if err != nil {
