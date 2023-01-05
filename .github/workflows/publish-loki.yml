@@ -45,7 +45,7 @@ jobs:
         MINIO_USER=${{ secrets.PROD_MINIO_USER }}
         MINIO_PASS=${{ secrets.PROD_MINIO_PASS }}
         SSO_CLIENT_ID=${{ secrets.PROD_SSO_CLIENT_ID }}
-        SSO_CLIENT_SECRET=${{ secrets.SSO_CLIENT_SECRET }}
+        SSO_CLIENT_SECRET=${{ secrets.PROD_SSO_CLIENT_SECRET }}
         EOF
 
     - name: Authenticate and set context
