@@ -62,6 +62,6 @@ jobs:
         NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} \
         SSO_CLIENT_ID=${{ env.SSO_CLIENT_ID }} \
         SSO_CLIENT_SECRET=${{ env.SSO_CLIENT_SECRET }} \
-        SSO_AUTH_URL=${{ env.SSO_AUTH_URL }} \
-        SSO_TOKEN_URL=${{ env.SSO_TOKEN_URL }}
+        AGGREGATION_DB_USER=${{ env.AGGREGATION_DB_USER }} \
+        AGGREGATION_DB_PASS=${{ env.AGGREGATION_DB_PASS }}
       working-directory: ./helm/grafana
