@@ -63,7 +63,7 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		log.Println(environment, realmId, clientId, eventType, date)
-		model.UpsertClientEvent(environment, realmId, clientId, eventType, date)
+		go model.UpsertClientEvent(environment, realmId, clientId, eventType, date)
 	}
 
 	if lastErr != nil {

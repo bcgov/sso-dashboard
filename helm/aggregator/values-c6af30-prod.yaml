@@ -1,3 +1,5 @@
+replicaCount: 2
+
 patroni:
   replicaCount: 2
   persistentVolume:

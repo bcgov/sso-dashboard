@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"sso-dashboard.bcgov.com/aggregator/model"
 	"sso-dashboard.bcgov.com/aggregator/promtail"
 	"sso-dashboard.bcgov.com/aggregator/utils"
 )
@@ -26,6 +27,8 @@ func main() {
 
 	log.Printf("attempting listen on %s", listenAddr)
 	http.Handle("/", root)
+
+	defer model.GetDB().Close()
 
 	log.Fatalln(http.ListenAndServe(listenAddr, nil))
 }
