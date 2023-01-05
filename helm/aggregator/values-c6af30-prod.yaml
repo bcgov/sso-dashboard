@@ -1,0 +1,6 @@
+replicaCount: 2
+
+patroni:
+  replicaCount: 2
+  persistentVolume:
+    size: 1Gi

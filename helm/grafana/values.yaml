@@ -1,0 +1,112 @@
+# see https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+grafana:
+  nameOverride: sso-grafana
+  fullnameOverride: sso-grafana
+  imagePullSecrets: []
+
+  rbac:
+    create: false
+    pspEnabled: false
+    pspUseAppArmor: false
+
+  serviceAccount:
+    create: false
+
+  replicas: 1
+
+  podDisruptionBudget: {}
+  #  minAvailable: 1
+  #  maxUnavailable: 1
+
+  image:
+    repository: grafana/grafana
+    tag: "9.3.2"
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+
+  testFramework:
+    enabled: false
+
+  securityContext:
+  containerSecurityContext:
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 128Mi
+
+  persistence:
+    type: pvc
+    enabled: true
+    storageClassName: netapp-file-standard
+    accessModes:
+      - ReadWriteMany
+    size: 5Gi
+
+  initChownData:
+    enabled: false
+
+  sidecar:
+    securityContext:
+
+  adminUser: admin
+  # adminPassword: strongpassword
+
+  # see https://github.com/kubeflow/community/blob/master/devstats/config/grafana/etc/grafana.ini.example
+  grafana.ini:
+    server:
+      domain: sso-grafana-sandbox.gov.bc.ca
+      root_url: https://sso-grafana-sandbox.gov.bc.ca
+    auth.generic_oauth:
+      enabled: true
+      name: Keycloak
+      icon: signin
+      scopes: openid
+      empty_scopes: false
+      client_id: <please-replace-me>
+      client_secret: <please-replace-me>
+      auth_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
+      token_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
+      api_url:
+      allowed_domains:
+      allow_sign_up: true
+      tls_skip_verify_insecure: true
+      use_pkce: true
+      login_attribute_path: preferred_username
+
+  # see https://github.com/kubeflow/community/blob/master/devstats/config/grafana/provisioning/datasources/datasource.yaml
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: SSO Loki
+        type: loki
+        access: proxy
+        orgId: 1
+        url: http://sso-loki-gateway
+        basicAuth: false
+        isDefault: true
+      - name: SSO Postgres
+        type: postgres
+        access: proxy
+        orgId: 1
+        url: sso-aggregator-patroni-readonly:5432
+        user: <please-replace-me>
+        database: aggregation
+        basicAuth: false
+        secureJsonData:
+          password: <please-replace-me>
+        jsonData:
+          sslmode: disable
+          maxOpenConns:
+          maxIdleConns: 2
+          connMaxLifetime: 14400
+          postgresVersion: 1400
+          timescaledb: false
+
+route:
+  enabled: true
+  host:
+  serviceName: sso-grafana

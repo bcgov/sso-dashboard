@@ -1,0 +1,67 @@
+name: Publish Loki
+
+on:
+  push:
+    branches:
+    - main
+    - dev
+    paths:
+    - helm/loki/**
+    - .github/workflows/publish-loki.yml
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
+    steps:
+    - uses: hmarr/debug-action@v2
+    - uses: actions/checkout@v3
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Set env to Sandbox
+      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+        OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
+        OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
+        OPENSHIFT_NAMESPACE=${{ secrets.SANDBOX_OPENSHIFT_NAMESPACE }}
+        MINIO_USER=${{ secrets.SANDBOX_MINIO_USER }}
+        MINIO_PASS=${{ secrets.SANDBOX_MINIO_PASS }}
+        SSO_CLIENT_ID=${{ secrets.SANDBOX_SSO_CLIENT_ID }}
+        SSO_CLIENT_SECRET=${{ secrets.SANDBOX_SSO_CLIENT_SECRET }}
+        EOF
+
+    - name: Set env to Production
+      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+        OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
+        OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
+        OPENSHIFT_NAMESPACE=${{ secrets.PROD_OPENSHIFT_NAMESPACE }}
+        MINIO_USER=${{ secrets.PROD_MINIO_USER }}
+        MINIO_PASS=${{ secrets.PROD_MINIO_PASS }}
+        SSO_CLIENT_ID=${{ secrets.PROD_SSO_CLIENT_ID }}
+        SSO_CLIENT_SECRET=${{ secrets.SSO_CLIENT_SECRET }}
+        EOF
+
+    - name: Authenticate and set context
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
+        openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+        insecure_skip_tls_verify: true
+
+    - name: Deploy loki with Helm chart
+      run: |
+        make upgrade \
+        NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} \
+        MINIO_USER=${{ env.MINIO_USER }} \
+        MINIO_PASS=${{ env.MINIO_PASS }} \
+        SSO_CLIENT_ID=${{ env.SSO_CLIENT_ID }} \
+        SSO_CLIENT_SECRET=${{ env.SSO_CLIENT_SECRET }}
+      working-directory: ./helm/loki

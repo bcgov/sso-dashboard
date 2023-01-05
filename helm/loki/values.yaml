@@ -1,0 +1,202 @@
+# see https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
+loki:
+  global:
+    clusterDomain: "cluster.local"
+    dnsService: "dns-default"
+    dnsNamespace: "openshift-dns"
+
+  nameOverride: sso-loki
+  fullnameOverride: sso-loki
+  imagePullSecrets: []
+
+  loki:
+    podSecurityContext:
+    containerSecurityContext:
+    auth_enabled: false
+
+    # see https://grafana.com/docs/loki/latest/configuration/#compactor
+    # see https://grafana.com/docs/loki/latest/operations/storage/retention/
+    #
+    # MinIO - Expire Objects after Number of Days
+    # see https://min.io/docs/minio/linux/administration/object-management/create-lifecycle-management-expiration-rule.html#id4
+    #     to expiry bucket contents after the expiry date and mitigate the existing issue https://github.com/grafana/loki/issues/6300
+    compactor:
+      working_directory: /var/loki/retention
+      shared_store: s3
+      compaction_interval: 10m
+      retention_enabled: true
+      retention_delete_delay: 1h
+      retention_delete_worker_count: 150
+
+    # see https://grafana.com/docs/loki/latest/configuration/#limits_config
+    limits_config:
+      enforce_metric_name: false
+      reject_old_samples: true
+      reject_old_samples_max_age: 168h
+      max_cache_freshness_per_query: 1m
+      split_queries_by_interval: 30m
+      max_query_parallelism: 32
+      max_query_series: 2000
+      max_query_length: 721h
+      ingestion_rate_mb: 10
+      retention_period: 744h
+
+    storage:
+      type: s3
+      bucketNames:
+        chunks: chunks
+        ruler: ruler
+        admin: admin
+      s3:
+        endpoint: sso-minio:9000
+        bucketnames: chunks
+        secretAccessKey: adminadmin
+        accessKeyId: admin
+        s3ForcePathStyle: true
+        insecure: true
+
+    schemaConfig:
+      configs:
+        - from: 2022-12-21
+          store: boltdb-shipper
+          object_store: s3
+          schema: v11
+          index:
+            prefix: index_
+            period: 24h
+
+    rulerConfig:
+      storage:
+        type: "s3"
+        s3:
+          bucketnames: ruler
+
+    storage_config:
+      boltdb_shipper:
+        active_index_directory: /var/loki/active
+        shared_store: s3
+        cache_location: /var/loki/cache
+        cache_ttl: 24h
+
+  serviceAccount:
+    create: false
+
+  test:
+    enabled: false
+
+  monitoring:
+    dashboards:
+      enabled: false
+
+    rules:
+      enabled: false
+
+    serviceMonitor:
+      enabled: false
+
+    selfMonitoring:
+      enabled: false
+
+      grafanaAgent:
+        installOperator: false
+
+      lokiCanary:
+        enabled: false
+
+  write:
+    replicas: 3
+    persistence:
+      size: 10Gi
+      storageClass: netapp-block-standard
+    resources:
+      limits:
+        cpu: 250m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+
+  read:
+    replicas: 3
+    persistence:
+      size: 10Gi
+      storageClass: netapp-block-standard
+    resources:
+      limits:
+        cpu: 250m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+
+  ingress:
+    enabled: false
+
+  gateway:
+    enabled: true
+    replicas: 1
+    podSecurityContext:
+    resources:
+      limits:
+        cpu: 250m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+
+  networkPolicy:
+    enabled: false
+
+# see https://github.com/minio/minio/blob/master/helm/minio/values.yaml
+root-minio:
+  enabled: true
+  replicas: 2
+  nameOverride: sso-minio
+  fullnameOverride: sso-minio
+  image:
+    repository: quay.io/minio/minio
+    tag: RELEASE.2023-01-02T09-40-09Z
+  pullPolicy: IfNotPresent
+  rootUser: admin
+  rootPassword: adminadmin
+  securityContext:
+    enabled: false
+  buckets:
+    - name: chunks
+      policy: none
+      purge: false
+    - name: ruler
+      policy: none
+      purge: false
+    - name: admin
+      policy: none
+      purge: false
+  persistence:
+    size: 2Gi
+    storageClass: netapp-block-standard
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 800Mi
+  serviceAccount:
+    create: false
+  certsPath: /tmp/minio/certs/
+  configPathmc: /tmp/minio/mc/
+  oidc:
+    enabled: true
+    configUrl: "https://identity-provider-url/.well-known/openid-configuration"
+    clientId: "minio"
+    clientSecret: ""
+    # please assign admin user to 'consoleAdmin' role for admin access via CSS app
+    claimName: "client_roles"
+    scopes: "openid"
+    redirectUri: "https://console-endpoint-url/oauth_callback"
+
+routes:
+  minio:
+    enabled: true
+    host:
+    serviceName: sso-minio-console

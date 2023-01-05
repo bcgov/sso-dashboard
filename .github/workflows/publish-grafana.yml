@@ -1,0 +1,67 @@
+name: Publish Grafana
+
+on:
+  push:
+    branches:
+    - main
+    - dev
+    paths:
+    - helm/grafana/**
+    - .github/workflows/publish-grafana.yml
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
+    steps:
+    - uses: hmarr/debug-action@v2
+    - uses: actions/checkout@v3
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Set env to Sandbox
+      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+        OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
+        OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
+        OPENSHIFT_NAMESPACE=${{ secrets.SANDBOX_OPENSHIFT_NAMESPACE }}
+        SSO_CLIENT_ID=${{ secrets.SANDBOX_SSO_CLIENT_ID }}
+        SSO_CLIENT_SECRET=${{ secrets.SANDBOX_SSO_CLIENT_SECRET }}
+        AGGREGATION_DB_USER=${{ secrets.SANDBOX_AGGREGATION_DB_USER }}
+        AGGREGATION_DB_PASS=${{ secrets.SANDBOX_AGGREGATION_DB_PASS }}
+        EOF
+
+    - name: Set env to Production
+      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+        OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
+        OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
+        OPENSHIFT_NAMESPACE=${{ secrets.PROD_OPENSHIFT_NAMESPACE }}
+        SSO_CLIENT_ID=${{ secrets.PROD_SSO_CLIENT_ID }}
+        SSO_CLIENT_SECRET=${{ secrets.PROD_SSO_CLIENT_SECRET }}
+        AGGREGATION_DB_USER=${{ secrets.PROD_AGGREGATION_DB_USER }}
+        AGGREGATION_DB_PASS=${{ secrets.PROD_AGGREGATION_DB_PASS }}
+        EOF
+
+    - name: Authenticate and set context
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
+        openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+        insecure_skip_tls_verify: true
+
+    - name: Deploy grafana with Helm chart
+      run: |
+        make upgrade \
+        NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} \
+        SSO_CLIENT_ID=${{ env.SSO_CLIENT_ID }} \
+        SSO_CLIENT_SECRET=${{ env.SSO_CLIENT_SECRET }} \
+        SSO_AUTH_URL=${{ env.SSO_AUTH_URL }} \
+        SSO_TOKEN_URL=${{ env.SSO_TOKEN_URL }}
+      working-directory: ./helm/grafana

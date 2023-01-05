@@ -1,0 +1,17 @@
+apiVersion: v2
+name: loki
+description: Helm chart for Grafana Loki
+type: application
+appVersion: 0.1.0
+version: 0.1.0
+dependencies:
+  - name: loki
+    alias: loki
+    version: 3.6.1
+    repository: https://grafana.github.io/helm-charts
+  - name: minio
+    alias: root-minio
+    # see https://github.com/minio/minio/tree/master/helm-releases
+    version: 5.0.4
+    repository: https://charts.min.io/
+    condition: root-minio.enabled
