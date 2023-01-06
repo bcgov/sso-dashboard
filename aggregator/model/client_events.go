@@ -44,7 +44,7 @@ func deleteOldClientEvents() error {
 	return nil
 }
 
-func DeleteOldEntries() {
+func RunCronJob() {
 	loc, _ := time.LoadLocation("America/Vancouver")
 	cron := gocron.NewScheduler(loc)
 	cron.Every(1).Day().At("02:00").Do(func() {

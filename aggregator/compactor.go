@@ -9,5 +9,5 @@ import (
 func main() {
 	log.Printf("cronjob starts...")
 
-	model.DeleteOldEntries()
+	model.RunCronJob()
 }
