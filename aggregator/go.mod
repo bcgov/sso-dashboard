@@ -3,6 +3,7 @@ module sso-dashboard.bcgov.com/aggregator
 go 1.19
 
 require (
+	github.com/go-co-op/gocron v1.18.0
 	github.com/go-pg/pg v8.0.7+incompatible
 	github.com/gorilla/mux v1.8.0
 	github.com/grafana/dskit v0.0.0-20221212120341-3e308a49441b
@@ -104,6 +105,7 @@ require (
 	github.com/prometheus/common/sigv4 v0.1.0 // indirect
 	github.com/prometheus/exporter-toolkit v0.8.2 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529 // indirect
 	github.com/sercand/kuberesolver v2.4.0+incompatible // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect

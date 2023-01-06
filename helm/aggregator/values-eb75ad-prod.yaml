@@ -4,3 +4,7 @@ patroni:
   replicaCount: 3
   persistentVolume:
     size: 10Gi
+
+compactor:
+  enabled: true
+  retentionPeriod: "1 year"

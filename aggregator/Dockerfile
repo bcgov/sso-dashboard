@@ -20,7 +20,8 @@ COPY alembic ./alembic
 
 RUN pip install -r requirements.txt
 
-COPY --from=builder /app/build/main /app/main
+COPY --from=builder /app/build/aggregator /app/aggregator
+COPY --from=builder /app/build/compactor /app/compactor
 
 ENV PORT 8080
 EXPOSE 8080

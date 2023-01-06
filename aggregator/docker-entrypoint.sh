@@ -14,4 +14,4 @@ alembic upgrade head
 
 echo "DB migration finished."
 
-./app/main
+./app/aggregator
