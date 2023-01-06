@@ -1,0 +1,65 @@
+{{- if .Values.compactor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aggregator.fullname" . }}-compactor
+  labels:
+    {{- include "aggregator.labels" . | nindent 4 }}
+    app.kubernetes.io/component: compactor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "aggregator.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: compactor
+  template:
+    metadata:
+      labels:
+        {{- include "aggregator.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: compactor
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "aggregator.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-compactor
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "./app/aggregator"
+          env:
+            - name: DB_HOSTNAME
+              value: {{ .Values.postgres.host }}
+            - name: DB_PORT
+              value: {{ .Values.postgres.port | quote }}
+            - name: DB_USERNAME
+              {{- if and .Values.postgres.credentials.secret .Values.postgres.credentials.usernameKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.credentials.secret }}
+                  key: {{ .Values.postgres.credentials.usernameKey }}
+              {{- else -}}
+              value: {{ .Values.postgres.credentials.username }}
+              {{- end }}
+            - name: DB_PASSWORD
+              {{- if and .Values.postgres.credentials.secret .Values.postgres.credentials.passwordKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.credentials.secret }}
+                  key: {{ .Values.postgres.credentials.passwordKey }}
+              {{- else -}}
+              value: {{ .Values.postgres.credentials.password }}
+              {{- end }}
+            - name: DB_DATABASE
+              value: {{ .Values.postgres.database }}
+            - name: RETENTION_PERIOD
+              value: {{ .Values.compactor.retentionPeriod }}
+          resources:
+            {{- toYaml .Values.compactor.resources | nindent 12 }}
+{{- end }}
