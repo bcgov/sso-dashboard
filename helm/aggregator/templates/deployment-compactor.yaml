@@ -31,8 +31,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - "./app/aggregator"
+          command: ["/app/compactor"]
           env:
             - name: DB_HOSTNAME
               value: {{ .Values.postgres.host }}
