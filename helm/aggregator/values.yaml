@@ -48,7 +48,7 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage:
 
 nodeSelector: {}
 
@@ -82,3 +82,14 @@ patroni:
 
   persistentVolume:
     size: 10Gi
+
+compactor:
+  enabled: false
+  retentionPeriod: "1 year"
+  resources:
+    limits:
+      cpu: 100m
+      memory: 200Mi
+    requests:
+      cpu: 50m
+      memory: 100Mi

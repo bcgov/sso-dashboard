@@ -10,7 +10,7 @@ import (
 	"sso-dashboard.bcgov.com/aggregator/utils"
 )
 
-func HealthHandler(w http.ResponseWriter, r *http.Request) {
+func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -19,7 +19,7 @@ func main() {
 	root := mux.NewRouter()
 
 	apiRouter := root.PathPrefix("/api").Subrouter()
-	apiRouter.HandleFunc("/healthz", HealthHandler)
+	apiRouter.HandleFunc("/healthz", healthHandler)
 	apiRouter.HandleFunc("/promtail/push", promtail.PromtailPushHandler)
 
 	port := utils.GetEnv("PORT", "8080")

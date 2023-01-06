@@ -8,19 +8,22 @@ install:
 
 .PHONY: build
 build:
-	go build -o build/main
+	go build -o build/aggregator main.go
+	go build -o build/compactor compactor.go
 
 .PHONY: format
 format:
 	gofmt -w -s .
 
-.PHONY: start
-start:
-	./build/main
-
 .PHONY: dev
 dev: build
-dev: start
+dev:
+	./build/aggregator
+
+.PHONY: compactor
+compactor: build
+compactor:
+	./build/compactor
 
 define db-start
 	pg_ctl start
