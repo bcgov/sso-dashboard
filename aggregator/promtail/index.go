@@ -11,6 +11,7 @@ import (
 	util_log "github.com/grafana/loki/pkg/util/log"
 	promql_parser "github.com/prometheus/prometheus/promql/parser"
 
+	"sso-dashboard.bcgov.com/aggregator/config"
 	"sso-dashboard.bcgov.com/aggregator/model"
 )
 
@@ -22,6 +23,8 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	loc := config.LoadTimeLocation()
 
 	var lastErr error
 	for _, stream := range req.Streams {
@@ -58,8 +61,8 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		for _, entry := range stream.Entries {
-			year, month, day := entry.Timestamp.Date()
-			date = time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+			year, month, day := entry.Timestamp.In(loc).Date()
+			date = time.Date(year, month, day, 0, 0, 0, 0, loc)
 		}
 
 		log.Println(environment, realmId, clientId, eventType, date)

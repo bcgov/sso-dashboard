@@ -24,7 +24,7 @@ root-minio:
   rootUser: <please-replace-me>
   rootPassword: <please-replace-me>
   persistence:
-    size: 50Gi
+    size: 25Gi
   oidc:
     configUrl: "https://loginproxy.gov.bc.ca/auth/realms/standard/.well-known/openid-configuration"
     clientId: <please-replace-me>
