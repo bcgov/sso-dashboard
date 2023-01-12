@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
+	"sso-dashboard.bcgov.com/aggregator/config"
 	"sso-dashboard.bcgov.com/aggregator/utils"
 )
 
@@ -45,7 +46,7 @@ func deleteOldClientEvents() error {
 }
 
 func RunCronJob() {
-	loc, _ := time.LoadLocation("America/Vancouver")
+	loc := config.LoadTimeLocation()
 	cron := gocron.NewScheduler(loc)
 	cron.Every(1).Day().At("02:00").Do(func() {
 		deleteOldClientEvents()

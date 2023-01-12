@@ -23,6 +23,7 @@ RUN pip install -r requirements.txt
 COPY --from=builder /app/build/aggregator /app/aggregator
 COPY --from=builder /app/build/compactor /app/compactor
 
+ENV TZ America/Vancouver
 ENV PORT 8080
 EXPOSE 8080
 
