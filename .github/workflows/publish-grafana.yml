@@ -31,8 +31,6 @@ jobs:
         OPENSHIFT_NAMESPACE=${{ secrets.SANDBOX_OPENSHIFT_NAMESPACE }}
         SSO_CLIENT_ID=${{ secrets.SANDBOX_SSO_CLIENT_ID }}
         SSO_CLIENT_SECRET=${{ secrets.SANDBOX_SSO_CLIENT_SECRET }}
-        AGGREGATION_DB_USER=${{ secrets.SANDBOX_AGGREGATION_DB_USER }}
-        AGGREGATION_DB_PASS=${{ secrets.SANDBOX_AGGREGATION_DB_PASS }}
         EOF
 
     - name: Set env to Production
@@ -44,8 +42,6 @@ jobs:
         OPENSHIFT_NAMESPACE=${{ secrets.PROD_OPENSHIFT_NAMESPACE }}
         SSO_CLIENT_ID=${{ secrets.PROD_SSO_CLIENT_ID }}
         SSO_CLIENT_SECRET=${{ secrets.PROD_SSO_CLIENT_SECRET }}
-        AGGREGATION_DB_USER=${{ secrets.PROD_AGGREGATION_DB_USER }}
-        AGGREGATION_DB_PASS=${{ secrets.PROD_AGGREGATION_DB_PASS }}
         EOF
 
     - name: Authenticate and set context
@@ -61,7 +57,5 @@ jobs:
         make upgrade \
         NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} \
         SSO_CLIENT_ID=${{ env.SSO_CLIENT_ID }} \
-        SSO_CLIENT_SECRET=${{ env.SSO_CLIENT_SECRET }} \
-        AGGREGATION_DB_USER=${{ env.AGGREGATION_DB_USER }} \
-        AGGREGATION_DB_PASS=${{ env.AGGREGATION_DB_PASS }}
+        SSO_CLIENT_SECRET=${{ env.SSO_CLIENT_SECRET }}
       working-directory: ./helm/grafana

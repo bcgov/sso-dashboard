@@ -42,9 +42,6 @@ GitHub CD pipeline scripts are triggered based on the directory that has changed
 1. `Loki`: deploys the `MinIO` and `Loki` resources, `read`, `write`, and `gateway`.
 1. `Aggregator`: deploys the `Aggregator` and `Compactor` with the `Postgres DB`.
 1. `Grafana`: deploys the `Grafana` dashboard with the two `datasources` configured above.
-
-   - requires two environment variables `AGGREGATION_DB_USER` and `AGGREGATION_DB_PASS` to access the aggregated database after the `Go servers` are deployed.
-
 1. `Promtail`: deploys the `Promtail` in multiple namespaces to collect the Keycloak disk logs.
 
 ## GitHub secrets
@@ -62,9 +59,6 @@ The following secrets are set in the GitHub secrets of the repository and can be
   - please find the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests)
 - `SANDBOX_MINIO_USER`: the username of the initial MinIO admin account.
 - `SANDBOX_MINIO_PASS`: the password of the initial MinIO admin account.
-- `SANDBOX_AGGREGATION_DB_USER`: the username of the `Aggregator` postgres database.
-- `SANDBOX_AGGREGATION_DB_PASS`: the password of the `Aggregator` postgres database.
-  - please the find the secret in [Aggregator Secret](https://console.apps.gold.devops.gov.bc.ca/k8s/ns/c6af30-prod/secrets/sso-aggregator-patroni-appusers)
 
 ### Production
 
@@ -77,6 +71,3 @@ The following secrets are set in the GitHub secrets of the repository and can be
   - please find the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests)
 - `PROD_MINIO_USER`: the username of the initial MinIO admin account.
 - `PROD_MINIO_PASS`: the password of the initial MinIO admin account.
-- `PROD_AGGREGATION_DB_USER`: the username of the `Aggregator` postgres database.
-- `PROD_AGGREGATION_DB_PASS`: the password of the `Aggregator` postgres database.
-  - please the find the secret in [Aggregator Secret](https://console.apps.gold.devops.gov.bc.ca/k8s/ns/eb75ad-prod/secrets/sso-aggregator-patroni-appusers)
