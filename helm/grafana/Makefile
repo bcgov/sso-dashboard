@@ -2,9 +2,11 @@ SHELL := /usr/bin/env bash
 NAMESPACE=
 SSO_CLIENT_ID=
 SSO_CLIENT_SECRET=
-AGGREGATION_DB_USER=
-AGGREGATION_DB_PASS=
-NAME=sso-grafana
+
+AGGREGATION_DB_SECRET := sso-aggregator-patroni-appusers
+AGGREGATION_DB_USER := $(shell kubectl get secret -n "${NAMESPACE}" "${AGGREGATION_DB_SECRET}" -o jsonpath="{.data.username-appuser1}" | base64 --decode)
+AGGREGATION_DB_PASS := $(shell kubectl get secret -n "${NAMESPACE}" "${AGGREGATION_DB_SECRET}" -o jsonpath="{.data.password-appuser1}" | base64 --decode)
+NAME := sso-grafana
 
 ifndef NAMESPACE
 $(error NAMESPACE is not set)
@@ -25,27 +27,27 @@ helm-dep:
 .PHONY: install
 install: helm-dep
 install:
-	helm install $(call arguments)
+	@helm install $(call arguments)
 
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
-	helm upgrade --install $(call arguments)
+	@helm upgrade --install $(call arguments)
 
 .PHONY: lint
 lint: helm-dep
 lint:
-	helm upgrade --dry-run --install $(call arguments)
+	@helm upgrade --dry-run --install $(call arguments)
 
 .PHONY: uninstall
 uninstall: helm-dep
 uninstall:
-	helm uninstall ${NAME} -n ${NAMESPACE}
+	@helm uninstall ${NAME} -n ${NAMESPACE}
 
 .PHONY: template
 template: helm-dep
 template:
-	helm template $(call arguments) > template.yaml
+	@helm template $(call arguments) > template.yaml
 
 .PHONY: force-install
 force-install: uninstall
