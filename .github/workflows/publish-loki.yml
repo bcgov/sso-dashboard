@@ -8,6 +8,12 @@ on:
     paths:
     - helm/loki/**
     - .github/workflows/publish-loki.yml
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: The target environment
+        required: true
+        options: [sandbox, production]
 
 jobs:
   build-and-push-image:
@@ -23,7 +29,9 @@ jobs:
       uses: ./.github/actions/setup-tools
 
     - name: Set env to Sandbox
-      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+      if: |
+        (github.ref == 'refs/heads/dev' && github.event_name == 'push') ||
+        (github.event.inputs.environment == 'sandbox' && github.event_name == 'workflow_dispatch')
       run: |
         cat >> $GITHUB_ENV <<EOF
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
@@ -36,7 +44,9 @@ jobs:
         EOF
 
     - name: Set env to Production
-      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
+      if: |
+        (github.ref == 'refs/heads/main' && github.event_name == 'push') ||
+        (github.event.inputs.environment == 'production' && github.event_name == 'workflow_dispatch')
       run: |
         cat >> $GITHUB_ENV <<EOF
         OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
