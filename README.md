@@ -36,7 +36,7 @@ SSO Keycloak dashboard services provide the ability to monitor real-time statist
 
 ## Deployment
 
-It continuously deploys the resources in the sandbox and the prod environment based on the repository branch (dev, main) that has the new changes.
+It continuously deploys the resources in the sandbox and the prod environment based on the repository branch (pr's to dev deploys sandbox, pr's to main deploys prod) that has the new changes.
 GitHub CD pipeline scripts are triggered based on the directory that has changed; there is a recommended deployment order when deploying the resources for the very first time:
 
 1. `Loki`: deploys the `MinIO` and `Loki` resources, `read`, `write`, and `gateway`.
