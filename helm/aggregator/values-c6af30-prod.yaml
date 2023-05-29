@@ -8,3 +8,7 @@ patroni:
 compactor:
   enabled: true
   retentionPeriod: "1 month"
+
+# to test the upgrade in sandbox we need to temporarily enable autoscalling
+autoscaling:
+  enabled: true
