@@ -4,6 +4,41 @@ A Helm chart for deploying [Grafana dashboard](https://github.com/grafana/helm-c
 
 ## Local deployment via Helm chart
 
+### Pre-Requisites
+
+#### Setup Network Policies
+
+- Below network policy has to be added to all the namespaces, where grafana requires to access the data source
+
+```yaml
+# Update $LICENSE_PLATE (ex.: e4ca1d)
+
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: sso-dev-sandbox-gold-grafana-access
+  namespace: $LICENSE_PLATE-(dev/test/prod)
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: sso-patroni
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              environment: tools
+              name: $LICENSE_PLATE
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: sso-grafana
+  policyTypes:
+    - Ingress
+```
+
+#### Update Helm Values
+
+- Update data source username, password and database names under `values-$LICENSE_PLATE.yml` in place of `<please-replace-me>`
+
 ### Installing/Upgrading the Chart
 
 ```sh
@@ -24,7 +59,7 @@ make uninstall NAMESPACE=<namespace>
 
 once the deployment is completed, please find the Grafana admin credentials in OCP secrets below:
 
-- `dev`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/c6af30-prod/secrets/sso-grafana
+- `dev`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/e4ca1d-tools/secrets/sso-grafana
 - `prod`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/eb75ad-prod/secrets/sso-grafana
 
 ## Configuration

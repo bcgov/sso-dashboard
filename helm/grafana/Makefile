@@ -3,9 +3,6 @@ NAMESPACE=
 SSO_CLIENT_ID=
 SSO_CLIENT_SECRET=
 
-AGGREGATION_DB_SECRET := sso-aggregator-patroni-appusers
-AGGREGATION_DB_USER := $(shell kubectl get secret -n "${NAMESPACE}" "${AGGREGATION_DB_SECRET}" -o jsonpath="{.data.username-appuser1}" | base64 --decode)
-AGGREGATION_DB_PASS := $(shell kubectl get secret -n "${NAMESPACE}" "${AGGREGATION_DB_SECRET}" -o jsonpath="{.data.password-appuser1}" | base64 --decode)
 NAME := sso-grafana
 
 ifndef NAMESPACE
@@ -15,9 +12,7 @@ endif
 define arguments
 	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
 	--set grafana."grafana\.ini"."auth\.generic_oauth".client_id=${SSO_CLIENT_ID} \
-	--set grafana."grafana\.ini"."auth\.generic_oauth".client_secret=${SSO_CLIENT_SECRET} \
-	--set grafana.datasources."datasources\.yaml".datasources[1].user=${AGGREGATION_DB_USER} \
-	--set grafana.datasources."datasources\.yaml".datasources[1].secureJsonData.password=${AGGREGATION_DB_PASS}
+	--set grafana."grafana\.ini"."auth\.generic_oauth".client_secret=${SSO_CLIENT_SECRET}
 endef
 
 .PHONY: helm-dep
