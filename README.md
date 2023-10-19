@@ -2,6 +2,11 @@
 
 SSO Keycloak dashboard services provide the ability to monitor real-time statistical data and event logs.
 
+## Local Development Environment
+
+- Install asdf
+- Run `make local-setup` to install necessary tooling
+
 ## Benefits
 
 1. De-coupling the auditing service from the authentication service (Keycloak) and reducing the amount of Keycloak SQL transactions and DB data storage; gives better maintainability of the Keycloak instances.
