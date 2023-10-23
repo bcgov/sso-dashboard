@@ -10,29 +10,12 @@ A Helm chart for deploying [Grafana dashboard](https://github.com/grafana/helm-c
 
 - Below network policy has to be added to all the namespaces, where grafana requires to access the data source
 
-```yaml
-# Update $LICENSE_PLATE (ex.: e4ca1d)
+```sh
+export LICENSE_PLATE=
+export ENV=
 
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: sso-dev-sandbox-gold-grafana-access
-  namespace: $LICENSE_PLATE-(dev/test/prod)
-spec:
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/name: sso-patroni
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              environment: tools
-              name: $LICENSE_PLATE
-        - podSelector:
-            matchLabels:
-              app.kubernetes.io/name: sso-grafana
-  policyTypes:
-    - Ingress
+# run below command after logging into each namespace (dev, test and prod)
+envsubst < net-policy-sso-keycloak.yaml | oc apply -f -
 ```
 
 #### Update Helm Values
