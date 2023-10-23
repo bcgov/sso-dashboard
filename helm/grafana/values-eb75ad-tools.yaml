@@ -5,12 +5,12 @@ grafana:
 
   grafana.ini:
     server:
-      domain: sso-grafana-sandbox.apps.gold.devops.gov.bc.ca
-      root_url: https://sso-grafana-sandbox.apps.gold.devops.gov.bc.ca
+      domain: sso-grafana.apps.gold.devops.gov.bc.ca
+      root_url: https://sso-grafana.apps.gold.devops.gov.bc.ca
     auth.generic_oauth:
-      name: SSO Pathfinder Sandbox
-      auth_url: https://dev.sandbox.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
-      token_url: https://dev.sandbox.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
+      name: SSO Pathfinder
+      auth_url: https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
+      token_url: https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
 
   datasources:
     datasources.yaml:
@@ -87,4 +87,4 @@ grafana:
 
 route:
   enabled: true
-  host: sso-grafana-sandbox.apps.gold.devops.gov.bc.ca
+  host: sso-grafana.apps.gold.devops.gov.bc.ca

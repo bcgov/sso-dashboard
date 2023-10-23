@@ -29,13 +29,13 @@ grafana:
 
   securityContext:
   containerSecurityContext:
-  resources: {}
-  #  limits:
-  #    cpu: 100m
-  #    memory: 128Mi
-  #  requests:
-  #    cpu: 100m
-  #    memory: 128Mi
+  resources:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 150m
+      memory: 128Mi
 
   persistence:
     type: pvc
