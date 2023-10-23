@@ -7,6 +7,8 @@ grafana:
     server:
       domain: sso-grafana.apps.gold.devops.gov.bc.ca
       root_url: https://sso-grafana.apps.gold.devops.gov.bc.ca
+    auth:
+      disable_login_form: true
     auth.generic_oauth:
       name: SSO Pathfinder
       auth_url: https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
@@ -37,7 +39,7 @@ grafana:
           type: postgres
           access: proxy
           orgId: 1
-          url: sso-patroni-readonly.e4ca1d-dev.svc.cluster.local:5432
+          url: sso-patroni-readonly.eb75ad-dev.svc.cluster.local:5432
           user: <please-replace-me>
           database: <please-replace-me>
           basicAuth: false
@@ -54,7 +56,7 @@ grafana:
           type: postgres
           access: proxy
           orgId: 1
-          url: sso-patroni-readonly.e4ca1d-test.svc.cluster.local:5432
+          url: sso-patroni-readonly.eb75ad-test.svc.cluster.local:5432
           user: <please-replace-me>
           database: <please-replace-me>
           basicAuth: false
@@ -71,7 +73,7 @@ grafana:
           type: postgres
           access: proxy
           orgId: 1
-          url: sso-patroni-readonly.e4ca1d-prod.svc.cluster.local:5432
+          url: sso-patroni-readonly.eb75ad-prod.svc.cluster.local:5432
           user: <please-replace-me>
           database: <please-replace-me>
           basicAuth: false

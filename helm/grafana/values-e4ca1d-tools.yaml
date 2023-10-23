@@ -7,6 +7,8 @@ grafana:
     server:
       domain: sso-grafana-sandbox.apps.gold.devops.gov.bc.ca
       root_url: https://sso-grafana-sandbox.apps.gold.devops.gov.bc.ca
+    auth:
+      disable_login_form: true
     auth.generic_oauth:
       name: SSO Pathfinder Sandbox
       auth_url: https://dev.sandbox.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
