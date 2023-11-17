@@ -37,7 +37,9 @@ SSO Keycloak dashboard services provide the ability to monitor real-time statist
 
 1. `Grafana`: connect Loki and the aggregation DB to visualize the logs and stats.
 
-![image](https://user-images.githubusercontent.com/36021827/211399712-5bbeaa67-2994-460f-a12b-368b13187cdd.png)
+   ![SSO Dashboard Architecture Diagram](assets/sso-dashboard-arch.gif)
+
+<!-- ![image](https://user-images.githubusercontent.com/36021827/211399712-5bbeaa67-2994-460f-a12b-368b13187cdd.png) -->
 
 ## Deployment
 
