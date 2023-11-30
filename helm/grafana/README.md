@@ -20,14 +20,12 @@ envsubst < net-policy-sso-keycloak.yaml | oc apply -f -
 
 #### Update Helm Values
 
-- Update data source username, password and database names under `values-$LICENSE_PLATE.yml` in place of `<please-replace-me>`
+- create `.env` from `.env.example` and fill the values
 
 ### Installing/Upgrading the Chart
 
 ```sh
-make upgrade NAMESPACE=<namespace> \
-             SSO_CLIENT_ID=<sso-client-id> \
-             SSO_CLIENT_SECRET=<sso-client-secret>
+make upgrade
 ```
 
 - please find the SSO client credentials of the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests):
@@ -35,7 +33,7 @@ make upgrade NAMESPACE=<namespace> \
 ### Uninstalling the Chart
 
 ```sh
-make uninstall NAMESPACE=<namespace>
+make uninstall
 ```
 
 ## Grafana Admin credentials
@@ -43,7 +41,7 @@ make uninstall NAMESPACE=<namespace>
 once the deployment is completed, please find the Grafana admin credentials in OCP secrets below:
 
 - `dev`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/e4ca1d-tools/secrets/sso-grafana
-- `prod`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/eb75ad-prod/secrets/sso-grafana
+- `prod`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/eb75ad-tools/secrets/sso-grafana
 
 ## Configuration
 

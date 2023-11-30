@@ -16,14 +16,16 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  name: ''
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -37,11 +39,11 @@ service:
 
 resources:
   limits:
-    cpu: 200m
-    memory: 200Mi
+    cpu: 300m
+    memory: 512Mi
   requests:
-    cpu: 100m
-    memory: 100Mi
+    cpu: 150m
+    memory: 256Mi
 
 autoscaling:
   enabled: false
@@ -70,6 +72,13 @@ patroni:
   image:
     repository: registry.opensource.zalan.do/acid/spilo-14
     tag: 2.1-p7
+  resources:
+    requests:
+      cpu: 150m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
 
   postgresMajorVersion: 14
 
@@ -85,11 +94,11 @@ patroni:
 
 compactor:
   enabled: false
-  retentionPeriod: "1 year"
+  retentionPeriod: '1 year'
   resources:
     limits:
       cpu: 100m
-      memory: 200Mi
+      memory: 256Mi
     requests:
       cpu: 50m
-      memory: 100Mi
+      memory: 128Mi

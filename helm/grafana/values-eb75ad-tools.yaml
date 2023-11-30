@@ -7,8 +7,6 @@ grafana:
     server:
       domain: sso-grafana.apps.gold.devops.gov.bc.ca
       root_url: https://sso-grafana.apps.gold.devops.gov.bc.ca
-    auth:
-      disable_login_form: true
     auth.generic_oauth:
       name: SSO Pathfinder
       auth_url: https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
@@ -74,6 +72,30 @@ grafana:
           access: proxy
           orgId: 1
           url: sso-patroni-readonly.eb75ad-prod.svc.cluster.local:5432
+          user: <please-replace-me>
+          database: <please-replace-me>
+          basicAuth: false
+          secureJsonData:
+            password: <please-replace-me>
+          jsonData:
+            sslmode: disable
+            maxOpenConns:
+            maxIdleConns: 2
+            connMaxLifetime: 14400
+            postgresVersion: 1400
+            timescaledb: false
+        - name: SSO Loki
+          type: loki
+          access: proxy
+          orgId: 1
+          url: http://sso-loki-gateway
+          basicAuth: false
+          isDefault: true
+        - name: SSO Postgres
+          type: postgres
+          access: proxy
+          orgId: 1
+          url: sso-aggregator-patroni-readonly:5432
           user: <please-replace-me>
           database: <please-replace-me>
           basicAuth: false

@@ -1,5 +1,5 @@
 promtail:
-  environment: dev
+  environment: test
 
   deployment:
     replicaCount: 1
@@ -8,9 +8,9 @@ promtail:
   config:
     logLevel: info
     clients:
-      - url: http://sso-loki-gateway.eb75ad-tools.svc.cluster.local/loki/api/v1/push
+      - url: http://sso-loki-gateway.e4ca1d-prod.svc.cluster.local/loki/api/v1/push
         tenant_id: sso-team
-      - url: http://sso-aggregator.eb75ad-tools.svc.cluster.local:8080/api/promtail/push
+      - url: http://sso-aggregator.e4ca1d-prod.svc.cluster.local:8080/api/promtail/push
     snippets:
       scrapeConfigs: |
         {{- tpl .Values.ssoScrapeConfigs . }}

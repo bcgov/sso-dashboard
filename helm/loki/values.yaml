@@ -1,9 +1,9 @@
 # see https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
 loki:
   global:
-    clusterDomain: "cluster.local"
-    dnsService: "dns-default"
-    dnsNamespace: "openshift-dns"
+    clusterDomain: 'cluster.local'
+    dnsService: 'dns-default'
+    dnsNamespace: 'openshift-dns'
 
   nameOverride: sso-loki
   fullnameOverride: sso-loki
@@ -32,14 +32,20 @@ loki:
     limits_config:
       enforce_metric_name: false
       reject_old_samples: true
-      reject_old_samples_max_age: 168h
+      reject_old_samples_max_age: 168h # 7 days
       max_cache_freshness_per_query: 1m
       split_queries_by_interval: 30m
       max_query_parallelism: 32
       max_query_series: 2000
       max_query_length: 721h
       ingestion_rate_mb: 10
-      retention_period: 744h
+      retention_period: 744h # 31 days
+      max_entries_limit_per_query: 100000
+      query_timeout: 300s
+      max_global_streams_per_user: 1000000
+
+    commonConfig:
+      replication_factor: 3
 
     storage:
       type: s3
@@ -67,7 +73,7 @@ loki:
 
     rulerConfig:
       storage:
-        type: "s3"
+        type: 's3'
         s3:
           bucketnames: ruler
 
@@ -80,6 +86,10 @@ loki:
 
   serviceAccount:
     create: false
+
+  rbac:
+    create: true
+    namespaced: true
 
   test:
     enabled: false
@@ -100,8 +110,8 @@ loki:
       grafanaAgent:
         installOperator: false
 
-      lokiCanary:
-        enabled: false
+    lokiCanary:
+      enabled: false
 
   write:
     replicas: 3
@@ -111,9 +121,9 @@ loki:
     resources:
       limits:
         cpu: 250m
-        memory: 1Gi
+        memory: 512Mi
       requests:
-        cpu: 50m
+        cpu: 150m
         memory: 256Mi
 
   read:
@@ -124,9 +134,9 @@ loki:
     resources:
       limits:
         cpu: 250m
-        memory: 1Gi
+        memory: 512Mi
       requests:
-        cpu: 50m
+        cpu: 150m
         memory: 256Mi
 
   ingress:
@@ -139,9 +149,9 @@ loki:
     resources:
       limits:
         cpu: 250m
-        memory: 1Gi
+        memory: 512Mi
       requests:
-        cpu: 50m
+        cpu: 150m
         memory: 256Mi
 
   networkPolicy:
@@ -155,7 +165,7 @@ root-minio:
   fullnameOverride: sso-minio
   image:
     repository: quay.io/minio/minio
-    tag: RELEASE.2023-01-02T09-40-09Z
+    tag: RELEASE.2023-10-25T06-33-25Z
   pullPolicy: IfNotPresent
   rootUser: admin
   rootPassword: adminadmin
@@ -172,28 +182,28 @@ root-minio:
       policy: none
       purge: false
   persistence:
-    size: 2Gi
+    size: 1Gi
     storageClass: netapp-block-standard
   resources:
     limits:
-      cpu: 500m
-      memory: 1Gi
+      cpu: 300m
+      memory: 512Mi
     requests:
-      cpu: 250m
-      memory: 800Mi
+      cpu: 150m
+      memory: 256Mi
   serviceAccount:
     create: false
   certsPath: /tmp/minio/certs/
   configPathmc: /tmp/minio/mc/
   oidc:
     enabled: true
-    configUrl: "https://identity-provider-url/.well-known/openid-configuration"
-    clientId: "minio"
-    clientSecret: ""
+    configUrl: 'https://identity-provider-url/.well-known/openid-configuration'
+    clientId: 'minio'
+    clientSecret: ''
     # please assign admin user to 'consoleAdmin' role for admin access via CSS app
-    claimName: "client_roles"
-    scopes: "openid"
-    redirectUri: "https://console-endpoint-url/oauth_callback"
+    claimName: 'client_roles'
+    scopes: 'openid'
+    redirectUri: 'https://console-endpoint-url/oauth_callback'
 
 routes:
   minio:

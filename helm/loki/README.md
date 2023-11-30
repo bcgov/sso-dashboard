@@ -4,6 +4,41 @@ A Helm chart for deploying [Grafana Loki](https://github.com/grafana/loki/tree/m
 
 ## Local deployment via Helm chart
 
+### Pre-Requisites
+
+- It's generally a good practice to stop Promtail before restarting Grafana Loki. Promtail is responsible for scraping and sending logs to Loki, and stopping it before a restart can prevent potential issues or data loss during the restart process. Stopping Promtail temporarily ensures that it doesn’t try to send logs while Loki is restarting, preventing any potential errors due to a disrupted connection. After Loki has restarted successfully, you can start Promtail again to resume log scraping and forwarding to Loki. This sequence helps in maintaining the integrity of log data and ensures a smoother restart process for Loki.
+
+```sh
+export LICENSE_PLATE=
+
+oc scale --replicas=0 deployment sso-promtail -n ${LICENSE_PLATE}-dev
+oc scale --replicas=0 deployment sso-promtail -n ${LICENSE_PLATE}-test
+oc scale --replicas=0 deployment sso-promtail -n ${LICENSE_PLATE}-prod
+```
+
+- Ensure below network policy exists in the namespace where loki is being deployed
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-sso-promtail
+  namespace: xxxx-xxxx
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: xxxx
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: promtail
+  policyTypes:
+    - Ingress
+status: {}
+```
+
 ### Installing/Upgrading the Chart
 
 ```sh
@@ -17,6 +52,14 @@ make upgrade NAMESPACE=<namespace> \
 - please find the SSO client credentials of the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests):
 
 - please generate the secure credentials for the initial `MinIO Admin` that can be set in the MinIO deployment.
+
+### Post Installation/Update of Loki
+
+```sh
+oc scale --replicas=1 deployment sso-promtail -n ${LICENSE_PLATE}-dev
+oc scale --replicas=1 deployment sso-promtail -n ${LICENSE_PLATE}-test
+oc scale --replicas=1 deployment sso-promtail -n ${LICENSE_PLATE}-prod
+```
 
 ### Uninstalling the Chart
 
