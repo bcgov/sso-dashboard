@@ -41,7 +41,7 @@ loki:
       ingestion_rate_mb: 10
       retention_period: 744h # 31 days
       max_entries_limit_per_query: 100000
-      query_timeout: 300s
+      query_timeout: 500s
       max_global_streams_per_user: 1000000
 
     commonConfig:
@@ -83,6 +83,11 @@ loki:
         shared_store: s3
         cache_location: /var/loki/cache
         cache_ttl: 24h
+
+    server:
+      http_server_read_timeout: 500s
+      http_server_write_timeout: 500s
+      http_server_idle_timeout: 500s
 
   serviceAccount:
     create: false

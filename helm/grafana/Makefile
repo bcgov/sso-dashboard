@@ -22,9 +22,9 @@ define arguments
 	--set grafana.datasources."datasources\.yaml".datasources[3].user=${DS_KEYCLOAK_PROD_USERNAME} \
 	--set grafana.datasources."datasources\.yaml".datasources[3].database=${DS_KEYCLOAK_PROD_DATABASE} \
 	--set grafana.datasources."datasources\.yaml".datasources[3].secureJsonData.password=${DS_KEYCLOAK_PROD_PASSWORD} \
-	--set grafana.datasources."datasources\.yaml".datasources[4].user=${DS_AGGREGATOR_USERNAME} \
-	--set grafana.datasources."datasources\.yaml".datasources[4].database=${DS_AGGREGATOR_DATABASE} \
-	--set grafana.datasources."datasources\.yaml".datasources[4].secureJsonData.password=${DS_AGGREGATOR_PASSWORD}
+	--set grafana.datasources."datasources\.yaml".datasources[5].user=${DS_AGGREGATOR_USERNAME} \
+	--set grafana.datasources."datasources\.yaml".datasources[5].database=${DS_AGGREGATOR_DATABASE} \
+	--set grafana.datasources."datasources\.yaml".datasources[5].secureJsonData.password=${DS_AGGREGATOR_PASSWORD}
 endef
 
 .PHONY: helm-dep

@@ -5,10 +5,10 @@ loki:
       size: 1Gi
     resources:
       limits:
-        cpu: 400m
+        cpu: 300m
         memory: 2Gi
       requests:
-        cpu: 200m
+        cpu: 150m
         memory: 512Mi
 
   read:
@@ -18,10 +18,10 @@ loki:
       size: 1Gi
     resources:
       limits:
-        cpu: 400m
+        cpu: 300m
         memory: 2Gi
       requests:
-        cpu: 200m
+        cpu: 150m
         memory: 512Mi
 
   loki:
@@ -42,7 +42,7 @@ root-minio:
     size: 5Gi
   resources:
     limits:
-      cpu: 500m
+      cpu: 450m
       memory: 2Gi
     requests:
       cpu: 250m

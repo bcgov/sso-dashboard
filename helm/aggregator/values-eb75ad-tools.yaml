@@ -7,7 +7,7 @@ patroni:
 
 compactor:
   enabled: true
-  retentionPeriod: '1 year'
+  retentionPeriod: '6 months'
 
 autoscaling:
   enabled: true

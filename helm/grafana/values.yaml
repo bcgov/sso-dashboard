@@ -32,10 +32,10 @@ grafana:
   resources:
     limits:
       cpu: 250m
-      memory: 512Mi
+      memory: 2Gi
     requests:
       cpu: 150m
-      memory: 256Mi
+      memory: 512Mi
 
   persistence:
     type: pvc
@@ -79,7 +79,11 @@ grafana:
       use_pkce: true
       login_attribute_path: preferred_username
       role_attribute_path: contains(client_roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(client_roles[*], 'admin') && 'Admin' || contains(client_roles[*], 'editor') && 'Editor' || 'Viewer'
-
+    dataproxy:
+      timeout: 500
+      keep_alive_seconds: 500
+      idle_conn_timeout_seconds: 500
+      logging: true
   # see https://github.com/kubeflow/community/blob/master/devstats/config/grafana/provisioning/datasources/datasource.yaml
 
 route:

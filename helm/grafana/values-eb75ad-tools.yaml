@@ -91,7 +91,7 @@ grafana:
           url: http://sso-loki-gateway
           basicAuth: false
           isDefault: true
-        - name: SSO Postgres
+        - name: SSO Aggregator
           type: postgres
           access: proxy
           orgId: 1
