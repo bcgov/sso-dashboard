@@ -84,15 +84,6 @@ promtail:
           - timestamp:
               format: RFC3339Nano
               source: timestamp
-      - match:
-          selector: '{job="keycloak"}'
-          stages:
-          - regex:
-              expression: "type=(?P<type>\\S+),.*realmId=(?P<realm_id>\\S+),.*clientId=(?P<client_id>\\S+),"
-          - labels:
-              event_type: type
-              realm_id:
-              client_id:
 
 persistentVolume:
   size: 100Mi
