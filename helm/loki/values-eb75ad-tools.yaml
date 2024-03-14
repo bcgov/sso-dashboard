@@ -31,7 +31,7 @@ loki:
         secretAccessKey: <please-replace-me>
 
     limits_config:
-      retention_period: 17520h # 24 months
+      retention_period: 4320h # 6 months
 
 root-minio:
   enabled: true
