@@ -28,6 +28,12 @@ loki:
       retention_delete_delay: 1h
       retention_delete_worker_count: 150
 
+    ingester:
+      chunk_target_size: 5242880
+      max_chunk_age: 2h
+      chunk_idle_period: 2h
+      chunk_encoding: snappy
+
     # see https://grafana.com/docs/loki/latest/configuration/#limits_config
     limits_config:
       enforce_metric_name: false
@@ -36,7 +42,7 @@ loki:
       max_cache_freshness_per_query: 1m
       split_queries_by_interval: 30m
       max_query_parallelism: 32
-      max_query_series: 2000
+      max_query_series: 3000
       max_query_length: 721h
       ingestion_rate_mb: 10
       retention_period: 744h # 31 days
@@ -88,6 +94,8 @@ loki:
       http_server_read_timeout: 500s
       http_server_write_timeout: 500s
       http_server_idle_timeout: 500s
+      grpc_server_max_recv_msg_size: 26214400
+      grpc_server_max_send_msg_size: 26214400
 
   serviceAccount:
     create: false
