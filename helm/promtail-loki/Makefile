@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 NAMESPACE=""
-NAME=sso-promtail
+NAME=sso-promtail-loki
 
 ifndef NAMESPACE
 $(error NAMESPACE is not set)
