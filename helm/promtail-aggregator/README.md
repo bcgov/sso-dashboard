@@ -1,6 +1,6 @@
-# sso-promtail
+# sso-promtail (aggregator)
 
-A Helm chart for deploying [Grafana Promtail](https://github.com/grafana/helm-charts/tree/main/charts/promtail).
+A Helm chart for deploying [Grafana Promtail](https://github.com/grafana/helm-charts/tree/main/charts/promtail) for our [aggregator server](../aggregator). This instance is separated from our loki promtail deployment in order to use additional labels for easier metric aggregation, which would negatively impact Loki performance.
 
 ## Local deployment via Helm chart
 
