@@ -1,6 +1,6 @@
 # sso-promtail
 
-A Helm chart for deploying [Grafana Promtail](https://github.com/grafana/helm-charts/tree/main/charts/promtail) for our loki instance. 
+A Helm chart for deploying [Grafana Promtail](https://github.com/grafana/helm-charts/tree/main/charts/promtail) for our loki instance.
 
 ## Labelling
 
