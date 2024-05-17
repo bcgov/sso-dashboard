@@ -2,16 +2,13 @@ package keycloak
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"strings"
-
-	// "io/ioutil"
-	// "log"
-	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -56,7 +53,7 @@ func (tm *TokenManager) getTokens(data url.Values) (string, error) {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 
 	if err != nil {
 		log.Fatalf("Error reading response body: %v", err)
