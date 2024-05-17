@@ -33,21 +33,31 @@ func deleteOldClientEvents() error {
 	retention_period := utils.GetEnv("RETENTION_PERIOD", "1 year")
 
 	// see https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-INTERVAL-INPUT
-	query := "DELETE FROM client_events WHERE date < current_date - interval ?;"
-	_, err := pgdb.Query(nil, query, retention_period)
-	defer pgdb.Close()
-	if err != nil {
-		log.Println(err)
-		return err
+	eventsQuery := "DELETE FROM client_events WHERE date < current_date - interval ?;"
+
+	// Using same retention period for sessions stats. May need to change that in the future.
+	sessionsQuery := "DELETE FROM client_sessions WHERE date < current_timestamp - interval ?;"
+
+	_, eventsErr := pgdb.Query(nil, eventsQuery, retention_period)
+	_, sessionsErr := pgdb.Query(nil, sessionsQuery, retention_period)
+
+	if eventsErr != nil {
+		log.Println(eventsErr)
+		return eventsErr
+	}
+
+	if sessionsErr != nil {
+		log.Println(sessionsErr)
+		return sessionsErr
 	}
 	return nil
 }
 
-func RunCronJob() {
+func RunEventsJob() {
 	loc := config.LoadTimeLocation()
 	cron := gocron.NewScheduler(loc)
 	cron.Every(1).Day().At("02:00").Do(func() {
 		deleteOldClientEvents()
 	})
-	cron.StartBlocking()
+	cron.StartAsync()
 }
