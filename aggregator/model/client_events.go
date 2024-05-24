@@ -34,21 +34,11 @@ func deleteOldClientEvents() error {
 
 	// see https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-INTERVAL-INPUT
 	eventsQuery := "DELETE FROM client_events WHERE date < current_date - interval ?;"
-
-	// Using same retention period for sessions stats. May need to change that in the future.
-	sessionsQuery := "DELETE FROM client_sessions WHERE date < current_timestamp - interval ?;"
-
 	_, eventsErr := pgdb.Query(nil, eventsQuery, retention_period)
-	_, sessionsErr := pgdb.Query(nil, sessionsQuery, retention_period)
 
 	if eventsErr != nil {
 		log.Println(eventsErr)
 		return eventsErr
-	}
-
-	if sessionsErr != nil {
-		log.Println(sessionsErr)
-		return sessionsErr
 	}
 	return nil
 }

@@ -2,6 +2,8 @@ package model
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -12,6 +14,7 @@ import (
 	"sso-dashboard.bcgov.com/aggregator/config"
 	"sso-dashboard.bcgov.com/aggregator/keycloak"
 	"sso-dashboard.bcgov.com/aggregator/utils"
+	"sso-dashboard.bcgov.com/aggregator/webhooks"
 )
 
 type RealmInfo struct {
@@ -24,22 +27,40 @@ type SessionStats struct {
 	OfflineSessions string `json:"offline"`
 }
 
-func GetRealms(tm *keycloak.TokenManager) []string {
-	req, err := http.NewRequest("GET", tm.BaseUrl+"/admin/realms", nil)
+var RealmErrorMessage = "Error getting realms for env %s: "
+var ClientErrorMessage = "Error getting client stats for env %s: "
+
+type SessionInserter func(environment string, realmID string, clientID string, activeSessions string, offlineSessions string) error
+
+func GetRealms(rm *keycloak.RequestHandler) ([]string, error) {
+	req, err := http.NewRequest("GET", rm.ApiBaseUrl+"/admin/realms", nil)
 	if err != nil {
-		log.Fatalf("Error occurred creating request: %v", err)
+		log.Printf("Error occurred creating request: %v", err)
+		return nil, err
 	}
 
-	resp, _ := tm.DoRequest(req)
+	resp, err := rm.DoRequest(req)
+
+	if err != nil {
+		log.Print("Error occurred making getting realms", err)
+		return nil, err
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		log.Printf("non 200 status code returned from realm request: %v", resp.Status)
+		return nil, errors.New("non 200 status code returned from realm request")
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalf("Error reading response body: %v", err)
+		log.Printf("Error reading response body: %v", err)
+		return nil, err
 	}
 
 	var realms []RealmInfo
 	if err := json.Unmarshal([]byte(body), &realms); err != nil {
-		log.Fatalf("Error unmarshalling response body: %v", err)
+		log.Printf("Error unmarshalling response body: %v", err)
+		return nil, err
 	}
 
 	var realmNames []string
@@ -48,42 +69,60 @@ func GetRealms(tm *keycloak.TokenManager) []string {
 		realmNames = append(realmNames, realm.Realm)
 	}
 
-	return realmNames
+	return realmNames, nil
 }
 
-func GetClientStats(tm *keycloak.TokenManager, realms []string, env string) error {
+func GetClientStats(rm *keycloak.RequestHandler, realms []string, env string) bool {
+	errOccured := false
+
+	handleError := func(message string) {
+		log.Print(message)
+		errOccured = true
+	}
+
 	for _, realm := range realms {
-		req, err := http.NewRequest("GET", tm.BaseUrl+"/admin/realms/"+realm+"/client-session-stats", nil)
+		req, err := http.NewRequest("GET", rm.ApiBaseUrl+"/admin/realms/"+realm+"/client-session-stats", nil)
 		if err != nil {
-			log.Fatalf("Error occurred creating request: %v", err)
-			return nil
+			handleError(fmt.Sprintf("Error occurred creating request: %v", err))
+			continue
 		}
 
-		resp, _ := tm.DoRequest(req)
+		resp, err := rm.DoRequest(req)
+		if err != nil {
+			handleError(fmt.Sprintf("Error occurred creating request: %v", err))
+			continue
+		}
+
+		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+			handleError(fmt.Sprintf("non 200 status code returned from realm request: %v", resp.Status))
+			continue
+		}
 
 		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
 
 		if err != nil {
-			log.Fatalf("Error reading response body: %v", err)
-			return err
+			handleError(fmt.Sprintf("Error reading response body: %v", err))
+			continue
 		}
 
 		var responseObjects []SessionStats
 		err = json.Unmarshal(body, &responseObjects)
 		if err != nil {
-			log.Fatalf("Error unmarshaling JSON response: %v", err)
-			return err
+			handleError(fmt.Sprintf("Error unmarshaling JSON response: %v", err))
+			continue
 		}
 
 		for _, obj := range responseObjects {
 			err := InsertActiveSessions(env, realm, obj.ClientId, obj.ActiveSessions, obj.OfflineSessions)
 			if err != nil {
-				log.Fatalf("Error inserting active sessions: %v", err)
+				handleError(fmt.Sprintf("Error inserting active sessions: %v", err))
+				continue
 			}
 		}
 	}
-	return nil
+
+	return errOccured
 }
 
 func InsertActiveSessions(environment string, realmID string, clientID string, activeSessions string, offlineSessions string) error {
@@ -96,31 +135,37 @@ func InsertActiveSessions(environment string, realmID string, clientID string, a
 	return nil
 }
 
-func ActiveSessions(env string) {
+func ActiveSessions(env string, baseUrl string, clientId string, username string, password string, notifier webhooks.RocketChatNotifier) {
 	log.Println("Getting active sessions for " + env + " environment")
-	baseUrl := utils.GetEnv(env+"_KEYCLOAK_URL", "")
-	clientId := utils.GetEnv(env+"_KEYCLOAK_CLIENT_ID", "")
-	username := utils.GetEnv(env+"_KEYCLOAK_USERNAME", "")
-	password := utils.GetEnv(env+"_KEYCLOAK_PASSWORD", "")
 
-	tm := keycloak.NewTokenManager(clientId, password, username, baseUrl)
+	rm := keycloak.NewRequestHandler(&keycloak.RequestHandler{}, baseUrl, baseUrl, password, username, clientId)
 
-	realms := GetRealms(tm)
-	GetClientStats(tm, realms, strings.ToLower(env))
+	realms, err := GetRealms(rm)
+	if err != nil {
+		log.Println(fmt.Sprintf(RealmErrorMessage, env), err)
+		notifier.NotifyRocketChat("Session Data Failure", fmt.Sprintf(RealmErrorMessage, env), err.Error())
+		return
+	}
+
+	hasError := GetClientStats(rm, realms, strings.ToLower(env))
+	if hasError {
+		notifier.NotifyRocketChat("Session Data Failure", fmt.Sprintf(ClientErrorMessage, env), "One or more realm's client stats failed to be retrieved. See logs for details.")
+		return
+	}
+	notifier.NotifyRocketChat("Session Data Loaded Successfully", env, fmt.Sprintf("Session data for environment %s has been loaded successfully", env))
 }
 
 func AllActiveSessions() {
-	go func() {
-		ActiveSessions("DEV")
-	}()
-
-	go func() {
-		ActiveSessions("TEST")
-	}()
-
-	go func() {
-		ActiveSessions("PROD")
-	}()
+	for _, env := range []string{"DEV", "TEST", "PROD"} {
+		env := env
+		baseUrl := utils.GetEnv(env+"_KEYCLOAK_URL", "")
+		clientId := utils.GetEnv(env+"_KEYCLOAK_CLIENT_ID", "")
+		username := utils.GetEnv(env+"_KEYCLOAK_USERNAME", "")
+		password := utils.GetEnv(env+"_KEYCLOAK_PASSWORD", "")
+		go func() {
+			ActiveSessions(env, baseUrl, clientId, username, password, &webhooks.RocketChat{})
+		}()
+	}
 }
 
 func RunSessionsJob() {
