@@ -2,7 +2,9 @@ name: Go CI
 
 on:
   push:
-    branches: [ssoteam-1456]
+    paths:
+    - aggregator/**
+
 
 defaults:
   run:
