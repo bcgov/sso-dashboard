@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - aggregator/**
+    - .github/workflows/test.yaml
 
 
 defaults:
