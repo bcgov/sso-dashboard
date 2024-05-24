@@ -25,7 +25,7 @@ func (m *MockRocketChat) ResetMock() {
 	m.Messages = [][]string{}
 }
 
-func TestClientSessionTokenFailure(t *testing.T) {
+func TestTokenFailure(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/realms/master/protocol/openid-connect/token" {
 			// Fail all token requests

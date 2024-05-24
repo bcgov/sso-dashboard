@@ -129,7 +129,7 @@ func (rm *RequestHandler) GetToken() (string, string, error) {
 	refreshTokenExpired, err := rm.IsTokenExpired(rm.RefreshToken)
 
 	var formData url.Values
-
+	// If there is an error or expiry, must get a new set of tokens. Otherwise refresh
 	if refreshTokenExpired || err != nil {
 		formData = url.Values{
 			"grant_type": {"password"},
@@ -180,8 +180,10 @@ func (tm *RequestHandler) IsTokenExpired(token string) (bool, error) {
 	}
 }
 
-// Method to perform an HTTP request with token management
-func (rm *RequestHandler) DoRequest(req *http.Request) (*http.Response, error) {
+/*
+Method to perform an HTTP request with token management. Returns the body or an error if network failure or non-200 status code.
+*/
+func (rm *RequestHandler) DoRequest(req *http.Request) ([]byte, error) {
 	accessToken, refreshToken, err := rm.GetToken()
 
 	if err != nil {
@@ -198,5 +200,19 @@ func (rm *RequestHandler) DoRequest(req *http.Request) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	return resp, err
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		log.Printf("non 200 status code returned from realm request: %v", resp.Status)
+		return nil, errors.New("non 200 status code returned from realm request")
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	defer resp.Body.Close()
+
+	if err != nil {
+		log.Printf("Error reading response body: %v", err)
+		return nil, err
+	}
+
+	return body, err
 }

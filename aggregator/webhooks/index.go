@@ -9,13 +9,6 @@ import (
 	"sso-dashboard.bcgov.com/aggregator/utils"
 )
 
-type Post struct {
-	Id     int    `json:"id"`
-	Title  string `json:"title"`
-	Body   string `json:"body"`
-	UserId int    `json:"userId"`
-}
-
 type RocketChatNotifier interface {
 	NotifyRocketChat(text string, title string, body string)
 }

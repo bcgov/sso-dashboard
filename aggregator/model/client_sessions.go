@@ -2,13 +2,10 @@ package model
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"strings"
-
-	"io"
 
 	"github.com/go-co-op/gocron"
 	"sso-dashboard.bcgov.com/aggregator/config"
@@ -30,8 +27,6 @@ type SessionStats struct {
 var RealmErrorMessage = "Error getting realms for env %s: "
 var ClientErrorMessage = "Error getting client stats for env %s: "
 
-type SessionInserter func(environment string, realmID string, clientID string, activeSessions string, offlineSessions string) error
-
 func GetRealms(rm *keycloak.RequestHandler) ([]string, error) {
 	req, err := http.NewRequest("GET", rm.ApiBaseUrl+"/admin/realms", nil)
 	if err != nil {
@@ -39,19 +34,8 @@ func GetRealms(rm *keycloak.RequestHandler) ([]string, error) {
 		return nil, err
 	}
 
-	resp, err := rm.DoRequest(req)
+	body, err := rm.DoRequest(req)
 
-	if err != nil {
-		log.Print("Error occurred making getting realms", err)
-		return nil, err
-	}
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		log.Printf("non 200 status code returned from realm request: %v", resp.Status)
-		return nil, errors.New("non 200 status code returned from realm request")
-	}
-
-	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Printf("Error reading response body: %v", err)
 		return nil, err
@@ -87,19 +71,7 @@ func GetClientStats(rm *keycloak.RequestHandler, realms []string, env string) bo
 			continue
 		}
 
-		resp, err := rm.DoRequest(req)
-		if err != nil {
-			handleError(fmt.Sprintf("Error occurred creating request: %v", err))
-			continue
-		}
-
-		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-			handleError(fmt.Sprintf("non 200 status code returned from realm request: %v", resp.Status))
-			continue
-		}
-
-		defer resp.Body.Close()
-		body, err := io.ReadAll(resp.Body)
+		body, err := rm.DoRequest(req)
 
 		if err != nil {
 			handleError(fmt.Sprintf("Error reading response body: %v", err))

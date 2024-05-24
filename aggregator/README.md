@@ -10,7 +10,7 @@ In order to avoid the custom codebase parsing the requests, it relies on `Grafan
 A lightweight Go server running scheduled jobs. There are two cronjobs it controls:
 
 1. Deleting old client events.
-2. Collecting and clearing client session counts.
+2. Collecting client session counts.
 
 ## Environment Variables
 
@@ -21,6 +21,7 @@ A lightweight Go server running scheduled jobs. There are two cronjobs it contro
 - `DB_PASSWORD`: the password to be used for password authentication.
 - `RETENTION_PERIOD`: the duration of time to keep the aggregated data.
   - please see [Postgres Interval Input](https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-INTERVAL-INPUT) for the unit convention.
+- `RC_WEBHOOK`: The url for the rocketchat webhook to use when notifying from the compactor
 - `DEV_KEYCLOAK_URL`: The development keycloak base URL
 - `DEV_KEYCLOAK_CLIENT_ID`: The development keycloak client id
 - `DEV_KEYCLOAK_USERNAME`: The development keycloak username
