@@ -4,6 +4,10 @@ on:
   push:
     branches: [ssoteam-1456]
 
+defaults:
+  run:
+    working-directory: aggregator
+
 jobs:
   build:
 
@@ -23,10 +27,10 @@ jobs:
 
     - name: Run kc tests
       run: |
-        cd aggregator/keycloak
+        cd keycloak
         go test
 
     - name: Run session tests
       run: |
-        cd aggregator/keycloak
+        cd ../model
         go test
