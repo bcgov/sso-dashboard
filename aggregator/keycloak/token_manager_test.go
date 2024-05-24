@@ -39,7 +39,7 @@ func TestTokenManagerHandler(t *testing.T) {
 	mockTokenProvider := &MockTokenProvider{}
 	handler := NewRequestHandler(mockTokenProvider, "", "", "", "", "")
 
-	req, _ := http.NewRequest("GET", "http://somedomain.com", nil)
+	req, _ := http.NewRequest("GET", "", nil)
 
 	// Make a request with expired access token and valid refresh token, expect refresh callout
 	handler.AccessToken = GenerateJWT(time.Now().Add(-time.Hour).Unix())
