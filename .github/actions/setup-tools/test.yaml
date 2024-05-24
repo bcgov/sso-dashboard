@@ -1,0 +1,32 @@
+name: Go CI
+
+on:
+  push:
+    branches: [ssoteam-1456]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: ^1.21.0
+
+    - name: Install dependencies
+      run: go mod download
+
+    - name: Run kc tests
+    - run: |
+        cd aggregator/keycloak
+        go test
+
+    - name: Run session tests
+    - run: |
+        cd aggregator/keycloak
+        go test
