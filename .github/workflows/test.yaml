@@ -22,11 +22,11 @@ jobs:
       run: go mod download
 
     - name: Run kc tests
-    - run: |
+      run: |
         cd aggregator/keycloak
         go test
 
     - name: Run session tests
-    - run: |
+      run: |
         cd aggregator/keycloak
         go test
