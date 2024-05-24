@@ -28,9 +28,9 @@ jobs:
     - name: Run kc tests
       run: |
         cd keycloak
-        go test
+        go test -v
 
     - name: Run session tests
       run: |
         cd model
-        go test
+        go test -v
