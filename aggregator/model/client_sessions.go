@@ -143,6 +143,6 @@ func AllActiveSessions() {
 func RunSessionsJob() {
 	loc := config.LoadTimeLocation()
 	cron := gocron.NewScheduler(loc)
-	cron.Every(1).Hour().Do(AllActiveSessions)
+	cron.Every(20).Second().Do(AllActiveSessions)
 	cron.StartAsync()
 }
