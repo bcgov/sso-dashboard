@@ -35,7 +35,7 @@ func deleteOldClientEvents() error {
 	// see https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-INTERVAL-INPUT
 	query := "DELETE FROM client_events WHERE date < current_date - interval ?;"
 	_, err := pgdb.Query(nil, query, retention_period)
-	defer pgdb.Close()
+
 	if err != nil {
 		log.Println(err)
 		return err
@@ -43,11 +43,11 @@ func deleteOldClientEvents() error {
 	return nil
 }
 
-func RunCronJob() {
+func RunEventsJob() {
 	loc := config.LoadTimeLocation()
 	cron := gocron.NewScheduler(loc)
 	cron.Every(1).Day().At("02:00").Do(func() {
 		deleteOldClientEvents()
 	})
-	cron.StartBlocking()
+	cron.StartAsync()
 }

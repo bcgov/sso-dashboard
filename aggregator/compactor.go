@@ -9,5 +9,7 @@ import (
 func main() {
 	log.Printf("cronjob starts...")
 
-	model.RunCronJob()
+	model.RunEventsJob()
+	model.RunSessionsJob()
+	select {}
 }
