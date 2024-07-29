@@ -8,8 +8,8 @@ import (
 
 func main() {
 	log.Printf("cronjob starts...")
-
 	model.RunEventsJob()
 	model.RunSessionsJob()
+	defer model.GetDB().Close()
 	select {}
 }
