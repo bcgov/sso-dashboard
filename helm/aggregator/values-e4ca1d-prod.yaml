@@ -1,0 +1,29 @@
+replicaCount: 2
+
+patroni:
+  replicaCount: 2
+  persistentVolume:
+    size: 1Gi
+
+compactor:
+  enabled: true
+  retentionPeriod: '3 months'
+  webhookUrl:
+  dev:
+    keycloakUrl:
+    keycloakClientId:
+    keycloakUsername:
+    keycloakPassword:
+  test:
+    keycloakUrl:
+    keycloakClientId:
+    keycloakUsername:
+    keycloakPassword:
+  prod:
+    keycloakUrl:
+    keycloakClientId:
+    keycloakUsername:
+    keycloakPassword:
+
+autoscaling:
+  enabled: true

@@ -21,12 +21,10 @@ type ClientEvent struct {
 func UpsertClientEvent(environment string, realmID string, clientID string, eventType string, date time.Time) error {
 	query := "INSERT INTO client_events (environment, realm_id, client_id, event_type, date, count) VALUES(?,?,?,?,?,1) ON CONFLICT (environment, realm_id, client_id, event_type, date) DO UPDATE SET count = client_events.count + 1"
 	_, err := pgdb.Query(nil, query, environment, realmID, clientID, eventType, date)
-
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-
 	return nil
 }
 
@@ -41,15 +39,14 @@ func deleteOldClientEvents() error {
 		log.Println(err)
 		return err
 	}
-
 	return nil
 }
 
-func RunCronJob() {
+func RunEventsJob() {
 	loc := config.LoadTimeLocation()
 	cron := gocron.NewScheduler(loc)
 	cron.Every(1).Day().At("02:00").Do(func() {
 		deleteOldClientEvents()
 	})
-	cron.StartBlocking()
+	cron.StartAsync()
 }

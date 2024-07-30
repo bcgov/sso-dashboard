@@ -2,3 +2,4 @@ config.json
 build
 __pycache__
 .env
+venv

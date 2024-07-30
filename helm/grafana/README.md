@@ -4,35 +4,44 @@ A Helm chart for deploying [Grafana dashboard](https://github.com/grafana/helm-c
 
 ## Local deployment via Helm chart
 
+### Pre-Requisites
+
+#### Setup Network Policies
+
+- Below network policy has to be added to all the namespaces, where grafana requires to access the data source
+
+```sh
+export LICENSE_PLATE=
+export ENV=
+
+# run below command after logging into each namespace (dev, test and prod)
+envsubst < net-policy-sso-keycloak.yaml | oc apply -f -
+```
+
+#### Update Helm Values
+
+- create `.env` from `.env.example` and fill the values
+
 ### Installing/Upgrading the Chart
 
 ```sh
-make upgrade NAMESPACE=<namespace> \
-             SSO_CLIENT_ID=<sso-client-id> \
-             SSO_CLIENT_SECRET=<sso-client-secret> \
-             AGGREGATION_DB_USER=<aggregation-db-user> \
-             AGGREGATION_DB_PASS=<aggregation-db-user>
+make upgrade
 ```
 
 - please find the SSO client credentials of the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests):
 
-- please find the DB admin credentials in OCP secrets:
-
-  - `dev`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/c6af30-prod/secrets/sso-aggregator-patroni-appusers
-  - `prod`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/eb75ad-prod/secrets/sso-aggregator-patroni-appusers
-
 ### Uninstalling the Chart
 
 ```sh
-make uninstall NAMESPACE=<namespace>
+make uninstall
 ```
 
 ## Grafana Admin credentials
 
 once the deployment is completed, please find the Grafana admin credentials in OCP secrets below:
 
-- `dev`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/c6af30-prod/secrets/sso-grafana
-- `prod`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/eb75ad-prod/secrets/sso-grafana
+- `dev`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/e4ca1d-tools/secrets/sso-grafana
+- `prod`: https://console.apps.gold.devops.gov.bc.ca/k8s/ns/eb75ad-tools/secrets/sso-grafana
 
 ## Configuration
 

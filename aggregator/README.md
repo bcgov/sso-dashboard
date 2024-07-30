@@ -7,7 +7,10 @@ In order to avoid the custom codebase parsing the requests, it relies on `Grafan
 
 ## Compactor
 
-A lightweight Go server running a job scheduling to delete the old aggregated data upserted by the aggregators.
+A lightweight Go server running scheduled jobs. There are two cronjobs it controls:
+
+1. Deleting old client events.
+2. Collecting client session counts.
 
 ## Environment Variables
 
@@ -18,6 +21,19 @@ A lightweight Go server running a job scheduling to delete the old aggregated da
 - `DB_PASSWORD`: the password to be used for password authentication.
 - `RETENTION_PERIOD`: the duration of time to keep the aggregated data.
   - please see [Postgres Interval Input](https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-INTERVAL-INPUT) for the unit convention.
+- `RC_WEBHOOK`: The url for the rocketchat webhook to use when notifying from the compactor
+- `DEV_KEYCLOAK_URL`: The development keycloak base URL
+- `DEV_KEYCLOAK_CLIENT_ID`: The development keycloak client id
+- `DEV_KEYCLOAK_USERNAME`: The development keycloak username
+- `DEV_KEYCLOAK_PASSWORD`: The development keycloak passowrd
+- `TEST_KEYCLOAK_URL`: The test keycloak base URL
+- `TEST_KEYCLOAK_CLIENT_ID`: The test keycloak client id
+- `TEST_KEYCLOAK_USERNAME`: The test keycloak username
+- `TEST_KEYCLOAK_PASSWORD`: The test keycloak passowrd
+- `PROD_KEYCLOAK_URL`: The prod keycloak base URL
+- `PROD_KEYCLOAK_CLIENT_ID`: The prod keycloak client id
+- `PROD_KEYCLOAK_USERNAME`: The prod keycloak username
+- `PROD_KEYCLOAK_PASSWORD`: The prod keycloak passowrd
 
 ## Local development setup
 

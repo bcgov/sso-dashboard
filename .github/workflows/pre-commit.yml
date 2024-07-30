@@ -6,8 +6,8 @@ jobs:
   pre-commit:
     runs-on: ubuntu-22.04
     steps:
-    - uses: hmarr/debug-action@v2
-    - uses: actions/checkout@v3
+    - uses: hmarr/debug-action@v3
+    - uses: actions/checkout@v4
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -18,7 +18,7 @@ jobs:
   commitlint:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - uses: wagoid/commitlint-github-action@v5

@@ -20,7 +20,7 @@ grafana:
 
   image:
     repository: grafana/grafana
-    tag: "9.3.2"
+    tag: '10.2.2'
     pullPolicy: IfNotPresent
     pullSecrets: []
 
@@ -29,13 +29,13 @@ grafana:
 
   securityContext:
   containerSecurityContext:
-  resources: {}
-  #  limits:
-  #    cpu: 100m
-  #    memory: 128Mi
-  #  requests:
-  #    cpu: 100m
-  #    memory: 128Mi
+  resources:
+    limits:
+      cpu: 250m
+      memory: 2Gi
+    requests:
+      cpu: 150m
+      memory: 512Mi
 
   persistence:
     type: pvc
@@ -59,6 +59,9 @@ grafana:
     server:
       domain: sso-grafana-sandbox.gov.bc.ca
       root_url: https://sso-grafana-sandbox.gov.bc.ca
+    auth:
+      disable_login_form: true
+      oauth_allow_insecure_email_lookup: true
     auth.generic_oauth:
       enabled: true
       name: Keycloak
@@ -75,36 +78,13 @@ grafana:
       tls_skip_verify_insecure: true
       use_pkce: true
       login_attribute_path: preferred_username
-
+      role_attribute_path: contains(client_roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(client_roles[*], 'admin') && 'Admin' || contains(client_roles[*], 'editor') && 'Editor' || 'Viewer'
+    dataproxy:
+      timeout: 500
+      keep_alive_seconds: 500
+      idle_conn_timeout_seconds: 500
+      logging: true
   # see https://github.com/kubeflow/community/blob/master/devstats/config/grafana/provisioning/datasources/datasource.yaml
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:
-      - name: SSO Loki
-        type: loki
-        access: proxy
-        orgId: 1
-        url: http://sso-loki-gateway
-        basicAuth: false
-        isDefault: true
-      - name: SSO Postgres
-        type: postgres
-        access: proxy
-        orgId: 1
-        url: sso-aggregator-patroni-readonly:5432
-        user: <please-replace-me>
-        database: aggregation
-        basicAuth: false
-        secureJsonData:
-          password: <please-replace-me>
-        jsonData:
-          sslmode: disable
-          maxOpenConns:
-          maxIdleConns: 2
-          connMaxLifetime: 14400
-          postgresVersion: 1400
-          timescaledb: false
 
 route:
   enabled: true

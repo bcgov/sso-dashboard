@@ -1,0 +1,114 @@
+grafana:
+  replicas: 1
+  persistence:
+    size: 1Gi
+
+  grafana.ini:
+    server:
+      domain: sso-grafana-sandbox.apps.gold.devops.gov.bc.ca
+      root_url: https://sso-grafana-sandbox.apps.gold.devops.gov.bc.ca
+    auth.generic_oauth:
+      name: SSO Pathfinder Sandbox
+      auth_url: https://dev.sandbox.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
+      token_url: https://dev.sandbox.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: SSO Logs
+          type: postgres
+          access: proxy
+          orgId: 1
+          url: kc-cron-patroni-readonly:5432
+          user: <please-replace-me>
+          database: <please-replace-me>
+          basicAuth: false
+          secureJsonData:
+            password: <please-replace-me>
+          jsonData:
+            sslmode: disable
+            maxOpenConns:
+            maxIdleConns: 2
+            connMaxLifetime: 14400
+            postgresVersion: 1400
+            timescaledb: false
+        - name: SSO Keycloak Dev
+          type: postgres
+          access: proxy
+          orgId: 1
+          url: sso-patroni-readonly.e4ca1d-dev.svc.cluster.local:5432
+          user: <please-replace-me>
+          database: <please-replace-me>
+          basicAuth: false
+          secureJsonData:
+            password: <please-replace-me>
+          jsonData:
+            sslmode: disable
+            maxOpenConns:
+            maxIdleConns: 2
+            connMaxLifetime: 14400
+            postgresVersion: 1400
+            timescaledb: false
+        - name: SSO Keycloak Test
+          type: postgres
+          access: proxy
+          orgId: 1
+          url: sso-patroni-readonly.e4ca1d-test.svc.cluster.local:5432
+          user: <please-replace-me>
+          database: <please-replace-me>
+          basicAuth: false
+          secureJsonData:
+            password: <please-replace-me>
+          jsonData:
+            sslmode: disable
+            maxOpenConns:
+            maxIdleConns: 2
+            connMaxLifetime: 14400
+            postgresVersion: 1400
+            timescaledb: false
+        - name: SSO Keycloak Prod
+          type: postgres
+          access: proxy
+          orgId: 1
+          url: sso-patroni-readonly.e4ca1d-prod.svc.cluster.local:5432
+          user: <please-replace-me>
+          database: <please-replace-me>
+          basicAuth: false
+          secureJsonData:
+            password: <please-replace-me>
+          jsonData:
+            sslmode: disable
+            maxOpenConns:
+            maxIdleConns: 2
+            connMaxLifetime: 14400
+            postgresVersion: 1400
+            timescaledb: false
+        - name: SSO Loki
+          type: loki
+          access: proxy
+          orgId: 1
+          url: http://sso-loki-gateway.e4ca1d-prod.svc.cluster.local
+          basicAuth: false
+          isDefault: true
+        - name: SSO Aggregator
+          type: postgres
+          access: proxy
+          orgId: 1
+          url: sso-aggregator-patroni-readonly.e4ca1d-prod.svc.cluster.local:5432
+          user: <please-replace-me>
+          database: <please-replace-me>
+          basicAuth: false
+          secureJsonData:
+            password: <please-replace-me>
+          jsonData:
+            sslmode: disable
+            maxOpenConns:
+            maxIdleConns: 2
+            connMaxLifetime: 14400
+            postgresVersion: 1400
+            timescaledb: false
+
+route:
+  enabled: true
+  host: sso-grafana-sandbox.apps.gold.devops.gov.bc.ca

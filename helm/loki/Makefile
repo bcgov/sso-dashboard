@@ -27,27 +27,27 @@ helm-dep:
 .PHONY: install
 install: helm-dep
 install:
-	helm install $(call arguments)
+	@helm install $(call arguments)
 
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
-	helm upgrade --install $(call arguments)
+	@helm upgrade --install $(call arguments)
 
 .PHONY: lint
 lint: helm-dep
 lint:
-	helm upgrade --dry-run --install $(call arguments)
+	@helm upgrade --dry-run --install $(call arguments)
 
 .PHONY: uninstall
 uninstall: helm-dep
 uninstall:
-	helm uninstall ${NAME} -n ${NAMESPACE}
+	@helm uninstall ${NAME} -n ${NAMESPACE}
 
 .PHONY: template
 template: helm-dep
 template:
-	helm template $(call arguments) > template.yaml
+	@helm template $(call arguments) > template.yaml
 
 .PHONY: force-install
 force-install: uninstall

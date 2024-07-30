@@ -1,0 +1,38 @@
+replicaCount: 10
+
+patroni:
+  replicaCount: 2
+  persistentVolume:
+    size: 1Gi
+
+compactor:
+  enabled: true
+  retentionPeriod: '6 months'
+  webhookUrl:
+  dev:
+    keycloakUrl:
+    keycloakClientId:
+    keycloakUsername:
+    keycloakPassword:
+  test:
+    keycloakUrl:
+    keycloakClientId:
+    keycloakUsername:
+    keycloakPassword:
+  prod:
+    keycloakUrl:
+    keycloakClientId:
+    keycloakUsername:
+    keycloakPassword:
+
+autoscaling:
+  enabled: true
+  maxReplicas: 5
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 1Gi
+  requests:
+    cpu: 150m
+    memory: 512Mi

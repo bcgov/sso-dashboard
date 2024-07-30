@@ -1,0 +1,20 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: 'sso-$ENV-gold-grafana-access'
+  namespace: '$LICENSE_PLATE-$ENV'
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: sso-patroni
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              environment: tools
+              name: '$LICENSE_PLATE'
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: sso-grafana
+  policyTypes:
+    - Ingress
