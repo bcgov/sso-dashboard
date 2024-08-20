@@ -1,0 +1,539 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_SSO_KEYCLOAK DEV",
+      "label": "SSO Keycloak Dev",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "barchart",
+      "name": "Bar chart",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.2.2"
+    },
+    {
+      "type": "datasource",
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "This is for all standard clients",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 19,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# ${DS_POSTGRES} environment\n\nCurrently showing IDP information for ${DS_POSTGRES}. Toggle the variable in the top left to switch between environments.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.2.2",
+      "title": "Environment",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "description": "Breakdown of clients for each IDP. Note none stands for service account",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "series",
+            "axisGridShow": true,
+            "axisLabel": "Number of Clients",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [
+            {
+              "options": {
+                "pattern": ".*-saml",
+                "result": {
+                  "color": "purple",
+                  "index": 0
+                }
+              },
+              "type": "regex"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 12,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "colorByField": "name",
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "orientation": "vertical",
+        "showValue": "auto",
+        "stacking": "none",
+        "text": {},
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "name",
+        "xTickLabelMaxLength": 0,
+        "xTickLabelRotation": -45,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH standard_clients as (\r\n  SELECT\r\n    *\r\n  FROM\r\n    \"public\".\"client\"\r\n  WHERE\r\n    (\"public\".\"client\".\"realm_id\" = 'standard')\r\n  \r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'account')\r\n    \r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'broker')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\r\n        \"public\".\"client\".\"client_id\" <> 'realm-management'\r\n      )\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\r\n        \"public\".\"client\".\"client_id\" <> 'security-admin-console'\r\n      )\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      \"public\".\"client\".\"description\" = 'CSS App Created'\r\n    )\r\n  ),\r\n  all_clients_and_idps as (\r\n    SELECT standard_clients.client_id, client_scope.name FROM standard_clients join client_scope_client on standard_clients.id = client_scope_client.client_id join client_scope on client_scope.id = client_scope_client.scope_id \r\n    where client_scope.name in ('idir', 'bceidbasic', 'bceidboth', 'bceidbusiness', 'azureidir', 'githubbcgov', 'githubpublic', 'idir-saml', 'bceidbasic-saml', 'bceidboth-saml', 'bceidbusiness-saml', 'azureidir-saml', 'githubbcgov-saml', 'githubpublic-saml', 'bcsc') \r\n    OR client_scope.name LIKE 'bcsc%'\r\n    order by client_id\r\n  ),\r\n  clients_without_idps as (\r\n    select count(client_id) as no_idp_count from standard_clients t1 where not exists (\r\n      select client_id from all_clients_and_idps where client_id = t1.client_id\r\n    )\r\n  )\r\n  select name, count(client_id) as clients from all_clients_and_idps group by name UNION select 'none' as name, no_idp_count as clients from clients_without_idps order by name, clients desc;\r\n\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Count of clients by IDPs",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "description": "A list of all clients and their aggregated IDPs",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 10,
+        "x": 0,
+        "y": 13
+      },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "idp_list"
+          }
+        ]
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH standard_clients as (\r\n  SELECT\r\n    *\r\n  FROM\r\n    \"public\".\"client\"\r\n  WHERE\r\n    (\"public\".\"client\".\"realm_id\" = 'standard')\r\n  \r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'account')\r\n    \r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'broker')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\r\n        \"public\".\"client\".\"client_id\" <> 'realm-management'\r\n      )\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\r\n        \"public\".\"client\".\"client_id\" <> 'security-admin-console'\r\n      )\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      \"public\".\"client\".\"description\" = 'CSS App Created'\r\n    )\r\n  ),\r\n  all_clients_and_idps as (\r\n    SELECT standard_clients.client_id, client_scope.name FROM standard_clients join client_scope_client on standard_clients.id = client_scope_client.client_id join client_scope on client_scope.id = client_scope_client.scope_id \r\n    where client_scope.name in ('idir', 'bceidbasic', 'bceidboth', 'bceidbusiness', 'azureidir', 'githubbcgov', 'githubpublic', 'idir-saml', 'bceidbasic-saml', 'bceidboth-saml', 'bceidbusiness-saml', 'azureidir-saml', 'githubbcgov-saml', 'githubpublic-saml','bcsc') order by client_id\r\n  )\r\n  select client_id, array_agg(name) as IDP_List from all_clients_and_idps group by client_id order by client_id;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "List of Clients With IDPs",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "description": "Clients without an IDP client scope assigned. Should be service or team accounts.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 10,
+        "y": 13
+      },
+      "id": 13,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "client_id"
+          }
+        ]
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH standard_clients as (\r\n  SELECT\r\n    *\r\n  FROM\r\n    \"public\".\"client\"\r\n  WHERE\r\n    (\"public\".\"client\".\"realm_id\" = 'standard')\r\n  \r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'account')\r\n    \r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'broker')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\r\n        \"public\".\"client\".\"client_id\" <> 'realm-management'\r\n      )\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\r\n        \"public\".\"client\".\"client_id\" <> 'security-admin-console'\r\n      )\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      \"public\".\"client\".\"description\" = 'CSS App Created'\r\n    )\r\n  ),\r\n  all_clients_and_idps as (\r\n    SELECT standard_clients.client_id, client_scope.name FROM standard_clients join client_scope_client on standard_clients.id = client_scope_client.client_id join client_scope on client_scope.id = client_scope_client.scope_id \r\n    where client_scope.name in ('idir', 'bceidbasic', 'bceidboth', 'bceidbusiness', 'azureidir', 'githubbcgov', 'githubpublic', 'idir-saml', 'bceidbasic-saml', 'bceidboth-saml', 'bceidbusiness-saml', 'azureidir-saml', 'githubbcgov-saml', 'githubpublic-saml') order by client_id\r\n  )\r\n  select client_id from standard_clients t1 where not exists (\r\n    select client_id from all_clients_and_idps where client_id = t1.client_id\r\n  )\r\n  ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "List of Clients With No IDPs",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "description": "This query counts the intersection of IDPs to get the number of repeat clients. E.g. a client with three IDPs would add 2 to this count. It is a sanity check on the math to double check the sum of IDP's less this number is the same as total clients.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 18,
+        "y": 13
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH standard_clients as (\r\n  SELECT\r\n    *\r\n  FROM\r\n    \"public\".\"client\"\r\n  WHERE\r\n    (\"public\".\"client\".\"realm_id\" = 'standard')\r\n  \r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'account')\r\n    \r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\"public\".\"client\".\"client_id\" <> 'broker')\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\r\n        \"public\".\"client\".\"client_id\" <> 'realm-management'\r\n      )\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      (\r\n        \"public\".\"client\".\"client_id\" <> 'security-admin-console'\r\n      )\r\n      OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    )\r\n    AND (\r\n      \"public\".\"client\".\"description\" = 'CSS App Created'\r\n    )\r\n  ),\r\n  all_clients_and_idps as (\r\n    SELECT standard_clients.client_id, client_scope.name FROM standard_clients join client_scope_client on standard_clients.id = client_scope_client.client_id join client_scope on client_scope.id = client_scope_client.scope_id \r\n    where client_scope.name in ('idir', 'bceidbasic', 'bceidboth', 'bceidbusiness', 'azureidir', 'githubbcgov', 'githubpublic', 'idir-saml', 'bceidbasic-saml', 'bceidboth-saml', 'bceidbusiness-saml', 'azureidir-saml', 'githubbcgov-saml', 'githubpublic-saml') order by client_id\r\n  ),\r\n  -- distinct_clients as (\r\n  --   select distinct client_id from all_clients_and_idps group by client_id\r\n  -- ) select count(*) from distinct_clients\r\n  counts as (\r\n    select count(client_id) - 1 as count from all_clients_and_idps group by client_id having count(client_id) > 1 order by client_id\r\n  ) select sum(count) from counts\r\n  -- select client_id, array_agg(name) from all_clients_and_idps group by client_id having count(client_id) > 1 order by client_id;\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Client IDP intersection Count",
+      "type": "stat"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "SSO Keycloak Dev",
+          "value": "P58A3A50522DA9208"
+        },
+        "description": "Variable to define the data source",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "DS_POSTGRES",
+        "options": [],
+        "query": "postgres",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "/.*Keycloak.*/",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "SSO Environment and IDP Analysis",
+  "uid": "ji7iuSnSz",
+  "version": 9,
+  "weekStart": ""
+}

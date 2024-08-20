@@ -59,6 +59,36 @@ spec:
               value: {{ .Values.postgres.database }}
             - name: RETENTION_PERIOD
               value: {{ .Values.compactor.retentionPeriod }}
+            - name: RC_WEBHOOK
+              value: {{ .Values.compactor.webhookUrl }}
+
+            - name: DEV_KEYCLOAK_URL
+              value: {{ .Values.compactor.dev.keycloakUrl }}
+            - name: DEV_KEYCLOAK_CLIENT_ID
+              value: {{ .Values.compactor.dev.keycloakClientId }}
+            - name: DEV_KEYCLOAK_USERNAME
+              value: {{ .Values.compactor.dev.keycloakUsername }}
+            - name: DEV_KEYCLOAK_PASSWORD
+              value: {{ .Values.compactor.dev.keycloakPassword }}
+
+            - name: TEST_KEYCLOAK_URL
+              value: {{ .Values.compactor.test.keycloakUrl }}
+            - name: TEST_KEYCLOAK_CLIENT_ID
+              value: {{ .Values.compactor.test.keycloakClientId }}
+            - name: TEST_KEYCLOAK_USERNAME
+              value: {{ .Values.compactor.test.keycloakUsername }}
+            - name: TEST_KEYCLOAK_PASSWORD
+              value: {{ .Values.compactor.test.keycloakPassword }}
+
+            - name: PROD_KEYCLOAK_URL
+              value: {{ .Values.compactor.prod.keycloakUrl }}
+            - name: PROD_KEYCLOAK_CLIENT_ID
+              value: {{ .Values.compactor.prod.keycloakClientId }}
+            - name: PROD_KEYCLOAK_USERNAME
+              value: {{ .Values.compactor.prod.keycloakUsername }}
+            - name: PROD_KEYCLOAK_PASSWORD
+              value: {{ .Values.compactor.prod.keycloakPassword }}
+
           resources:
             {{- toYaml .Values.compactor.resources | nindent 12 }}
 {{- end }}

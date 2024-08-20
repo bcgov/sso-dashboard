@@ -8,6 +8,22 @@ patroni:
 compactor:
   enabled: true
   retentionPeriod: '6 months'
+  webhookUrl:
+  dev:
+    keycloakUrl:
+    keycloakClientId:
+    keycloakUsername:
+    keycloakPassword:
+  test:
+    keycloakUrl:
+    keycloakClientId:
+    keycloakUsername:
+    keycloakPassword:
+  prod:
+    keycloakUrl:
+    keycloakClientId:
+    keycloakUsername:
+    keycloakPassword:
 
 autoscaling:
   enabled: true

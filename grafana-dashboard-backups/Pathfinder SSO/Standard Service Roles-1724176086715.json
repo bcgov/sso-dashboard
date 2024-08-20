@@ -1,0 +1,559 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_SSO_KEYCLOAK DEV",
+      "label": "SSO Keycloak Dev",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    },
+    {
+      "name": "DS_SSO_KEYCLOAK PROD",
+      "label": "SSO Keycloak Prod",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.2.2"
+    },
+    {
+      "type": "datasource",
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "panels": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 5,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.2.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "${DS_SSO_KEYCLOAK DEV}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n\"Client\".\"client_id\" AS \"Client__client_id\",\r\n  \"Keycloak Role\".\"client_role\" AS \"Keycloak Role__client_role\",\r\n  \"Keycloak Role\".\"description\" AS \"Keycloak Role__description\",\r\n    \"Keycloak Role\".\"name\" AS \"Keycloak Role__name\",\r\n  \"Keycloak Role\".\"realm_id\" AS \"Keycloak Role__realm_id\",\r\n  \"public\".\"user_entity\".\"first_name\" AS \"first_name\",\r\n  \"public\".\"user_entity\".\"last_name\" AS \"last_name\",\r\n  \"public\".\"user_entity\".\"realm_id\" AS \"realm_id\",\r\n  \"public\".\"user_entity\".\"username\" AS \"username\",\r\n  \"public\".\"user_entity\".\"id\" AS \"id\",\r\n  \r\n\r\n  \"Keycloak Role\".\"realm\" AS \"Keycloak Role__realm\"\r\n  \r\nFROM\r\n  \"public\".\"user_entity\"\r\n \r\nLEFT JOIN \"public\".\"user_role_mapping\" AS \"User Role Mapping\" ON \"public\".\"user_entity\".\"id\" = \"User Role Mapping\".\"user_id\"\r\n  LEFT JOIN \"public\".\"keycloak_role\" AS \"Keycloak Role\" ON \"User Role Mapping\".\"role_id\" = \"Keycloak Role\".\"id\"\r\n  LEFT JOIN \"public\".\"client\" AS \"Client\" ON \"Keycloak Role\".\"client\" = \"Client\".\"id\"\r\nWHERE\r\n  \"public\".\"user_entity\".\"realm_id\" = 'standard'\r\n\r\n  limit 10",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Dev Roles",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 9
+          },
+          "id": 2,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.2.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "${DS_SSO_KEYCLOAK PROD}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n\"Client\".\"client_id\" AS \"Client__client_id\",\r\n  \"Keycloak Role\".\"client_role\" AS \"Keycloak Role__client_role\",\r\n  \"Keycloak Role\".\"description\" AS \"Keycloak Role__description\",\r\n    \"Keycloak Role\".\"name\" AS \"Keycloak Role__name\",\r\n  \"Keycloak Role\".\"realm_id\" AS \"Keycloak Role__realm_id\",\r\n  \"public\".\"user_entity\".\"first_name\" AS \"first_name\",\r\n  \"public\".\"user_entity\".\"last_name\" AS \"last_name\",\r\n  \"public\".\"user_entity\".\"realm_id\" AS \"realm_id\",\r\n  \"public\".\"user_entity\".\"username\" AS \"username\",\r\n  \"public\".\"user_entity\".\"id\" AS \"id\",\r\n  \r\n\r\n  \"Keycloak Role\".\"realm\" AS \"Keycloak Role__realm\"\r\n  \r\nFROM\r\n  \"public\".\"user_entity\"\r\n \r\nLEFT JOIN \"public\".\"user_role_mapping\" AS \"User Role Mapping\" ON \"public\".\"user_entity\".\"id\" = \"User Role Mapping\".\"user_id\"\r\n  LEFT JOIN \"public\".\"keycloak_role\" AS \"Keycloak Role\" ON \"User Role Mapping\".\"role_id\" = \"Keycloak Role\".\"id\"\r\n  LEFT JOIN \"public\".\"client\" AS \"Client\" ON \"Keycloak Role\".\"client\" = \"Client\".\"id\"\r\nWHERE\r\n  \"public\".\"user_entity\".\"realm_id\" = 'standard'\r\n\r\n  limit 10",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "PROD  Roles",
+          "type": "table"
+        }
+      ],
+      "title": "roles limited to 10",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 4,
+      "panels": [],
+      "title": "All Roles",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\nc.client_id AS \"Client__client_id\",\r\nkr.client_role AS \"Keycloak Role__client_role\",\r\nkr.description AS \"Keycloak Role__description\",\r\nkr.name AS \"Keycloak Role__name\",\r\nkr.realm_id AS \"Keycloak Role__realm_id\",\r\nue.first_name AS \"first_name\",\r\nue.last_name  AS \"last_name\",\r\nue.username AS \"username\"\r\n\r\nFROM \r\nuser_entity as ue,\r\nuser_role_mapping as urm,\r\nkeycloak_role as kr,\r\nclient as c\r\n\r\nWHERE\r\n\r\nurm.user_id=ue.id AND\r\nkr.id = urm.role_id AND\r\nkr.client = c.id AND\r\n\r\nue.realm_id='standard' AND c.client_id like '%4414%'\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Customize env and query parm",
+      "type": "table"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 6,
+      "panels": [],
+      "title": "By Email Address OR GUID",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\nc.client_id AS \"Client__client_id\",\r\nkr.client_role AS \"Keycloak Role__client_role\",\r\nkr.description AS \"Keycloak Role__description\",\r\nkr.name AS \"Keycloak Role__name\",\r\nkr.realm_id AS \"Keycloak Role__realm_id\",\r\nue.email as \"email\",\r\nue.first_name AS \"first_name\",\r\nue.last_name  AS \"last_name\",\r\nue.username AS \"username\"\r\n\r\n\r\nFROM \r\nuser_entity as ue,\r\nuser_role_mapping as urm,\r\nkeycloak_role as kr,\r\nclient as c\r\n\r\nWHERE\r\n\r\nurm.user_id=ue.id AND\r\nkr.id = urm.role_id AND\r\nkr.client = c.id AND\r\n\r\n\r\nue.realm_id='standard' \r\nAND \r\nue.email like '##############'\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "email: Customize env and query parm",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\nc.client_id AS \"Client__client_id\",\r\nkr.client_role AS \"Keycloak Role__client_role\",\r\nkr.description AS \"Keycloak Role__description\",\r\nkr.name AS \"Keycloak Role__name\",\r\nkr.realm_id AS \"Keycloak Role__realm_id\",\r\nue.email as \"email\",\r\nue.first_name AS \"first_name\",\r\nue.last_name  AS \"last_name\",\r\nue.username AS \"username\"\r\n\r\n\r\nFROM \r\nuser_entity as ue,\r\nuser_role_mapping as urm,\r\nkeycloak_role as kr,\r\nclient as c\r\n\r\nWHERE\r\n\r\nurm.user_id=ue.id AND\r\nkr.id = urm.role_id AND\r\nkr.client = c.id AND\r\nue.realm_id='standard' AND\r\nue.username = '###################@bceidboth'  \r\n--OR ue.username = '#######################@bceidboth'\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "guid: Customize env and query parm",
+      "type": "table"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Standard Service Roles",
+  "uid": "eee6fb07-e4b2-4be2-b7d8-24dfdeb4fe84",
+  "version": 11,
+  "weekStart": ""
+}

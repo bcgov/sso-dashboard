@@ -2,6 +2,10 @@
 
 A Helm chart for deploying [Keycloak event log aggregator](../../aggregator).
 
+## Setup
+
+This chart includes two different deployments, running the same dockerfile. The dockerfile build copies the compactor into app/compactor, and the aggregator into app/aggregator. In the compactor [deployment template](./templates/deployment-compactor.yaml) the command is used to run the compactor, whereas the [entry shell file](../../aggregator/docker-entrypoint.sh) will run the aggregator by default (last line).
+
 ## Local deployment via Helm chart
 
 ### Pre-Requisites

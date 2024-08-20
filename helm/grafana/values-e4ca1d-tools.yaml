@@ -95,7 +95,7 @@ grafana:
           type: postgres
           access: proxy
           orgId: 1
-          url: sso-aggregator-patroni-readonly:5432
+          url: sso-aggregator-patroni-readonly.e4ca1d-prod.svc.cluster.local:5432
           user: <please-replace-me>
           database: <please-replace-me>
           basicAuth: false
