@@ -1,0 +1,1053 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_SSO_KEYCLOAK DEV",
+      "label": "SSO Keycloak Dev",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    },
+    {
+      "name": "DS_SSO_KEYCLOAK TEST",
+      "label": "SSO Keycloak Test",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    },
+    {
+      "name": "DS_SSO_KEYCLOAK PROD",
+      "label": "SSO Keycloak Prod",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    },
+    {
+      "name": "DS_SSO_AGGREGATOR",
+      "label": "SSO Aggregator",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    },
+    {
+      "name": "DS_SSO_LOGS",
+      "label": "SSO Logs",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.2.2"
+    },
+    {
+      "type": "datasource",
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "panels": [],
+      "title": "Custom Clients Details",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "description": "NO SSO realms",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 1
+      },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  \"public\".\"client\".\"realm_id\" AS \"realm_id\",\r\n  COUNT(*) AS \"count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  (\r\n    (\"public\".\"client\".\"realm_id\" not in ('idir','azureidir','bceidbusiness','bceidboth','github','master','bceidbasic','junmin-test','sso-team-testing','zorin_test_realm_march15','tian-test-realm','zorintest-march23'))\r\n    OR (\"public\".\"client\".\"realm_id\" IS NULL)\r\n  )\r\n \r\n   AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    OR (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n    OR (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    OR (\"public\".\"client\".\"client_id\" <> 'broker')\r\n    OR (\"public\".\"client\".\"client_id\" <> 'realm-management' )\r\n    OR ( \"public\".\"client\".\"client_id\" <> 'security-admin-console' )\r\n  )\r\nGROUP BY\r\n  \"public\".\"client\".\"realm_id\"\r\nORDER BY\r\n  \"public\".\"client\".\"realm_id\" ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Dev Custom CLients Details",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK TEST}"
+      },
+      "description": "NO SSO realms",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 1
+      },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK TEST}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  \"public\".\"client\".\"realm_id\" AS \"realm_id\",\r\n  COUNT(*) AS \"count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  (\r\n    (\"public\".\"client\".\"realm_id\" not in ('idir','azureidir','bceidbusiness','bceidboth','github','master','bceidbasic','junmin-test','sso-team-testing','zorin_test_realm_march15','tian-test-realm','zorintest-march23'))\r\n    OR (\"public\".\"client\".\"realm_id\" IS NULL)\r\n  )\r\n \r\n   AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    OR (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n    OR (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    OR (\"public\".\"client\".\"client_id\" <> 'broker')\r\n    OR (\"public\".\"client\".\"client_id\" <> 'realm-management' )\r\n    OR ( \"public\".\"client\".\"client_id\" <> 'security-admin-console' )\r\n  )\r\nGROUP BY\r\n  \"public\".\"client\".\"realm_id\"\r\nORDER BY\r\n  \"public\".\"client\".\"realm_id\" ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "test Custom CLients Details",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "description": "NO SSO realms",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 1
+      },
+      "id": 10,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  \"public\".\"client\".\"realm_id\" AS \"realm_id\",\r\n  COUNT(*) AS \"count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  (\r\n    (\"public\".\"client\".\"realm_id\" not in ('idir','azureidir','bceidbusiness','bceidboth','github','master','bceidbasic','junmin-test','sso-team-testing','zorin_test_realm_march15','tian-test-realm','zorintest-march23'))\r\n    OR (\"public\".\"client\".\"realm_id\" IS NULL)\r\n  )\r\n \r\n   AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    OR (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n    OR (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n    OR (\"public\".\"client\".\"client_id\" <> 'broker')\r\n    OR (\"public\".\"client\".\"client_id\" <> 'realm-management' )\r\n    OR ( \"public\".\"client\".\"client_id\" <> 'security-admin-console' )\r\n  )\r\nGROUP BY\r\n  \"public\".\"client\".\"realm_id\"\r\nORDER BY\r\n  \"public\".\"client\".\"realm_id\" ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Prod Custom CLients Details",
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "panels": [],
+      "title": "Events",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK TEST}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "dark-red",
+                  "index": 0,
+                  "text": "Never"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 12,
+      "options": {
+        "displayMode": "basic",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK TEST}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select name, events_expiration from realm where events_enabled is true and events_expiration is not null;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Test custom realms with events expiration duration",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "dark-red",
+                  "index": 0,
+                  "text": "Never"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 2,
+      "options": {
+        "displayMode": "basic",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select name, events_expiration from realm where events_enabled is true and events_expiration is not null;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Dev custom realms with events expiration duration",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK TEST}"
+      },
+      "description": "This shows a count of the retained logs over the previous 24 hours by realm. Refer to the retention periods in this dashboard to get a full idea of impact. Realms with no logs will not be displayed. Note that event_entity is a large table with millions of records, so ensure to set a reasonable interval.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 17
+      },
+      "id": 15,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK TEST}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH event_realms AS (\r\n    SELECT array_agg(name)::text[] AS realms FROM realm WHERE events_enabled IS TRUE AND events_expiration IS NOT NULL\r\n)\r\nSELECT \r\n    realm_id, \r\n    COUNT(CASE WHEN event_time > (SELECT FLOOR(EXTRACT(EPOCH FROM (NOW() - INTERVAL '1 days')::timestamp)*1000))::bigint THEN 1 END) AS \"Previous 24 hour retained logs\",\r\n    COUNT(CASE WHEN event_time > (SELECT FLOOR(EXTRACT(EPOCH FROM (NOW() - INTERVAL '2 days')::timestamp)*1000))::bigint THEN 1 END) AS \"Previous 48 hour retained logs\"\r\nFROM \r\n    event_entity \r\nWHERE \r\n    realm_id = ANY((SELECT realms FROM event_realms)::text[])\r\nGROUP BY \r\n    realm_id;\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "TEST Retained logs",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "description": "This shows a count of the retained logs over the previous 24 hours by realm. Refer to the retention periods in this dashboard to get a full idea of impact. Realms with no logs will not be displayed. Note that event_entity is a large table with millions of records, so ensure to set a reasonable interval.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 25
+      },
+      "id": 13,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "-- WITH event_realms AS (\r\n--     SELECT array_agg(name)::text[] AS realms FROM realm WHERE events_enabled IS TRUE AND events_expiration IS NOT NULL\r\n-- )\r\n-- SELECT realm_id, \r\n-- COUNT(realm_id) as \"Previous 24 hour retained logs\"\r\n--   from event_entity \r\n--   where event_time > (SELECT FLOOR(EXTRACT(EPOCH FROM (NOW() - INTERVAL '1 days')::timestamp)*1000))::bigint\r\n--   -- Using a simple IN statement causes issues with the query planner doing a sequential scan instead of index scan.\r\n--   and realm_id = ANY((select realms from event_realms)::text[]) group by realm_id;\r\n\r\nWITH event_realms AS (\r\n    SELECT array_agg(name)::text[] AS realms FROM realm WHERE events_enabled IS TRUE AND events_expiration IS NOT NULL\r\n)\r\nSELECT \r\n    realm_id, \r\n    COUNT(CASE WHEN event_time > (SELECT FLOOR(EXTRACT(EPOCH FROM (NOW() - INTERVAL '1 days')::timestamp)*1000))::bigint THEN 1 END) AS \"Previous 24 hour retained logs\"\r\n    -- COUNT(CASE WHEN event_time > (SELECT FLOOR(EXTRACT(EPOCH FROM (NOW() - INTERVAL '2 days')::timestamp)*1000))::bigint THEN 1 END) AS \"Previous 48 hour retained logs\"\r\nFROM \r\n    event_entity \r\nWHERE \r\n    realm_id = ANY((SELECT realms FROM event_realms)::text[])\r\nGROUP BY \r\n    realm_id;\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "DEV Retained logs",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "dark-red",
+                  "index": 0,
+                  "text": "Never"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "id": 11,
+      "options": {
+        "displayMode": "basic",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select name, events_expiration from realm where events_enabled is true and events_expiration is not null;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Prod custom realms with events expiration duration",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "description": "Get a count of logs in prod. Please see the comments, due to the large data in the event table and the indexing strategy having dynamic times is not recommended (will timeout on the standby server).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 34
+      },
+      "id": 14,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select 'You will need to alter this query. Please see the query comments for details.' as \"Guide\";\r\n\r\n/*\r\nDue to the millions of records in the event_entity table and the indexing strategy of the keycloak database,\r\nthe start date for this query must be entered as a hardcoded value for the query plan to be performant enough.\r\n\r\nTo get the value, you can use the query below:\r\n\r\nSELECT FLOOR(EXTRACT(EPOCH FROM (NOW() - INTERVAL '1 days')::timestamp)*1000);\r\n\r\nThis will return an integer that you can use in the query below. You can use a longer interval than 1 day,\r\nbut check the query plan before executing it to see that it is doing an index scan still and not a sequential scan.\r\nYou can do this by prepending explain to the query.\r\n*/\r\n\r\n-- WITH event_realms AS (\r\n--     SELECT array_agg(name)::text[] AS realms FROM realm WHERE events_enabled IS TRUE AND events_expiration IS NOT NULL\r\n-- )\r\n-- SELECT realm_id, COUNT(realm_id) as \"Previous 24 hour retained logs\"\r\n--   from event_entity \r\n--   where event_time > {your value here}\r\n--   -- Using a simple IN statement causes issues with the query planner doing a sequential scan instead of index scan.\r\n--   and realm_id = ANY((select realms from event_realms)::text[]) group by realm_id;\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "PROD Retained logs",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_AGGREGATOR}"
+      },
+      "description": "A total log count built off of the sso aggregator table. The retention intervals are hard-coded and will not auto-update, since they live in another database. Check they are still relevant before using.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 34
+      },
+      "id": 16,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_AGGREGATOR}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select 'workbces' as name, sum(count) as \"Retained Logs\" from client_events where realm_id = 'workbces' and environment = 'prod' and date > now() - interval '2 weeks'\r\nunion\r\nselect 'foi-mod' as name, sum(count) as \"Retained Logs\" from client_events where realm_id = 'foi-mod' and environment = 'prod' and date > now() - interval '2 weeks'\r\nunion\r\nselect 'digitaltrust-citz' as name, sum(count) as \"Retained Logs\" from client_events where realm_id = 'digitaltrust-citz' and environment = 'prod'\r\nUNION \r\nselect 'access-to-court-materials-jag' as name, sum(count) as \"Retained Logs\" from client_events where realm_id = 'access-to-court-materials-jag' and environment = 'prod'\r\nunion\r\nselect 'bcregistry' as name, sum(count) as \"Retained Logs\" from client_events where realm_id = 'bcregistry' and environment = 'prod';",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "PROD total log count",
+      "type": "table"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "postgres",
+          "uid": "${DS_SSO_LOGS}"
+        },
+        "definition": "SELECT\n    EXTRACT(EPOCH FROM (CURRENT_DATE - INTERVAL '3 days')::timestamp)::bigint AS unix_timestamp;",
+        "description": "Extract 3 days ago as bigint (millis since 1970)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "3 days ago",
+        "multi": false,
+        "name": "3_days_ago",
+        "options": [],
+        "query": "SELECT\n    EXTRACT(EPOCH FROM (CURRENT_DATE - INTERVAL '3 days')::timestamp)::bigint AS unix_timestamp;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Custom Event Logs & Other Details",
+  "uid": "Q9WMaSnSk",
+  "version": 21,
+  "weekStart": ""
+}

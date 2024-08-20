@@ -1,0 +1,1773 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_SSO_KEYCLOAK DEV",
+      "label": "SSO Keycloak Dev",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    },
+    {
+      "name": "DS_SSO_KEYCLOAK TEST",
+      "label": "SSO Keycloak Test",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    },
+    {
+      "name": "DS_SSO_KEYCLOAK PROD",
+      "label": "SSO Keycloak Prod",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.2.2"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "panels": [],
+      "title": "Number of Clients",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 0,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  COUNT(*) AS \"Dev Count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  (\"public\".\"client\".\"realm_id\" = 'standard')\r\n \r\n   AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account')\r\n   \r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'broker')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'realm-management'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'security-admin-console'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Number of Clients DEV",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK TEST}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 5,
+        "y": 1
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK TEST}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  COUNT(*) AS \"Test Count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  (\"public\".\"client\".\"realm_id\" = 'standard')\r\n \r\n   AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account')\r\n   \r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'broker')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'realm-management'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'security-admin-console'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Number of Clients Test",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "description": "Note that CSS Team accounts are only created in PROD..so prod query is now updated",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 10,
+        "y": 1
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  COUNT(*) AS \"Prod Count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  (\"public\".\"client\".\"realm_id\" = 'standard')\r\n \r\n   AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account')\r\n   \r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'broker')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'realm-management'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'security-admin-console'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Number of Clients Prod",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "The average number of clients across the dev, test, and production environments.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 15,
+        "y": 1
+      },
+      "id": 24,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  COUNT(*) AS \"Dev Count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  (\"public\".\"client\".\"realm_id\" = 'standard')\r\n \r\n   AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account')\r\n   \r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'broker')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'realm-management'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'security-admin-console'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK TEST}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  COUNT(*) AS \"Test Count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  (\"public\".\"client\".\"realm_id\" = 'standard')\r\n \r\n   AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account')\r\n   \r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'broker')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'realm-management'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'security-admin-console'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  COUNT(*) AS \"Prod Count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  (\"public\".\"client\".\"realm_id\" = 'standard')\r\n \r\n   AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account')\r\n   \r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'account-console')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'admin-cli')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\"public\".\"client\".\"client_id\" <> 'broker')\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'realm-management'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    (\r\n      \"public\".\"client\".\"client_id\" <> 'security-admin-console'\r\n    )\r\n    OR (\"public\".\"client\".\"client_id\" IS NULL)\r\n  )\r\n  AND (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )",
+          "refId": "C",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Average Number of Clients by Environment",
+      "transformations": [
+        {
+          "id": "concatenate",
+          "options": {}
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "mean"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT count(*) AS \"count\"\r\nFROM \"public\".\"client\"\r\nWHERE (\"public\".\"client\".\"realm_id\" = 'standard'\r\n   \r\n   AND (\"public\".\"client\".\"client_id\"  like  'service-account-team%')\r\n   )",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Prod - CSS Team Account",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "id": 8,
+      "panels": [],
+      "title": "Number of Service Accounts",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 8
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT count(*) AS \"count\"\r\nFROM \"public\".\"client\"\r\nWHERE (\"public\".\"client\".\"realm_id\" = 'standard'\r\n   AND \"public\".\"client\".\"service_accounts_enabled\" = TRUE)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Service Accounts Dev",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK TEST}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 8
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK TEST}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT count(*) AS \"count\"\r\nFROM \"public\".\"client\"\r\nWHERE (\"public\".\"client\".\"realm_id\" = 'standard'\r\n   AND \"public\".\"client\".\"service_accounts_enabled\" = TRUE)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Service Accounts Test",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "description": "note CSS Account APIs are only created inprod",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 8
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT count(*) AS \"count\"\r\nFROM \"public\".\"client\"\r\nWHERE (\"public\".\"client\".\"realm_id\" = 'standard'\r\n   AND \"public\".\"client\".\"service_accounts_enabled\" = TRUE)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Service Accounts Prod",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 14,
+      "panels": [],
+      "title": "Standard Protocol Breakdown",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 17
+      },
+      "id": 16,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  \"public\".\"client\".\"protocol\" AS \"protocol\",\r\n  COUNT(*) AS \"count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  \"public\".\"client\".\"realm_id\" = 'standard'\r\nAND  (\"public\".\"client\".\"client_id\" not in ('account', 'account-console','admin-cli','broker','realm-management','security-admin-console'  ))\r\nGROUP BY\r\n  \"public\".\"client\".\"protocol\"\r\nORDER BY\r\n  \"public\".\"client\".\"protocol\" ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Dev Protocols",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK TEST}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 17
+      },
+      "id": 17,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK TEST}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  \"public\".\"client\".\"protocol\" AS \"protocol\",\r\n  COUNT(*) AS \"count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  \"public\".\"client\".\"realm_id\" = 'standard'\r\nAND  (\"public\".\"client\".\"client_id\" not in ('account', 'account-console','admin-cli','broker','realm-management','security-admin-console'  ))\r\nGROUP BY\r\n  \"public\".\"client\".\"protocol\"\r\nORDER BY\r\n  \"public\".\"client\".\"protocol\" ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Test Protocols",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 17
+      },
+      "id": 18,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  \"public\".\"client\".\"protocol\" AS \"protocol\",\r\n  COUNT(*) AS \"count\"\r\nFROM\r\n  \"public\".\"client\"\r\nWHERE\r\n  \"public\".\"client\".\"realm_id\" = 'standard'\r\nAND  (\"public\".\"client\".\"client_id\" not in ('account', 'account-console','admin-cli','broker','realm-management','security-admin-console'  ))\r\nGROUP BY\r\n  \"public\".\"client\".\"protocol\"\r\nORDER BY\r\n  \"public\".\"client\".\"protocol\" ASC",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Prod Protocols",
+      "type": "piechart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "id": 20,
+      "panels": [],
+      "title": "Number of CSS Team Accounts in Standard - Client selected CSS API Account",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
+      "id": 25,
+      "panels": [],
+      "title": "Clients with Roles",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 0,
+        "y": 27
+      },
+      "id": 26,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\ncount (distinct   \"public\".\"client\".\"client_id\")\r\n\r\nFROM\r\n  \"public\".\"client\"\r\n \r\nLEFT JOIN \"public\".\"keycloak_role\" AS \"Keycloak Role\" ON \"public\".\"client\".\"id\" = \"Keycloak Role\".\"client\"\r\n  LEFT JOIN \"public\".\"user_role_mapping\" AS \"User Role Mapping\" ON \"Keycloak Role\".\"id\" = \"User Role Mapping\".\"role_id\"\r\nWHERE\r\n  (\"public\".\"client\".\"realm_id\" = 'standard')\r\n    AND (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )\r\n   AND  (  \"User Role Mapping\".\"user_id\" IS NOT NULL )\r\n ",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Number of Clients with Roles DEV",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK TEST}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 5,
+        "y": 27
+      },
+      "id": 27,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK TEST}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\ncount (distinct   \"public\".\"client\".\"client_id\")\r\n\r\nFROM\r\n  \"public\".\"client\"\r\n \r\nLEFT JOIN \"public\".\"keycloak_role\" AS \"Keycloak Role\" ON \"public\".\"client\".\"id\" = \"Keycloak Role\".\"client\"\r\n  LEFT JOIN \"public\".\"user_role_mapping\" AS \"User Role Mapping\" ON \"Keycloak Role\".\"id\" = \"User Role Mapping\".\"role_id\"\r\nWHERE\r\n  (\"public\".\"client\".\"realm_id\" = 'standard')\r\n    AND (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )\r\n   AND  (  \"User Role Mapping\".\"user_id\" IS NOT NULL )\r\n ",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Number of Clients with Roles TEST",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 10,
+        "y": 27
+      },
+      "id": 28,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\ncount (distinct   \"public\".\"client\".\"client_id\")\r\n\r\nFROM\r\n  \"public\".\"client\"\r\n \r\nLEFT JOIN \"public\".\"keycloak_role\" AS \"Keycloak Role\" ON \"public\".\"client\".\"id\" = \"Keycloak Role\".\"client\"\r\n  LEFT JOIN \"public\".\"user_role_mapping\" AS \"User Role Mapping\" ON \"Keycloak Role\".\"id\" = \"User Role Mapping\".\"role_id\"\r\nWHERE\r\n  (\"public\".\"client\".\"realm_id\" = 'standard')\r\n    AND (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )\r\n   AND  (  \"User Role Mapping\".\"user_id\" IS NOT NULL )\r\n ",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Number of Clients with Roles PROD",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "description": "set idp criteria in query",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 6,
+        "x": 0,
+        "y": 33
+      },
+      "id": 29,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n count( distinct   \"public\".\"client\".\"client_id\") AS \"client_id\"  ,\r\n  \"Client Scope\".\"name\" AS \"Client Scope__name\"\r\n\r\nFROM\r\n  \"public\".\"client\"\r\n \r\nLEFT JOIN \"public\".\"client_scope_client\" AS \"Client Scope Client\" ON \"public\".\"client\".\"id\" = \"Client Scope Client\".\"client_id\"\r\n  LEFT JOIN \"public\".\"client_scope\" AS \"Client Scope\" ON \"Client Scope Client\".\"scope_id\" = \"Client Scope\".\"id\"\r\n  LEFT JOIN \"public\".\"keycloak_role\" AS \"Keycloak Role\" ON \"public\".\"client\".\"id\" = \"Keycloak Role\".\"client\"\r\n  LEFT JOIN \"public\".\"user_role_mapping\" AS \"User Role Mapping\" ON \"Keycloak Role\".\"id\" = \"User Role Mapping\".\"role_id\"\r\n  LEFT JOIN \"public\".\"user_attribute\" AS \"User Attribute - User\" ON \"User Role Mapping\".\"user_id\" = \"User Attribute - User\".\"user_id\"\r\nWHERE\r\n  (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )\r\n  AND (  \"public\".\"client\".\"realm_id\" = 'standard')\r\n \r\n  AND (\r\n\r\n(\"Client Scope\".\"name\" = 'bceidbasic')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbasic-saml')\r\n    OR (\"Client Scope\".\"name\" = 'bceidboth')\r\n    OR (\"Client Scope\".\"name\" = 'bceidboth-saml')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbusiness')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbusiness-saml')\r\nOR  (\"Client Scope\".\"name\" = 'azureidir')  \r\n OR (\"Client Scope\".\"name\" = 'azureidir-saml')    \r\n OR (\"Client Scope\".\"name\" = 'githubbcgov')\r\nOR (\"Client Scope\".\"name\" = 'githubbcgov-saml')\r\n OR (\"Client Scope\".\"name\" = 'githubpublic')\r\n OR (\"Client Scope\".\"name\" = 'githubpublic-saml')\r\nOR (\"Client Scope\".\"name\" = 'idir')\r\nOR (\"Client Scope\".\"name\" = 'idir-saml') \r\nOR (\"Client Scope\".\"name\" = 'bcsc')\r\nOR (\"Client Scope\".\"name\" LIKE 'bcsc%')   \r\n  )\r\n\r\n  AND (\r\n     \"User Role Mapping\".\"user_id\" IS NOT NULL\r\n  )\r\n\r\n  group by   \"Client Scope\".\"name\" \r\n\r\n  order by   \"Client Scope\".\"name\" ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "DEV clients by IDP with roles",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK TEST}"
+      },
+      "description": "set idp criteria in query",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 6,
+        "x": 6,
+        "y": 33
+      },
+      "id": 30,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK TEST}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n count( distinct   \"public\".\"client\".\"client_id\") AS \"client_id\"  ,\r\n  \"Client Scope\".\"name\" AS \"Client Scope__name\"\r\n\r\nFROM\r\n  \"public\".\"client\"\r\n \r\nLEFT JOIN \"public\".\"client_scope_client\" AS \"Client Scope Client\" ON \"public\".\"client\".\"id\" = \"Client Scope Client\".\"client_id\"\r\n  LEFT JOIN \"public\".\"client_scope\" AS \"Client Scope\" ON \"Client Scope Client\".\"scope_id\" = \"Client Scope\".\"id\"\r\n  LEFT JOIN \"public\".\"keycloak_role\" AS \"Keycloak Role\" ON \"public\".\"client\".\"id\" = \"Keycloak Role\".\"client\"\r\n  LEFT JOIN \"public\".\"user_role_mapping\" AS \"User Role Mapping\" ON \"Keycloak Role\".\"id\" = \"User Role Mapping\".\"role_id\"\r\n  LEFT JOIN \"public\".\"user_attribute\" AS \"User Attribute - User\" ON \"User Role Mapping\".\"user_id\" = \"User Attribute - User\".\"user_id\"\r\nWHERE\r\n  (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )\r\n  AND (  \"public\".\"client\".\"realm_id\" = 'standard')\r\n \r\n  AND (\r\n\r\n(\"Client Scope\".\"name\" = 'bceidbasic')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbasic-saml')\r\n    OR (\"Client Scope\".\"name\" = 'bceidboth')\r\n    OR (\"Client Scope\".\"name\" = 'bceidboth-saml')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbusiness')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbusiness-saml')\r\nOR  (\"Client Scope\".\"name\" = 'azureidir')  \r\n OR (\"Client Scope\".\"name\" = 'azureidir-saml')    \r\n OR (\"Client Scope\".\"name\" = 'githubbcgov')\r\nOR (\"Client Scope\".\"name\" = 'githubbcgov-saml')\r\n OR (\"Client Scope\".\"name\" = 'githubpublic')\r\n OR (\"Client Scope\".\"name\" = 'githubpublic-saml')\r\nOR (\"Client Scope\".\"name\" = 'idir')\r\nOR (\"Client Scope\".\"name\" = 'idir-saml') \r\nOR (\"Client Scope\".\"name\" LIKE 'bcsc%') \r\n  )\r\n\r\n  AND (\r\n     \"User Role Mapping\".\"user_id\" IS NOT NULL\r\n  )\r\n\r\n  group by   \"Client Scope\".\"name\" \r\n\r\n  order by   \"Client Scope\".\"name\" ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "TEST clients by IDP with roles",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK PROD}"
+      },
+      "description": "set idp criteria in query",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 9,
+        "x": 12,
+        "y": 33
+      },
+      "id": 31,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK PROD}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n count( distinct   \"public\".\"client\".\"client_id\") AS \"client_id\"  ,\r\n  \"Client Scope\".\"name\" AS \"Client Scope__name\"\r\n\r\nFROM\r\n  \"public\".\"client\"\r\n \r\nLEFT JOIN \"public\".\"client_scope_client\" AS \"Client Scope Client\" ON \"public\".\"client\".\"id\" = \"Client Scope Client\".\"client_id\"\r\n  LEFT JOIN \"public\".\"client_scope\" AS \"Client Scope\" ON \"Client Scope Client\".\"scope_id\" = \"Client Scope\".\"id\"\r\n  LEFT JOIN \"public\".\"keycloak_role\" AS \"Keycloak Role\" ON \"public\".\"client\".\"id\" = \"Keycloak Role\".\"client\"\r\n  LEFT JOIN \"public\".\"user_role_mapping\" AS \"User Role Mapping\" ON \"Keycloak Role\".\"id\" = \"User Role Mapping\".\"role_id\"\r\n  LEFT JOIN \"public\".\"user_attribute\" AS \"User Attribute - User\" ON \"User Role Mapping\".\"user_id\" = \"User Attribute - User\".\"user_id\"\r\nWHERE\r\n  (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )\r\n  AND (  \"public\".\"client\".\"realm_id\" = 'standard')\r\n \r\n  AND (\r\n\r\n(\"Client Scope\".\"name\" = 'bceidbasic')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbasic-saml')\r\n    OR (\"Client Scope\".\"name\" = 'bceidboth')\r\n    OR (\"Client Scope\".\"name\" = 'bceidboth-saml')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbusiness')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbusiness-saml')\r\nOR  (\"Client Scope\".\"name\" = 'azureidir')  \r\n OR (\"Client Scope\".\"name\" = 'azureidir-saml')    \r\n OR (\"Client Scope\".\"name\" = 'githubbcgov')\r\nOR (\"Client Scope\".\"name\" = 'githubbcgov-saml')\r\n OR (\"Client Scope\".\"name\" = 'githubpublic')\r\n OR (\"Client Scope\".\"name\" = 'githubpublic-saml')\r\nOR (\"Client Scope\".\"name\" = 'idir')\r\nOR (\"Client Scope\".\"name\" = 'idir-saml') \r\nOR (\"Client Scope\".\"name\" LIKE 'bcsc%') \r\n  )\r\n\r\n  AND (\r\n     \"User Role Mapping\".\"user_id\" IS NOT NULL\r\n  )\r\n\r\n  group by   \"Client Scope\".\"name\" \r\n\r\n  order by   \"Client Scope\".\"name\" ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "PROD clients by IDP with roles",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "description": "set idp criteria in query",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 5,
+        "x": 0,
+        "y": 45
+      },
+      "id": 32,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n count( distinct   \"public\".\"client\".\"client_id\") AS \"client_id\"  ,\r\n  \"Client Scope\".\"name\" AS \"Client Scope__name\"\r\n\r\nFROM\r\n  \"public\".\"client\"\r\n \r\nLEFT JOIN \"public\".\"client_scope_client\" AS \"Client Scope Client\" ON \"public\".\"client\".\"id\" = \"Client Scope Client\".\"client_id\"\r\n  LEFT JOIN \"public\".\"client_scope\" AS \"Client Scope\" ON \"Client Scope Client\".\"scope_id\" = \"Client Scope\".\"id\"\r\n  LEFT JOIN \"public\".\"keycloak_role\" AS \"Keycloak Role\" ON \"public\".\"client\".\"id\" = \"Keycloak Role\".\"client\"\r\n  LEFT JOIN \"public\".\"user_role_mapping\" AS \"User Role Mapping\" ON \"Keycloak Role\".\"id\" = \"User Role Mapping\".\"role_id\"\r\n  LEFT JOIN \"public\".\"user_attribute\" AS \"User Attribute - User\" ON \"User Role Mapping\".\"user_id\" = \"User Attribute - User\".\"user_id\"\r\nWHERE\r\n  (\r\n    \"public\".\"client\".\"description\" = 'CSS App Created'\r\n  )\r\n  AND (  \"public\".\"client\".\"realm_id\" = 'standard')\r\n \r\n  AND (\r\n\r\n(\"Client Scope\".\"name\" = 'bceidbasic')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbasic-saml')\r\n    OR (\"Client Scope\".\"name\" = 'bceidboth')\r\n    OR (\"Client Scope\".\"name\" = 'bceidboth-saml')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbusiness')\r\n    OR (\"Client Scope\".\"name\" = 'bceidbusiness-saml')\r\nOR  (\"Client Scope\".\"name\" = 'azureidir')  \r\n OR (\"Client Scope\".\"name\" = 'azureidir-saml')    \r\n OR (\"Client Scope\".\"name\" = 'githubbcgov')\r\nOR (\"Client Scope\".\"name\" = 'githubbcgov-saml')\r\n OR (\"Client Scope\".\"name\" = 'githubpublic')\r\n OR (\"Client Scope\".\"name\" = 'githubpublic-saml')\r\nOR (\"Client Scope\".\"name\" = 'idir')\r\nOR (\"Client Scope\".\"name\" = 'idir-saml') \r\n  )\r\n\r\n  AND (\r\n     \"User Role Mapping\".\"user_id\" IS NOT NULL\r\n  )\r\n\r\n  group by   \"Client Scope\".\"name\" \r\n\r\n  order by   \"Client Scope\".\"name\" ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "temp",
+      "type": "stat"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Standard Service Overview",
+  "uid": "4J3ltI7Ik",
+  "version": 15,
+  "weekStart": ""
+}
