@@ -1,0 +1,273 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_SSO_KEYCLOAK DEV",
+      "label": "SSO Keycloak Dev",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.2.2"
+    },
+    {
+      "type": "datasource",
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "panels": [],
+      "title": "Level 1 Realm Admin (Master)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 17,
+        "x": 0,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  \"public\".\"keycloak_role\".\"name\" AS \"name\",\r\n  \"public\".\"keycloak_role\".\"description\" AS \"description\",\r\n \r\n  \"public\".\"keycloak_role\".\"realm_id\" AS \"realm_id\",\r\n  \"public\".\"keycloak_role\".\"client\" AS \"client\",\r\n  \"public\".\"keycloak_role\".\"realm\" AS \"realm\"\r\nFROM\r\n  \"public\".\"keycloak_role\"\r\nWHERE\r\n  (\"public\".\"keycloak_role\".\"realm_id\" = 'master')\r\n \r\n   AND (\r\n    LOWER(\"public\".\"keycloak_role\".\"name\") LIKE '%realm-admin%'\r\n  )",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Dev Level 1 Realm Admin",
+      "type": "table"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "id": 3,
+      "panels": [],
+      "title": "Level 2 Realm Admin - Realm Roles",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${DS_SSO_KEYCLOAK DEV}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 17,
+        "x": 0,
+        "y": 15
+      },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${DS_SSO_KEYCLOAK DEV}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  \"public\".\"keycloak_role\".\"id\" AS \"id\",\r\n  \"public\".\"keycloak_role\".\"client_role\" AS \"client_role\",\r\n  \"public\".\"keycloak_role\".\"description\" AS \"description\",\r\n  \"public\".\"keycloak_role\".\"name\" AS \"name\",\r\n  \"public\".\"keycloak_role\".\"realm_id\" AS \"realm_id\",\r\n  \"public\".\"keycloak_role\".\"realm\" AS \"realm\",\r\n  \"User Entity - User\".\"id\" AS \"User Entity - User__id\",\r\n  \"User Entity - User\".\"email\" AS \"User Entity - User__email\",\r\n  \"User Entity - User\".\"email_constraint\" AS \"User Entity - User__email_constraint\",\r\n  \"User Entity - User\".\"email_verified\" AS \"User Entity - User__email_verified\",\r\n  \"User Entity - User\".\"enabled\" AS \"User Entity - User__enabled\",\r\n  \"User Entity - User\".\"federation_link\" AS \"User Entity - User__federation_link\",\r\n  \"User Entity - User\".\"first_name\" AS \"User Entity - User__first_name\",\r\n  \"User Entity - User\".\"last_name\" AS \"User Entity - User__last_name\",\r\n  \"User Entity - User\".\"realm_id\" AS \"User Entity - User__realm_id\",\r\n  \"User Entity - User\".\"username\" AS \"User Entity - User__username\",\r\n  \"User Entity - User\".\"created_timestamp\" AS \"User Entity - User__created_timestamp\",\r\n  \"User Entity - User\".\"service_account_client_link\" AS \"User Entity - User__service_account_client_link\",\r\n  \"User Entity - User\".\"not_before\" AS \"User Entity - User__not_before\"\r\nFROM\r\n  \"public\".\"keycloak_role\"\r\n \r\nLEFT JOIN \"public\".\"user_role_mapping\" AS \"User Role Mapping\" ON \"public\".\"keycloak_role\".\"id\" = \"User Role Mapping\".\"role_id\"\r\n  LEFT JOIN \"public\".\"user_entity\" AS \"User Entity - User\" ON \"User Role Mapping\".\"user_id\" = \"User Entity - User\".\"id\"\r\nWHERE\r\n  (\r\n    (\"public\".\"keycloak_role\".\"realm_id\" <> 'master')\r\n   \r\n    OR (\"public\".\"keycloak_role\".\"realm_id\" IS NULL)\r\n  )\r\n \r\n   AND (\"public\".\"keycloak_role\".\"name\" = 'realm-admin')\r\n  AND (\"User Entity - User\".\"email\" IS NOT NULL)\r\n  AND (\r\n    (\"User Entity - User\".\"email\" <> '')\r\n    OR (\"User Entity - User\".\"email\" IS NULL)\r\n  )\r\nORDER BY\r\n  \"public\".\"keycloak_role\".\"realm_id\" ASC\r\nLIMIT\r\n  1048575",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Dev Level 1 Realm Admin",
+      "type": "table"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Realm Admins",
+  "uid": "b7f79bb2-acdf-4925-a5a7-7b034e2c2209",
+  "version": 7,
+  "weekStart": ""
+}
