@@ -19,7 +19,7 @@ promtail:
   image:
     registry: docker.io
     repository: grafana/promtail
-    tag: null
+    tag: ""
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
