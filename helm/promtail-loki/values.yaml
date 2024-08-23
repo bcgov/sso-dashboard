@@ -47,7 +47,7 @@ promtail:
   defaultVolumes:
     - name: positions
       persistentVolumeClaim:
-        claimName: sso-promtail-positions
+        claimName: sso-promtail-loki-positions
 
   defaultVolumeMounts:
     - name: positions
