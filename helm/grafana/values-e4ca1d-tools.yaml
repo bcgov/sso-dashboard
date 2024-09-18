@@ -9,8 +9,8 @@ grafana:
       root_url: https://sso-grafana-sandbox.apps.gold.devops.gov.bc.ca
     auth.generic_oauth:
       name: SSO Pathfinder Sandbox
-      auth_url: https://dev.sandbox.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
-      token_url: https://dev.sandbox.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
+      auth_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
+      token_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
 
   datasources:
     datasources.yaml:
@@ -48,7 +48,7 @@ grafana:
             maxOpenConns:
             maxIdleConns: 2
             connMaxLifetime: 14400
-            postgresVersion: 1400
+            postgresVersion: 1500
             timescaledb: false
         - name: SSO Keycloak Test
           type: postgres
@@ -65,7 +65,7 @@ grafana:
             maxOpenConns:
             maxIdleConns: 2
             connMaxLifetime: 14400
-            postgresVersion: 1400
+            postgresVersion: 1500
             timescaledb: false
         - name: SSO Keycloak Prod
           type: postgres
@@ -82,7 +82,7 @@ grafana:
             maxOpenConns:
             maxIdleConns: 2
             connMaxLifetime: 14400
-            postgresVersion: 1400
+            postgresVersion: 1500
             timescaledb: false
         - name: SSO Loki
           type: loki

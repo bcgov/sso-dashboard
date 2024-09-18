@@ -20,6 +20,8 @@ envsubst < net-policy-sso-keycloak.yaml | oc apply -f -
 
 #### Update Helm Values
 
+You will need to create a separate set of environment values for the sandbox and production grafana instances.  The sandbox grafana instance uses the `dev production 4492` client for authentication and the production grafana instance uses the `prod production 4492` client.
+
 - create `.env` from `.env.example` and fill the values
 
 ### Installing/Upgrading the Chart
