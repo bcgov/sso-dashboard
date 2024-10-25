@@ -9,6 +9,7 @@ on:
     paths:
     - terraform-ecs/**
     - loki-authorizer/**
+    - .github/**
 
 env:
   TF_VERSION: 1.1.4
