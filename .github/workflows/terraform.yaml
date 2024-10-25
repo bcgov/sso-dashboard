@@ -1,0 +1,43 @@
+name: Terraform
+
+on:
+  push:
+    branches:
+    - dev
+    - main
+    - ssoteam-2010
+    paths:
+    - terraform-ecs/**
+    - loki-authorizer/**
+
+env:
+  TF_VERSION: 1.1.4
+
+jobs:
+  terraform:
+    permissions: write-all
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: hmarr/debug-action@v3
+    - uses: actions/checkout@v4
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
+        aws-region: ca-central-1
+
+    - name: Terraform Init
+      id: init
+      run: terraform init -upgrade
+      working-directory: ./terraform
+
+    - name: Terraform Plan
+      id: plan
+      if: github.event_name == 'pull_request'
+      run: terraform plan -var "auth_secret=fake_secret_for_testing" -no-color
+      working-directory: ./terraform
+      continue-on-error: true
