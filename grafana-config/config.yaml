@@ -28,7 +28,7 @@ ingester:
   max_chunk_age: 2h
   wal:
     enabled: true
-    flush_on_shutdown: false
+    flush_on_shutdown: true
 limits_config:
   enforce_metric_name: false
   ingestion_rate_mb: 10
