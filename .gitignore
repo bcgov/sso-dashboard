@@ -1,3 +1,8 @@
 helm/**/charts
 get-pip.py
 **/.env
+node_modules
+.terraform
+*.tfstate
+*.tfstate.backup
+loki-authorizer.zip

@@ -4,3 +4,4 @@ postgres 14.1
 golang 1.21.0
 helm 3.10.2
 loki-logcli 2.9.2
+terraform 1.9.7
