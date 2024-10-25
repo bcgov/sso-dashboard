@@ -8,7 +8,7 @@ promtail:
   config:
     logLevel: info
     clients:
-      - url: https://kn5unpe58e.execute-api.ca-central-1.amazonaws.com/loki/api/v1/push
+      - url: https://qcvs5jdpkd.execute-api.ca-central-1.amazonaws.com/loki/api/v1/push
         tenant_id: sso-team
         headers:
           Authorization: <please replace me>
