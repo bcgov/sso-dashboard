@@ -58,7 +58,7 @@ resource "aws_iam_role" "loki_task_role" {
 
 resource "aws_iam_policy" "loki_task_s3_policy" {
   name        = "loki-task-policy-s3"
-  description = "Permissions for Loki to access S3, CloudWatch, and other AWS resources"
+  description = "Permissions for Loki to access S3"
   policy      = jsonencode({
     Version = "2012-10-17"
     Statement = [
