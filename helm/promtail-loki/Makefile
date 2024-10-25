@@ -1,5 +1,7 @@
+include /$(PWD)/.env
+
 SHELL := /usr/bin/env bash
-NAMESPACE=""
+NAMESPACE="e4ca1d-prod"
 NAME=sso-promtail-loki
 
 ifndef NAMESPACE
@@ -7,7 +9,8 @@ $(error NAMESPACE is not set)
 endif
 
 define arguments
-	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml"
+	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
+	--set promtail.config.clients[0].headers.Authorization="Bearer ${LOKI_AUTH_TOKEN}"
 endef
 
 .PHONY: helm-dep
