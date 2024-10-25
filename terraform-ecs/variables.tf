@@ -15,11 +15,32 @@ variable "region" {
     default = "ca-central-1"
 }
 
-variable "gold_ip" {
-  type = string
-}
-
 variable "auth_secret" {
   type = string
+  description = "Authentication secret to use loki API"
   sensitive = true
+}
+
+variable "loki_read_cpu" {
+  type = number
+  description = "CPU as vCPU, e.g. 1000 = 1cpu"
+  default = 256
+}
+
+variable "loki_write_cpu" {
+  type = number
+  description = "CPU as vCPU, e.g. 1000 = 1cpu"
+  default = 256
+}
+
+variable "loki_read_memory" {
+  type = number
+  description = "Memory in Mb"
+  default = 512
+}
+
+variable "loki_write_memory" {
+  type = number
+  description = "Memory in Mb"
+  default = 512
 }

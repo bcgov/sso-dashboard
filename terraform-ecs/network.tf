@@ -17,12 +17,12 @@ data "aws_subnet" "subnet_b" {
   }
 }
 
+# Open for api gateway to receive traffic. Authorizer used to check token on all calls
 resource "aws_security_group" "loki_sg" {
   name        = "loki_sg"
   description = "Security group for loki"
   vpc_id      = data.aws_vpc.selected.id
 
-  # Allowing traffic for testing from local. Can restrict to gold ip
   ingress {
     from_port = 0
     to_port   = 0

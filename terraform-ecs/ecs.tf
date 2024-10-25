@@ -15,9 +15,9 @@ resource "aws_ecs_task_definition" "loki_write" {
     name = "loki-write"
     image = "jelanglois/grafana:flush"
     essential              = true
-    memory                 = 512
-    cpu                    = 256
-    # IMPORTANT: Make sure ingesters have time to flush logs.
+    memory                 = var.loki_write_memory
+    cpu                    = var.loki_write_cpu
+    # IMPORTANT: Make sure ingesters have time to cut any chunks in memory.
     stop_timeout = 120
 
     portMappings = [
@@ -115,8 +115,8 @@ resource "aws_ecs_task_definition" "loki_read" {
     name = "loki-read"
     image                  = "jelanglois/grafana:flush"
     essential              = true
-    memory                 = 512
-    cpu                    = 256
+    memory                 = var.loki_read_memory
+    cpu                    = var.loki_read_cpu
 
     portMappings = [
       {
@@ -164,7 +164,7 @@ resource "aws_ecs_task_definition" "loki_read" {
       options = {
         awslogs-create-group  = "true"
         awslogs-group         = "/ecs/${aws_ecs_cluster.sso_ecs_cluster.name}"
-        awslogs-region        = "ca-central-1"
+        awslogs-region        = var.region
         awslogs-stream-prefix = "ecs-loki-read"
       }
     }
