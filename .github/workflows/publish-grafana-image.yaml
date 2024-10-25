@@ -1,4 +1,4 @@
-name: Create and publish SSO Aggregator
+name: Create and publish SSO Grafana
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 env:
   GITHUB_REGISTRY: ghcr.io
-  IMAGE_NAME: bcgov/grafana
+  IMAGE_NAME: bcgov/sso-grafana
 
 jobs:
   build-and-push-image:
@@ -46,7 +46,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: aggregator
+        context: grafana-config
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
