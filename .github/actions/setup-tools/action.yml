@@ -21,8 +21,8 @@ runs:
       asdf reshim
     shell: bash
 
-  # - name: Install python tools
-  #   run: |
-  #     pip install -r requirements.txt
-  #     asdf reshim
-  #   shell: bash
+  - name: Install python tools
+    run: |
+      pip install -r requirements.txt
+      asdf reshim
+    shell: bash
