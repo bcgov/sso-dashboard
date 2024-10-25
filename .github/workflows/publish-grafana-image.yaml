@@ -8,6 +8,7 @@ on:
     - ssoteam-2010
     paths:
     - grafana-config/*
+    - .github/workflows/publish-grafana-image.yaml
 
 env:
   GITHUB_REGISTRY: ghcr.io
