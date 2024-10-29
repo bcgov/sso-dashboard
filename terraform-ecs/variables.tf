@@ -44,8 +44,3 @@ variable "loki_write_memory" {
   description = "Memory in Mb"
   default = 512
 }
-
-variable "state_bucket" {
-  type = string
-  default = "xgr00q-dev-loki-terraform"
-}
