@@ -8,10 +8,9 @@ WORKDIR /etc/loki
 COPY ./config.yaml /etc/loki/config/
 COPY ./runtime-config.yaml /etc/loki/runtime-config/runtime-config.yaml
 
-# Give loki user permissions for config folder
+# Setup loki user permissions for working directory
 USER root
 RUN mkdir -p /var/loki/retention && chown -R loki:loki /var/loki
 USER loki
 
-# Ensure the container starts with Loki using your custom config file
 ENTRYPOINT ["/usr/bin/loki"]

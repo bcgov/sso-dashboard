@@ -69,13 +69,6 @@ schema_config:
     object_store: s3
     schema: v11
     store: boltdb-shipper
-  # - from: "2024-10-19"
-  #   index:
-  #     period: 24h
-  #     prefix: awsindex_
-  #   object_store: s3
-  #   schema: v11
-  #   store: boltdb-shipper
 server:
   http_listen_address: 0.0.0.0
   grpc_listen_address: 0.0.0.0
