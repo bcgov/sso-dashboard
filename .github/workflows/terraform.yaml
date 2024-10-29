@@ -49,7 +49,7 @@ jobs:
     - name: Terraform Init
       id: init
       run: terraform init -upgrade
-      working-directory: ./terraform
+      working-directory: ./terraform-ecs
 
     - name: Terraform Plan
       id: plan
