@@ -31,19 +31,22 @@ SSO Keycloak dashboard services provide the ability to monitor real-time statist
 
 1. `Promtail` & `Loki`: collect, transform and load raw log data for the designated time period.
 
-1. `Loki` & `MinIO`: provide the Amazon S3 compatible Object Storage to store/read compacted event data by Loki.
+1. `Loki` & `S3`: provide the Amazon S3 compatible Object Storage to store/read compacted event data by Loki.
 
 1. `Promtail` & `Custom Go server`: collect, and upsert the aggreated event historial data in DB.
 
 1. `Grafana`: connect Loki and the aggregation DB to visualize the logs and stats.
 
-   ![SSO Dashboard Architecture Diagram](assets/sso-dashboard-arch.gif)
+   ![SSO Dashboard Architecture Diagram](assets/sso-dashboard.drawio.svg)
 
 <!-- ![image](https://user-images.githubusercontent.com/36021827/211399712-5bbeaa67-2994-460f-a12b-368b13187cdd.png) -->
 
 ## Deployment
 
-It continuously deploys the resources in the sandbox and the prod environment based on the repository branch (pr's to dev deploys sandbox, pr's to main deploys prod) that has the new changes.
+The helm charts for the promtail instances and grafana dashboard can be installed with make commands. These automate adding environment variables from .env files in their directories. See the directory readmes for more information.
+
+The Loki setup is deployed with terraform into AWS. It deploys automatically on merge to dev/main.
+
 GitHub CD pipeline scripts are triggered based on the directory that has changed; there is a recommended deployment order when deploying the resources for the very first time:
 
 1. `Loki`: deploys the `MinIO` and `Loki` resources, `read`, `write`, and `gateway`.
@@ -64,8 +67,6 @@ The following secrets are set in the GitHub secrets of the repository and can be
 - `SANDBOX_SSO_CLIENT_ID`: the SSO integration credentials, `client id`, to set in `Grafana` and `MinIO` dashboard UI.
 - `SANDBOX_SSO_CLIENT_SECRET`: the SSO integration credentials, `client secret`, to set in `Grafana` and `MinIO` dashboard UI.
   - please find the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests)
-- `SANDBOX_MINIO_USER`: the username of the initial MinIO admin account.
-- `SANDBOX_MINIO_PASS`: the password of the initial MinIO admin account.
 
 ### Production
 
@@ -76,5 +77,3 @@ The following secrets are set in the GitHub secrets of the repository and can be
 - `PROD_SSO_CLIENT_ID`: the SSO integration credentials, `client id`, to set in `Grafana` and `MinIO` dashboard UI.
 - `PROD_SSO_CLIENT_SECRET`: the SSO integration credentials, `client secret`, to set in `Grafana` and `MinIO` dashboard UI.
   - please find the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests)
-- `PROD_MINIO_USER`: the username of the initial MinIO admin account.
-- `PROD_MINIO_PASS`: the password of the initial MinIO admin account.
