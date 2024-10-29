@@ -47,13 +47,18 @@ jobs:
         aws-region: ca-central-1
 
     - name: Terraform Init
-      id: init
-      run: terraform init -upgrade
       working-directory: ./terraform-ecs
+      run: |
+        cat <<EOF > backend.hcl
+        bucket = "${{ vars.S3_BACKEND_NAME }}"
+        key = "tf-state"
+        region = "ca-central-1"
+        EOF
+        terraform init -backend-config=backend.hcl
 
     - name: Terraform Plan
       id: plan
-      if: github.event_name == 'pull_request'
+      # if: github.event_name == 'pull_request'
       run: terraform plan -var "auth_secret=fake_secret_for_testing" -no-color
-      working-directory: ./terraform
+      working-directory: ./terraform-ecs
       continue-on-error: true
