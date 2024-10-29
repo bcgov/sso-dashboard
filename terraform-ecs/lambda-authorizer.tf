@@ -1,6 +1,6 @@
 resource "aws_lambda_function" "auth_function" {
   function_name = "lokiApiAuth"
-  runtime       = "nodejs20.x"  # or your preferred runtime
+  runtime       = "nodejs20.x"
   role          = aws_iam_role.lambda_exec.arn
   handler       = "authorize.handler"
   filename      = "loki-authorizer.zip"
@@ -9,7 +9,7 @@ resource "aws_lambda_function" "auth_function" {
 
   environment {
     variables = {
-        AUTH_SECRET = var.auth_secret
+      AUTH_SECRET = var.auth_secret
     }
   }
 }

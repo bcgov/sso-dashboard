@@ -12,11 +12,11 @@ resource "aws_ecs_task_definition" "loki_write" {
   memory                   = "512"
 
   container_definitions = jsonencode([{
-    name = "loki-write"
-    image = "ghcr.io/bcgov/sso-grafana:ssoteam-2010"
-    essential              = true
-    memory                 = var.loki_write_memory
-    cpu                    = var.loki_write_cpu
+    name      = "loki-write"
+    image     = "ghcr.io/bcgov/sso-grafana:ssoteam-2010"
+    essential = true
+    memory    = var.loki_write_memory
+    cpu       = var.loki_write_cpu
     # IMPORTANT: Make sure ingesters have time to cut any chunks in memory.
     stop_timeout = 120
 
@@ -33,9 +33,9 @@ resource "aws_ecs_task_definition" "loki_write" {
         protocol      = "tcp"
       },
       {
-        name        = "grpc"
-        hostPort    = 9095
-        protocol    = "tcp"
+        name          = "grpc"
+        hostPort      = 9095
+        protocol      = "tcp"
         containerPort = 9095
       }
     ]
@@ -112,11 +112,11 @@ resource "aws_ecs_task_definition" "loki_read" {
   memory                   = "512"
 
   container_definitions = jsonencode([{
-    name = "loki-read"
-    image                  = "ghcr.io/bcgov/sso-grafana:ssoteam-2010"
-    essential              = true
-    memory                 = var.loki_read_memory
-    cpu                    = var.loki_read_cpu
+    name      = "loki-read"
+    image     = "ghcr.io/bcgov/sso-grafana:ssoteam-2010"
+    essential = true
+    memory    = var.loki_read_memory
+    cpu       = var.loki_read_cpu
 
     portMappings = [
       {
@@ -128,9 +128,9 @@ resource "aws_ecs_task_definition" "loki_read" {
         hostPort      = 8500
       },
       {
-        name        = "grpc"
-        hostPort    = 9095
-        protocol    = "tcp"
+        name          = "grpc"
+        hostPort      = 9095
+        protocol      = "tcp"
         containerPort = 9095
       },
       {
@@ -212,23 +212,23 @@ resource "aws_appautoscaling_target" "ecs_read_service_target" {
 }
 
 resource "aws_appautoscaling_policy" "scale_out" {
-  name                   = "scale_out"
-  policy_type           = "StepScaling"
-  resource_id           = aws_appautoscaling_target.ecs_read_service_target.id
-  scalable_dimension     = "ecs:service:DesiredCount"
-  service_namespace      = "ecs"
+  name               = "scale_out"
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.ecs_read_service_target.id
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
 
   step_scaling_policy_configuration {
     adjustment_type = "ChangeInCapacity"
     step_adjustment {
-      scaling_adjustment = 1  # Increase the number of tasks by
+      scaling_adjustment = 1 # Increase the number of tasks by
       # The bounds are for the difference between the trigger and the actual value
       # e.g if alarm is at 60%, and you want a step for 60% - 80%, the lower bound would be zero and the upper 20.
       metric_interval_lower_bound = 0
       metric_interval_upper_bound = 20
     }
     step_adjustment {
-      scaling_adjustment = 2
+      scaling_adjustment          = 2
       metric_interval_lower_bound = 20
     }
     cooldown = 30
@@ -236,15 +236,15 @@ resource "aws_appautoscaling_policy" "scale_out" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_high" {
-  alarm_name                = "HighCpuAlarm"
-  comparison_operator       = "GreaterThanThreshold"
-  evaluation_periods        = 1
-  metric_name              = "CPUUtilization"
-  namespace                = "AWS/ECS"
-  period                   = 30
-  statistic                = "Average"
-  threshold                = 60
-  dimensions               = {
+  alarm_name          = "HighCpuAlarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = 30
+  statistic           = "Average"
+  threshold           = 60
+  dimensions = {
     ClusterName = aws_ecs_cluster.sso_ecs_cluster.name
     ServiceName = aws_ecs_service.loki_read.name
   }

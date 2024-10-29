@@ -1,6 +1,6 @@
 # Execution role, permissions to log to cloudwatch
 resource "aws_iam_role" "loki_execution_role" {
-  name               = "loki-execution-role"
+  name = "loki-execution-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -18,7 +18,7 @@ resource "aws_iam_role" "loki_execution_role" {
 resource "aws_iam_policy" "loki_execution_policy" {
   name        = "loki-execution-policy"
   description = "Permissions for ECS task execution, including logging to CloudWatch"
-  policy      = jsonencode({
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -41,7 +41,7 @@ resource "aws_iam_role_policy_attachment" "loki_execution_role_attachment" {
 
 # Task role for running container, needs to connect to the s3 bucket for logs
 resource "aws_iam_role" "loki_task_role" {
-  name               = "loki-task-role"
+  name = "loki-task-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -59,7 +59,7 @@ resource "aws_iam_role" "loki_task_role" {
 resource "aws_iam_policy" "loki_task_s3_policy" {
   name        = "loki-task-policy-s3"
   description = "Permissions for Loki to access S3"
-  policy      = jsonencode({
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -91,10 +91,10 @@ resource "aws_lambda_permission" "allow_api_gateway" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.auth_function.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_apigatewayv2_api.sso_loki_api.execution_arn}/*/*"
+  source_arn    = "${aws_apigatewayv2_api.sso_loki_api.execution_arn}/*/*"
 }
 
-# Below permission can be added if needing to ssh into the loki tasks
+# Below permission can be added temporarily if needing to ssh into the loki tasks for debugging.
 
 # resource "aws_iam_policy" "loki_task_ssh_policy" {
 #   name        = "loki-task-policy-efs"

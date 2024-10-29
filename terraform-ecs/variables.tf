@@ -11,36 +11,41 @@ variable "subnet_b" {
 }
 
 variable "region" {
-    type = string
-    default = "ca-central-1"
+  type    = string
+  default = "ca-central-1"
 }
 
 variable "auth_secret" {
-  type = string
+  type        = string
   description = "Authentication secret to use loki API"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "loki_read_cpu" {
-  type = number
+  type        = number
   description = "CPU as vCPU, e.g. 1000 = 1cpu"
-  default = 256
+  default     = 256
 }
 
 variable "loki_write_cpu" {
-  type = number
+  type        = number
   description = "CPU as vCPU, e.g. 1000 = 1cpu"
-  default = 256
+  default     = 256
 }
 
 variable "loki_read_memory" {
-  type = number
+  type        = number
   description = "Memory in Mb"
-  default = 512
+  default     = 512
 }
 
 variable "loki_write_memory" {
-  type = number
+  type        = number
   description = "Memory in Mb"
-  default = 512
+  default     = 512
+}
+
+variable "bucket_name" {
+  type    = string
+  default = "xgr00q-dev-sso-loki"
 }

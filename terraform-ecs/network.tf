@@ -17,16 +17,16 @@ data "aws_subnet" "subnet_b" {
   }
 }
 
-# Open for api gateway to receive traffic. Authorizer used to check token on all calls
+# Open for api gateway to receive traffic from internet, e.g our openshift promtail. Authorization token is checked on all calls
 resource "aws_security_group" "loki_sg" {
   name        = "loki_sg"
   description = "Security group for loki"
   vpc_id      = data.aws_vpc.selected.id
 
   ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = -1
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -39,20 +39,20 @@ resource "aws_security_group" "loki_sg" {
 }
 
 resource "aws_lb" "loki_lb" {
-  name                       = "loki-lb"
-  internal                   = true
-  load_balancer_type         = "application"
-  security_groups            = [aws_security_group.loki_sg.id]
-  subnets                    = [data.aws_subnet.subnet_a.id, data.aws_subnet.subnet_b.id]
+  name                             = "loki-lb"
+  internal                         = true
+  load_balancer_type               = "application"
+  security_groups                  = [aws_security_group.loki_sg.id]
+  subnets                          = [data.aws_subnet.subnet_a.id, data.aws_subnet.subnet_b.id]
   enable_cross_zone_load_balancing = true
 }
 
 resource "aws_lb" "loki_gossip_lb" {
-  name                       = "loki-gossip-lb"
-  internal                   = true
-  load_balancer_type         = "network"
-  security_groups            = [aws_security_group.loki_sg.id]
-  subnets                    = [data.aws_subnet.subnet_a.id, data.aws_subnet.subnet_b.id]
+  name                             = "loki-gossip-lb"
+  internal                         = true
+  load_balancer_type               = "network"
+  security_groups                  = [aws_security_group.loki_sg.id]
+  subnets                          = [data.aws_subnet.subnet_a.id, data.aws_subnet.subnet_b.id]
   enable_cross_zone_load_balancing = true
 }
 
