@@ -47,5 +47,4 @@ variable "loki_write_memory" {
 
 variable "bucket_name" {
   type    = string
-  default = "xgr00q-dev-sso-loki"
 }

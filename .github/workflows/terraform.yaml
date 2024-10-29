@@ -6,6 +6,7 @@ on:
     branches:
     - dev
     - main
+    - ssoteam-2010
     paths:
     - terraform-ecs/**
     - loki-authorizer/**
@@ -39,10 +40,34 @@ jobs:
         asdf reshim
       shell: bash
 
+    - name: Set env to development
+      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+
+        TERRAFORM_DEPLOY_ROLE_ARN=${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_DEV }}
+        LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_DEV }}
+        LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_DEV }}
+        S3_BACKEND_NAME=${{vars.S3_BACKEND_NAME_DEV}}
+
+        EOF
+
+    - name: Set env to production
+      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+
+        TERRAFORM_DEPLOY_ROLE_ARN=${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_PROD }}
+        LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_PROD }}
+        LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_PROD }}
+        S3_BACKEND_NAME=${{vars.S3_BACKEND_NAME_PROD}}
+
+        EOF
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
+        role-to-assume: ${{ env.TERRAFORM_DEPLOY_ROLE_ARN }}
         aws-region: ca-central-1
 
     - name: Build Lambdas
@@ -53,16 +78,16 @@ jobs:
       working-directory: ./terraform-ecs
       run: |
         cat <<EOF > backend.hcl
-        bucket = "${{ vars.S3_BACKEND_NAME }}"
+        bucket = "${{ env.S3_BACKEND_NAME }}"
         key = "tf-state"
         region = "ca-central-1"
         EOF
         terraform init -backend-config=backend.hcl
 
     - name: Terraform Plan
-      run: terraform plan -var "auth_secret=${{secrets.LOKI_AUTH_TOKEN}}" -no-color
+      run: terraform plan -var "auth_secret=${{env.LOKI_AUTH_TOKEN}}" -var "bucket_name=${{ env.LOKI_BUCKET_NAME }}" -no-color
       working-directory: ./terraform-ecs
 
-    - name: Terraform Apply
-      run: terraform apply -var "auth_secret=${{secrets.LOKI_AUTH_TOKEN}}" -auto-approve
-      working-directory: ./terraform-ecs
+    # - name: Terraform Apply
+    #   run: terraform apply -var "auth_secret=${{env.LOKI_AUTH_TOKEN}}" -var "bucket_name=${{ env.LOKI_BUCKET_NAME }}" -auto-approve
+    #   working-directory: ./terraform-ecs
