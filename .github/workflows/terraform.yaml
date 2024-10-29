@@ -46,6 +46,10 @@ jobs:
         role-to-assume: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN }}
         aws-region: ca-central-1
 
+    - name: Build Lambdas
+      working-directory: ./loki-authorizer
+      run: make build
+
     - name: Terraform Init
       working-directory: ./terraform-ecs
       run: |
