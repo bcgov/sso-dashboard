@@ -6,7 +6,6 @@ on:
     branches:
     - dev
     - main
-    - ssoteam-2010
     paths:
     - terraform-ecs/**
     - loki-authorizer/**
@@ -41,7 +40,7 @@ jobs:
       shell: bash
 
     - name: Set env to development
-      if: (github.ref == 'refs/heads/ssoteam-2010' && github.event_name == 'push')
+      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
 
@@ -88,6 +87,6 @@ jobs:
       run: terraform plan -var "auth_secret=${{env.LOKI_AUTH_TOKEN}}" -var "bucket_name=${{ env.LOKI_BUCKET_NAME }}" -no-color
       working-directory: ./terraform-ecs
 
-    # - name: Terraform Apply
-    #   run: terraform apply -var "auth_secret=${{env.LOKI_AUTH_TOKEN}}" -var "bucket_name=${{ env.LOKI_BUCKET_NAME }}" -auto-approve
-    #   working-directory: ./terraform-ecs
+    - name: Terraform Apply
+      run: terraform apply -var "auth_secret=${{env.LOKI_AUTH_TOKEN}}" -var "bucket_name=${{ env.LOKI_BUCKET_NAME }}" -auto-approve
+      working-directory: ./terraform-ecs
