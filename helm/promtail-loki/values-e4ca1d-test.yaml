@@ -8,8 +8,10 @@ promtail:
   config:
     logLevel: info
     clients:
-      - url: http://sso-loki-gateway.e4ca1d-prod.svc.cluster.local/loki/api/v1/push
+      - url: <replace me>
         tenant_id: sso-team
+        headers:
+          Authorization: <please replace me>
     snippets:
       scrapeConfigs: |
         {{- tpl .Values.ssoScrapeConfigs . }}

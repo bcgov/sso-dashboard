@@ -1,3 +1,5 @@
+include /$(PWD)/.env
+
 SHELL := /usr/bin/env bash
 NAMESPACE=""
 NAME=sso-promtail-loki
@@ -7,7 +9,9 @@ $(error NAMESPACE is not set)
 endif
 
 define arguments
-	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml"
+	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
+	--set promtail.config.clients[0].headers.Authorization="Bearer ${LOKI_AUTH_TOKEN}"
+	--set promtail.config.clients[0].url="${API_GATEWAY_URL}/loki/api/v1/push"
 endef
 
 .PHONY: helm-dep

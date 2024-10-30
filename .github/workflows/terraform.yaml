@@ -1,0 +1,94 @@
+name: Terraform
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - dev
+    - main
+    paths:
+    - terraform-ecs/**
+    - loki-authorizer/**
+    - .github/**
+
+env:
+  TF_VERSION: 1.9.7
+
+jobs:
+  terraform:
+    permissions: write-all
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: hmarr/debug-action@v3
+    - uses: actions/checkout@v4
+
+    - name: Install asdf
+      uses: asdf-vm/actions/setup@v3
+
+    - name: Cache tools
+      uses: actions/cache@v4
+      with:
+        path: /home/runner/.asdf
+        key: ${{ runner.os }}-${{ hashFiles('**/.tool-versions') }}
+
+    - name: Install required tools
+      run: |
+        cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
+        asdf plugin-update --all
+        asdf install
+        asdf reshim
+      shell: bash
+
+    - name: Set env to development
+      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+
+        TERRAFORM_DEPLOY_ROLE_ARN=${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_DEV }}
+        LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_DEV }}
+        LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_DEV }}
+        S3_BACKEND_NAME=${{vars.S3_BACKEND_NAME_DEV}}
+        LOKI_TAG=dev
+
+        EOF
+
+    - name: Set env to production
+      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+
+        TERRAFORM_DEPLOY_ROLE_ARN=${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_PROD }}
+        LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_PROD }}
+        LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_PROD }}
+        S3_BACKEND_NAME=${{vars.S3_BACKEND_NAME_PROD}}
+        LOKI_TAG=prod
+
+        EOF
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ env.TERRAFORM_DEPLOY_ROLE_ARN }}
+        aws-region: ca-central-1
+
+    - name: Build Lambdas
+      working-directory: ./loki-authorizer
+      run: make build
+
+    - name: Terraform Init
+      working-directory: ./terraform-ecs
+      run: |
+        cat <<EOF > backend.hcl
+        bucket = "${{ env.S3_BACKEND_NAME }}"
+        key = "tf-state"
+        region = "ca-central-1"
+        EOF
+        terraform init -backend-config=backend.hcl
+
+    - name: Terraform Plan
+      run: terraform plan -var "auth_secret=${{env.LOKI_AUTH_TOKEN}}" -var "bucket_name=${{ env.LOKI_BUCKET_NAME }}" -var "loki_tag=${{env.LOKI_TAG}}" -no-color
+      working-directory: ./terraform-ecs
+
+    - name: Terraform Apply
+      run: terraform apply -var "auth_secret=${{env.LOKI_AUTH_TOKEN}}" -var "bucket_name=${{ env.LOKI_BUCKET_NAME }}" -var "loki_tag=${{env.LOKI_TAG}}" -auto-approve
+      working-directory: ./terraform-ecs
