@@ -12,7 +12,7 @@ For grafana loki we have found that keeping a minimal label set is ideal for per
 
 ## Local deployment via Helm chart
 
-Create a .env file following the variables in .env.example. See the tools-namespace secrets for the loki auth token, and the aws environment for the loki api-gateway url.
+Create a .env file following the variables in .env.example. See the tools-namespace secrets for the loki auth token and api gateway url under the loki-auth-token secret.
 
 ### Installing/Upgrading the Chart
 
