@@ -13,7 +13,7 @@ resource "aws_ecs_task_definition" "loki_write" {
 
   container_definitions = jsonencode([{
     name      = "loki-write"
-    image     = "ghcr.io/bcgov/sso-grafana:${var.loki_tag}"
+    image     = "ghcr.io/bcgov/sso-loki:${var.loki_tag}"
     essential = true
     memory    = var.loki_write_memory
     cpu       = var.loki_write_cpu
@@ -113,7 +113,7 @@ resource "aws_ecs_task_definition" "loki_read" {
 
   container_definitions = jsonencode([{
     name      = "loki-read"
-    image     = "ghcr.io/bcgov/sso-grafana:${var.loki_tag}"
+    image     = "ghcr.io/bcgov/sso-loki:${var.loki_tag}"
     essential = true
     memory    = var.loki_read_memory
     cpu       = var.loki_read_cpu
