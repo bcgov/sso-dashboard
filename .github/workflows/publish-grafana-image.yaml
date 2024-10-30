@@ -11,7 +11,7 @@ on:
 
 env:
   GITHUB_REGISTRY: ghcr.io
-  IMAGE_NAME: bcgov/sso-grafana
+  IMAGE_NAME: bcgov/sso-loki
 
 jobs:
   build-and-push-image:

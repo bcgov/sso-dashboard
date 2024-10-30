@@ -39,6 +39,18 @@ SSO Keycloak dashboard services provide the ability to monitor real-time statist
 
    ![SSO Dashboard Architecture Diagram](assets/sso-dashboard.drawio.svg)
 
+1. Loki in AWS breakdown:
+
+   ![SSO Loki on AWS Diagram](assets/sso-dashboard-aws.drawio.svg)
+
+### Loki in AWS ECS Cluster
+
+Loki has a helm chart for deploying in kubernetes. For the deployment in an ECS cluster there are a few changes to note:
+
+- Service discovery can be used in ECS to replace services in k8s. Since we cannot use this in the BCGov AWS, it has been replaced with a network load balancer. This is necessary to allow read and write tasks to communicate on port 7946. If not working, you will see "empty ring" errors.
+- ECS does not support config maps. To replace this a custom image was built with custom configuration files. Configurations that will be changed at runtime can set their values with the syntax ${ENV_VAR:-default}, and environment variables can be used to configure them. Values consistent across environments can be hardcoded.
+- The helm chart includes a deployment "gateway". This is an nginx reverse proxy which provides path-based routing to the read and write services. It has been replaced with listener rules on the application load balancer.
+
 <!-- ![image](https://user-images.githubusercontent.com/36021827/211399712-5bbeaa67-2994-460f-a12b-368b13187cdd.png) -->
 
 ## Deployment
