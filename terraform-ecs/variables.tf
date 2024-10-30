@@ -48,3 +48,8 @@ variable "loki_write_memory" {
 variable "bucket_name" {
   type    = string
 }
+
+variable "loki_tag" {
+  type = string
+  default = "dev"
+}

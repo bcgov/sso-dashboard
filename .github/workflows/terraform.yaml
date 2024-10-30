@@ -48,6 +48,7 @@ jobs:
         LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_DEV }}
         LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_DEV }}
         S3_BACKEND_NAME=${{vars.S3_BACKEND_NAME_DEV}}
+        LOKI_TAG=dev
 
         EOF
 
@@ -60,6 +61,7 @@ jobs:
         LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_PROD }}
         LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_PROD }}
         S3_BACKEND_NAME=${{vars.S3_BACKEND_NAME_PROD}}
+        LOKI_TAG=prod
 
         EOF
 
@@ -84,9 +86,9 @@ jobs:
         terraform init -backend-config=backend.hcl
 
     - name: Terraform Plan
-      run: terraform plan -var "auth_secret=${{env.LOKI_AUTH_TOKEN}}" -var "bucket_name=${{ env.LOKI_BUCKET_NAME }}" -no-color
+      run: terraform plan -var "auth_secret=${{env.LOKI_AUTH_TOKEN}}" -var "bucket_name=${{ env.LOKI_BUCKET_NAME }}" -var "loki_tag=${{env.LOKI_TAG}}" -no-color
       working-directory: ./terraform-ecs
 
     - name: Terraform Apply
-      run: terraform apply -var "auth_secret=${{env.LOKI_AUTH_TOKEN}}" -var "bucket_name=${{ env.LOKI_BUCKET_NAME }}" -auto-approve
+      run: terraform apply -var "auth_secret=${{env.LOKI_AUTH_TOKEN}}" -var "bucket_name=${{ env.LOKI_BUCKET_NAME }}" -var "loki_tag=${{env.LOKI_TAG}}" -auto-approve
       working-directory: ./terraform-ecs
