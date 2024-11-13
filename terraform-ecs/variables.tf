@@ -53,3 +53,8 @@ variable "loki_tag" {
   type = string
   default = "dev"
 }
+
+variable "retention_period" {
+  type = string
+  default = "180d"
+}
