@@ -25,7 +25,6 @@ jobs:
       packages: write
 
     steps:
-    - uses: hmarr/debug-action@v3
     - uses: actions/checkout@v4
 
     - name: Log in to the GitHub Container registry
