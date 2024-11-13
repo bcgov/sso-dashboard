@@ -66,6 +66,10 @@ resource "aws_ecs_task_definition" "loki_write" {
         name  = "JOIN_MEMBERS"
         value = "${aws_lb.loki_gossip_lb.dns_name}:7946"
       },
+      {
+        name  = "RETENTION_PERIOD"
+        value = var.retention_period
+      },
     ]
     command = [
       "-target=write",
@@ -108,8 +112,8 @@ resource "aws_ecs_task_definition" "loki_read" {
   task_role_arn            = aws_iam_role.loki_task_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "256"
-  memory                   = "512"
+  cpu                      = var.loki_read_cpu
+  memory                   = var.loki_read_memory
 
   container_definitions = jsonencode([{
     name      = "loki-read"
@@ -156,6 +160,10 @@ resource "aws_ecs_task_definition" "loki_read" {
       {
         name  = "JOIN_MEMBERS"
         value = "${aws_lb.loki_gossip_lb.dns_name}:7946"
+      },
+      {
+        name  = "RETENTION_PERIOD"
+        value = var.retention_period
       },
     ]
 
