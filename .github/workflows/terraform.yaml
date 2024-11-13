@@ -86,8 +86,8 @@ jobs:
         LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_DEV }}
         S3_BACKEND_NAME=${{vars.S3_BACKEND_NAME_DEV}}
         LOKI_TAG=dev
-        READ_TASK_CPU=256
-        READ_TASK_MEMORY=512
+        LOKI_READ_CPU=256
+        LOKI_READ_MEMORY=512
         RETENTION_PERIOD=168h
         SUBNET_A=Web_Dev_aza_net
         SUBNET_B=Web_Dev_azb_net
@@ -104,8 +104,8 @@ jobs:
         LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_PROD }}
         S3_BACKEND_NAME=${{vars.S3_BACKEND_NAME_PROD}}
         LOKI_TAG=main
-        READ_TASK_CPU=512
-        READ_TASK_MEMORY=2048
+        LOKI_READ_CPU=512
+        LOKI_READ_MEMORY=2048
         RETENTION_PERIOD=180d
         SUBNET_A=Web_Prod_aza_net
         SUBNET_B=Web_Prod_azb_net
