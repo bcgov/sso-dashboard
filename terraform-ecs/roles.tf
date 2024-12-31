@@ -22,7 +22,6 @@ resource "aws_iam_role" "loki_execution_role" {
 
 resource "aws_iam_policy" "loki_execution_policy" {
   name        = "loki-execution-policy"
-  permissions_boundary = data.aws_iam_policy.permissions_boundary_policy.arn
   description = "Permissions for ECS task execution, including logging to CloudWatch"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -48,6 +47,7 @@ resource "aws_iam_role_policy_attachment" "loki_execution_role_attachment" {
 # Task role for running container, needs to connect to the s3 bucket for logs
 resource "aws_iam_role" "loki_task_role" {
   name = "loki-task-role"
+  permissions_boundary = data.aws_iam_policy.permissions_boundary_policy.arn
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
