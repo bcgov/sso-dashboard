@@ -1,6 +1,11 @@
+data "aws_iam_policy" "permissions_boundary_policy" {
+    name = "sso-dashboard-boundary"
+}
+
 # Execution role, permissions to log to cloudwatch
 resource "aws_iam_role" "loki_execution_role" {
   name = "loki-execution-role"
+  permissions_boundary = data.aws_iam_policy.permissions_boundary_policy.arn
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -17,6 +22,7 @@ resource "aws_iam_role" "loki_execution_role" {
 
 resource "aws_iam_policy" "loki_execution_policy" {
   name        = "loki-execution-policy"
+  permissions_boundary = data.aws_iam_policy.permissions_boundary_policy.arn
   description = "Permissions for ECS task execution, including logging to CloudWatch"
   policy = jsonencode({
     Version = "2012-10-17"
