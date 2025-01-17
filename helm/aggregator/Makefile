@@ -24,7 +24,7 @@ install:
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
-	@helm upgrade --install $(call arguments)
+	@helm upgrade --install $(call arguments) --dry-run
 
 .PHONY: lint
 lint: helm-dep
