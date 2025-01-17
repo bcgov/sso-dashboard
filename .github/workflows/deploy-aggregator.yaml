@@ -53,14 +53,14 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
-    # - name: Set env to Sandbox
-    #   if: (github.ref == 'refs/heads/ssoteam-1919' && github.event_name == 'push')
-    #   run: |
-    #     cat >> $GITHUB_ENV <<EOF
-    #     OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
-    #     OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
-    #     OPENSHIFT_NAMESPACE=${{ secrets.SANDBOX_OPENSHIFT_NAMESPACE }}
-    #     EOF
+    - name: Set env to Sandbox
+      if: (github.ref == 'refs/heads/ssoteam-1919' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+        OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
+        OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
+        OPENSHIFT_NAMESPACE=${{ secrets.SANDBOX_OPENSHIFT_NAMESPACE }}
+        EOF
 
     # - name: Set env to Production
     #   if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
@@ -71,16 +71,16 @@ jobs:
     #     OPENSHIFT_NAMESPACE=${{ secrets.PROD_OPENSHIFT_NAMESPACE }}
     #     EOF
 
-    # - name: Authenticate and set context
-    #   uses: redhat-actions/oc-login@v1
-    #   with:
-    #     openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
-    #     openshift_token: ${{ env.OPENSHIFT_TOKEN }}
-    #     namespace: ${{ env.OPENSHIFT_NAMESPACE }}
-    #     insecure_skip_tls_verify: true
+    - name: Authenticate and set context
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
+        openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+        insecure_skip_tls_verify: true
 
-    # - name: Deploy aggregator with Helm chart
-    #   run: |
-    #     namespace=${{ env.OPENSHIFT_NAMESPACE }}
-    #     make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} IMAGE_TAG=sha-${{ github.sha }}
-    #   working-directory: ./helm/aggregator
+    - name: Deploy aggregator with Helm chart
+      run: |
+        namespace=${{ env.OPENSHIFT_NAMESPACE }}
+        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} IMAGE_TAG=sha-${{ github.sha }}
+      working-directory: ./helm/aggregator
