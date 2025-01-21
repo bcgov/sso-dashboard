@@ -82,5 +82,5 @@ jobs:
     - name: Deploy aggregator with Helm chart
       run: |
         namespace=${{ env.OPENSHIFT_NAMESPACE }}
-        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }} IMAGE_TAG=${{ steps.meta.outputs.tags }}
+        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}
       working-directory: ./helm/aggregator
