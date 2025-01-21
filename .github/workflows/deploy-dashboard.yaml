@@ -29,7 +29,7 @@ jobs:
         cat >> $GITHUB_ENV <<EOF
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
-        OPENSHIFT_NAMESPACE=${{ secrets.SANDBOX_OPENSHIFT_NAMESPACE }}
+        OPENSHIFT_NAMESPACE=e4ca1d-tools
         ${{ secrets.GRAFANA_SANDBOX_ENV }}
         EOF
 
