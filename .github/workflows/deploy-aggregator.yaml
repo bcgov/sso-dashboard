@@ -9,7 +9,7 @@ on:
     paths:
     - aggregator/**
     - helm/aggregator/**
-    - .github/workflows/deploy-aggregator.yml
+    - .github/workflows/deploy-aggregator.yaml
 
 env:
   GITHUB_REGISTRY: ghcr.io
