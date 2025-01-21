@@ -1,4 +1,4 @@
-name: Create and publish SSO Aggregator
+name: Create and publish SSO Aggregator helm chart
 
 on:
   push:
