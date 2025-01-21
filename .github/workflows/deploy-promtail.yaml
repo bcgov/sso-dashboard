@@ -5,6 +5,7 @@ on:
     branches:
     - main
     - dev
+    - ssoteam-1919
     paths:
     - helm/grafana/**
     - .github/workflows/deploy-dashboard.yaml
@@ -23,12 +24,12 @@ jobs:
       uses: ./.github/actions/setup-tools
 
     - name: Set env to Sandbox
-      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+      if: (github.ref == 'refs/heads/ssoteam-1919' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
-        OPENSHIFT_NAMESPACE=e4ca1d-tools
+        OPENSHIFT_NAMESPACE=e4ca1d
         ${{ secrets.GRAFANA_SANDBOX_ENV }}
         EOF
 
@@ -52,6 +53,5 @@ jobs:
 
     - name: Deploy aggregator with Helm chart
       run: |
-        namespace=${{ env.OPENSHIFT_NAMESPACE }}
-        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}
-      working-directory: ./helm/grafana
+        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-dev
+      working-directory: ./helm/promtail-aggregator
