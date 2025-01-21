@@ -60,34 +60,73 @@ spec:
             - name: RETENTION_PERIOD
               value: {{ .Values.compactor.retentionPeriod }}
             - name: RC_WEBHOOK
-              value: {{ .Values.compactor.webhookUrl }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: RC_WEBHOOK
 
             - name: DEV_KEYCLOAK_URL
-              value: {{ .Values.compactor.dev.keycloakUrl }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: DEV_KEYCLOAK_URL
             - name: DEV_KEYCLOAK_CLIENT_ID
-              value: {{ .Values.compactor.dev.keycloakClientId }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: DEV_KEYCLOAK_CLIENT_ID
             - name: DEV_KEYCLOAK_USERNAME
-              value: {{ .Values.compactor.dev.keycloakUsername }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: DEV_KEYCLOAK_USERNAME
             - name: DEV_KEYCLOAK_PASSWORD
-              value: {{ .Values.compactor.dev.keycloakPassword }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: DEV_KEYCLOAK_PASSWORD
 
             - name: TEST_KEYCLOAK_URL
-              value: {{ .Values.compactor.test.keycloakUrl }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: TEST_KEYCLOAK_URL
             - name: TEST_KEYCLOAK_CLIENT_ID
-              value: {{ .Values.compactor.test.keycloakClientId }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: TEST_KEYCLOAK_CLIENT_ID
             - name: TEST_KEYCLOAK_USERNAME
-              value: {{ .Values.compactor.test.keycloakUsername }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: TEST_KEYCLOAK_USERNAME
             - name: TEST_KEYCLOAK_PASSWORD
-              value: {{ .Values.compactor.test.keycloakPassword }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: TEST_KEYCLOAK_PASSWORD
 
             - name: PROD_KEYCLOAK_URL
-              value: {{ .Values.compactor.prod.keycloakUrl }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: PROD_KEYCLOAK_URL
             - name: PROD_KEYCLOAK_CLIENT_ID
-              value: {{ .Values.compactor.prod.keycloakClientId }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: PROD_KEYCLOAK_CLIENT_ID
             - name: PROD_KEYCLOAK_USERNAME
-              value: {{ .Values.compactor.prod.keycloakUsername }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: PROD_KEYCLOAK_USERNAME
             - name: PROD_KEYCLOAK_PASSWORD
-              value: {{ .Values.compactor.prod.keycloakPassword }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.compactor.secret }}
+                  key: PROD_KEYCLOAK_PASSWORD
 
           resources:
             {{- toYaml .Values.compactor.resources | nindent 12 }}

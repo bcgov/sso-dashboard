@@ -1,4 +1,4 @@
-replicaCount: 2
+replicaCount: 1
 
 patroni:
   replicaCount: 2
@@ -8,22 +8,7 @@ patroni:
 compactor:
   enabled: true
   retentionPeriod: '3 months'
-  webhookUrl:
-  dev:
-    keycloakUrl:
-    keycloakClientId:
-    keycloakUsername:
-    keycloakPassword:
-  test:
-    keycloakUrl:
-    keycloakClientId:
-    keycloakUsername:
-    keycloakPassword:
-  prod:
-    keycloakUrl:
-    keycloakClientId:
-    keycloakUsername:
-    keycloakPassword:
+  secret: sso-aggregator
 
 autoscaling:
   enabled: true

@@ -93,6 +93,7 @@ patroni:
     size: 10Gi
 
 compactor:
+  secret: sso-aggregator
   enabled: false
   retentionPeriod: '1 year'
   resources:
