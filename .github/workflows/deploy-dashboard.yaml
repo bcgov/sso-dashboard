@@ -1,4 +1,4 @@
-name: Create and publish SSO Aggregator helm chart
+name: Publish SSO Grafana helm chart
 
 on:
   push:
