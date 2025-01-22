@@ -1,11 +1,10 @@
-name: Publish SSO Grafana helm chart
+name: Publish SSO Promtail Instances
 
 on:
   push:
     branches:
     - main
     - dev
-    - ssoteam-1919
     paths:
     - helm/promtail-aggregator/**
     - helm/promtail-loki/**
