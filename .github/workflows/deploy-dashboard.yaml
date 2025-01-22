@@ -48,7 +48,6 @@ jobs:
         openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
         openshift_token: ${{ env.OPENSHIFT_TOKEN }}
         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
-        insecure_skip_tls_verify: true
 
     - name: Deploy aggregator with Helm chart
       run: |

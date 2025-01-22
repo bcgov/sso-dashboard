@@ -53,7 +53,7 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Set env to Sandbox
-      if: (github.ref == 'refs/heads/ssoteam-1919' && github.event_name == 'push')
+      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
@@ -61,14 +61,14 @@ jobs:
         OPENSHIFT_NAMESPACE=e4ca1d-prod
         EOF
 
-    # - name: Set env to Production
-    #   if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
-    #   run: |
-    #     cat >> $GITHUB_ENV <<EOF
-    #     OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
-    #     OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
-    #     OPENSHIFT_NAMESPACE=eb75ad-tools
-    #     EOF
+    - name: Set env to Production
+      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+        OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
+        OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
+        OPENSHIFT_NAMESPACE=eb75ad-tools
+        EOF
 
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@v1
