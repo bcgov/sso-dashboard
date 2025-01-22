@@ -1,7 +1,7 @@
 # see https://github.com/grafana/helm-charts/blob/main/charts/promtail/values.yaml
 promtail:
-  nameOverride: sso-promtail-loki
-  fullnameOverride: sso-promtail-loki
+  nameOverride: sso-promtail-aws-loki
+  fullnameOverride: sso-promtail-aws-loki
 
   daemonset:
     enabled: false
