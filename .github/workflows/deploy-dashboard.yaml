@@ -39,7 +39,7 @@ jobs:
         cat >> $GITHUB_ENV <<EOF
         OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
-        OPENSHIFT_NAMESPACE=${{ secrets.PROD_OPENSHIFT_NAMESPACE }}
+        OPENSHIFT_NAMESPACE=eb75ad-tools
         ${{ secrets.GRAFANA_PROD_ENV }}
         EOF
 
