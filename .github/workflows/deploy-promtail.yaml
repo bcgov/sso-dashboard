@@ -8,6 +8,7 @@ on:
     - ssoteam-1919
     paths:
     - helm/promtail-aggregator/**
+    - helm/promtail-loki/**
     - .github/workflows/deploy-promtail.yaml
 
 jobs:
@@ -30,6 +31,7 @@ jobs:
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
         OPENSHIFT_NAMESPACE=e4ca1d
+        ${{ secrets.GRAFANA_SANDBOX_ENV }}
         EOF
 
     # - name: Set env to Production
