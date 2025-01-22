@@ -5,6 +5,7 @@ on:
     branches:
     - main
     - dev
+    - ssoteam-1919
     paths:
     - aggregator/**
     - helm/aggregator/**
@@ -22,8 +23,7 @@ jobs:
       packages: write
 
     steps:
-    - uses: hmarr/debug-action@v2
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -53,7 +53,7 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Set env to Sandbox
-      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+      if: (github.ref == 'refs/heads/ssoteam-1919' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
@@ -61,14 +61,14 @@ jobs:
         OPENSHIFT_NAMESPACE=e4ca1d-prod
         EOF
 
-    - name: Set env to Production
-      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
-      run: |
-        cat >> $GITHUB_ENV <<EOF
-        OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
-        OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
-        OPENSHIFT_NAMESPACE=eb75ad-tools
-        EOF
+    # - name: Set env to Production
+    #   if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
+    #   run: |
+    #     cat >> $GITHUB_ENV <<EOF
+    #     OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
+    #     OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
+    #     OPENSHIFT_NAMESPACE=eb75ad-tools
+    #     EOF
 
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@v1
@@ -76,10 +76,9 @@ jobs:
         openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
         openshift_token: ${{ env.OPENSHIFT_TOKEN }}
         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
-        insecure_skip_tls_verify: true
 
-    - name: Deploy aggregator with Helm chart
-      run: |
-        namespace=${{ env.OPENSHIFT_NAMESPACE }}
-        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}
-      working-directory: ./helm/aggregator
+    # - name: Deploy aggregator with Helm chart
+    #   run: |
+    #     namespace=${{ env.OPENSHIFT_NAMESPACE }}
+    #     make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}
+    #   working-directory: ./helm/aggregator
