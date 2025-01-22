@@ -7,8 +7,8 @@ on:
     - dev
     - ssoteam-1919
     paths:
-    - helm/grafana/**
-    - .github/workflows/deploy-dashboard.yaml
+    - helm/promtail-aggregator/**
+    - .github/workflows/deploy-promtail.yaml
 
 jobs:
   build-and-push-image:
@@ -30,7 +30,6 @@ jobs:
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
         OPENSHIFT_NAMESPACE=e4ca1d
-        ${{ secrets.GRAFANA_SANDBOX_ENV }}
         EOF
 
     # - name: Set env to Production
@@ -54,4 +53,6 @@ jobs:
     - name: Deploy aggregator with Helm chart
       run: |
         make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-dev
+        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-test
+        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-prod
       working-directory: ./helm/promtail-aggregator
