@@ -8,7 +8,7 @@ image:
 patroni:
   replicaCount: 2
   persistentVolume:
-    size: 3Gi
+    size: 1Gi
 
 compactor:
   enabled: true
