@@ -7,7 +7,7 @@ The github actions need service accounts to run. The script `generate_sa.sh` wil
 While logged into the **Gold** instance run:
 
 `
-./generate_sa.sh <<LICENCE_PLATE>> gold
+./generate_sa.sh <<LICENCE_PLATE>>
 `
 
 The service account, roles, and rolebindings will be created.

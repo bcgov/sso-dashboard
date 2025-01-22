@@ -7,18 +7,18 @@ Creates a service account for the dev test and prod environments of the project 
 namespace licence plate arg.
 
 Usages:
-    $0 <project_licence_plate> <cluster>
+    $0 <project_licence_plate>
 
 Available licence plates:
     - e4ca1d
     - eb75ad
 
 Examples:
-    $ $0 e4ca1d gold
+    $ $0 e4ca1d
 EOF
 }
 
-if [ "$#" -lt 2 ]; then
+if [ "$#" -lt 1 ]; then
     usage
     exit 1
 fi
