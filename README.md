@@ -63,6 +63,10 @@ GitHub CD pipeline scripts are triggered based on the directory that has changed
 
 The terraform account for deployment is restricted to the required resource types for this repository. If adding new resources not currently required, you will get a permission denied error. Expand the permissions on the `sso-dashboard-boundary` as needed.
 
+## Service accounts
+
+Service accounts are already generated and added to github secrets, see below for the related OC secret to see the token value. If needing to recreate the service account, see the [service-account-generator directory](/service-account-generator/README.md) for how to do so.
+
 ## GitHub secrets
 
 The following secrets are set in the GitHub secrets of the repository and can be found in [OCP secret](https://console.apps.silver.devops.gov.bc.ca/k8s/ns/6d70e7-tools/secrets/sso-team-sso-dashboard-github-secrets)

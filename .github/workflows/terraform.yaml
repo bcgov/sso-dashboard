@@ -77,7 +77,7 @@ jobs:
       shell: bash
 
     - name: Set env to development
-      if: (github.ref == 'refs/heads/ssoteam-1919' && github.event_name == 'push')
+      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
 
@@ -95,7 +95,7 @@ jobs:
         EOF
 
     - name: Set env to production
-      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
+      if: (github.ref == 'refs/heads/ssoteam-1919' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
 
