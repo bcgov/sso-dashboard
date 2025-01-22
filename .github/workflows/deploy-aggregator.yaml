@@ -5,6 +5,7 @@ on:
     branches:
     - main
     - dev
+    - ssoteam-1919
     paths:
     - aggregator/**
     - helm/aggregator/**
@@ -53,7 +54,7 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Set env to Sandbox
-      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+      if: (github.ref == 'refs/heads/ssoteam-1919' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
