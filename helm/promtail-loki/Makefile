@@ -26,8 +26,8 @@ install:
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
-	echo $NAMESPACE
-	echo $API_GATEWAY_URL
+	echo ${NAMESPACE}
+	echo ${API_GATEWAY_URL}
 	@helm upgrade --install $(call arguments)
 
 .PHONY: lint
