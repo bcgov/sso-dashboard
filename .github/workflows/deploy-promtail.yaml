@@ -59,9 +59,9 @@ jobs:
         make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-prod
       working-directory: ./helm/promtail-aggregator
 
-    # - name: Deploy loki-promtail with Helm chart
-    #   run: |
-    #     make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-dev
-    #     make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-test
-    #     make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-prod
-    #   working-directory: ./helm/promtail-loki
+    - name: Deploy loki-promtail with Helm chart
+      run: |
+        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-dev
+        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-test
+        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-prod
+      working-directory: ./helm/promtail-loki
