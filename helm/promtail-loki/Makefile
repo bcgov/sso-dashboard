@@ -8,9 +8,6 @@ ifndef NAMESPACE
 $(error NAMESPACE is not set)
 endif
 
-echo $NAMESPACE
-echo $API_GATEWAY_URL
-
 define arguments
 	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
 	--set promtail.config.clients[0].headers.Authorization="Bearer ${LOKI_AUTH_TOKEN}"
@@ -29,6 +26,8 @@ install:
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
+	echo $NAMESPACE
+	echo $API_GATEWAY_URL
 	@helm upgrade --install $(call arguments)
 
 .PHONY: lint
