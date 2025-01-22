@@ -25,7 +25,7 @@ jobs:
       uses: ./.github/actions/setup-tools
 
     - name: Set env to Sandbox
-      if: (github.ref == 'refs/heads/ssoteam-1919' && github.event_name == 'push')
+      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
@@ -40,7 +40,7 @@ jobs:
     #     cat >> $GITHUB_ENV <<EOF
     #     OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
     #     OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
-    #     OPENSHIFT_NAMESPACE=${{ secrets.PROD_OPENSHIFT_NAMESPACE }}
+    #     OPENSHIFT_NAMESPACE=eb75ad
     #     ${{ secrets.GRAFANA_PROD_ENV }}
     #     EOF
 

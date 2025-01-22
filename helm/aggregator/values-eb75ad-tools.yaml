@@ -15,7 +15,6 @@ compactor:
   retentionPeriod: '6 months'
   secret: sso-aggregator
 
-
 autoscaling:
   enabled: true
   maxReplicas: 5
