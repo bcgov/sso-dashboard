@@ -50,6 +50,7 @@ Loki has a helm chart for deploying in kubernetes. For the deployment in an ECS 
 - Service discovery can be used in ECS to replace services in k8s. Since we cannot use this in the BCGov AWS, it has been replaced with a network load balancer. This is necessary to allow read and write tasks to communicate on port 7946. If not working, you will see "empty ring" errors.
 - ECS does not support config maps. To replace this a custom image was built with custom configuration files. Configurations that will be changed at runtime can set their values with the syntax ${ENV_VAR:-default}, and environment variables can be used to configure them. Values consistent across environments can be hardcoded.
 - The helm chart includes a deployment "gateway". This is an nginx reverse proxy which provides path-based routing to the read and write services. It has been replaced with listener rules on the application load balancer.
+- When deploying locally, you will need to use the values from the [terraform workflow file](/.github/workflows/terraform.yaml#97) to populate a var file, refer to the dev or prod block depending on environment. The secret value loki_auth_token can be found in the tools namespace secret loki-auth-token.
 
 <!-- ![image](https://user-images.githubusercontent.com/36021827/211399712-5bbeaa67-2994-460f-a12b-368b13187cdd.png) -->
 

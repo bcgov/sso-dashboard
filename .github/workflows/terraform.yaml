@@ -150,6 +150,6 @@ jobs:
       run: terraform plan -no-color
       working-directory: ./terraform-ecs
 
-    # - name: Terraform Apply
-    #   run: terraform apply -auto-approve
-    #   working-directory: ./terraform-ecs
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      working-directory: ./terraform-ecs
