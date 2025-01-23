@@ -6,7 +6,6 @@ on:
     branches:
     - dev
     - main
-    - ssoteam-1919
     paths:
     - terraform-ecs/**
     - loki-authorizer/**
@@ -95,7 +94,7 @@ jobs:
         EOF
 
     - name: Set env to production
-      if: (github.ref == 'refs/heads/ssoteam-1919' && github.event_name == 'push')
+      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
 
