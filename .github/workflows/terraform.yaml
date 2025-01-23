@@ -143,6 +143,7 @@ jobs:
         retention_period="${{env.RETENTION_PERIOD}}"
         subnet_a="${{env.SUBNET_A}}"
         subnet_b="${{env.SUBNET_B}}"
+        loki_tag="${{env.LOKI_TAG}}"
         EOF
 
     - name: Terraform Plan
