@@ -1,6 +1,5 @@
 SHELL := /usr/bin/env bash
 NAMESPACE=
-IMAGE_TAG=dev
 NAME=sso-aggregator
 
 ifndef NAMESPACE
@@ -8,8 +7,7 @@ $(error NAMESPACE is not set)
 endif
 
 define arguments
-	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
-	--set image.tag="${IMAGE_TAG}"
+	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml"
 endef
 
 .PHONY: helm-dep

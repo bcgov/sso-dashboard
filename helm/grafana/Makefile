@@ -1,4 +1,4 @@
-include /$(PWD)/.env
+-include /$(PWD)/.env
 
 SHELL := /usr/bin/env bash
 

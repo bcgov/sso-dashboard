@@ -1,0 +1,83 @@
+name: Create and publish SSO Aggregator helm chart
+
+on:
+  push:
+    branches:
+    - main
+    - dev
+    paths:
+    - aggregator/**
+    - helm/aggregator/**
+    - .github/workflows/deploy-aggregator.yaml
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+  IMAGE_NAME: bcgov/sso-aggregator
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Log in to the GitHub Container registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.GITHUB_REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=sha,format=long
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v3
+      with:
+        context: aggregator
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+    - name: Set env to Sandbox
+      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+        OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
+        OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
+        OPENSHIFT_NAMESPACE=e4ca1d-prod
+        EOF
+
+    - name: Set env to Production
+      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+        OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
+        OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
+        OPENSHIFT_NAMESPACE=eb75ad-tools
+        EOF
+
+    - name: Authenticate and set context
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
+        openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+
+    - name: Deploy aggregator with Helm chart
+      run: |
+        namespace=${{ env.OPENSHIFT_NAMESPACE }}
+        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}
+      working-directory: ./helm/aggregator

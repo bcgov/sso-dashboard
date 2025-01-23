@@ -56,7 +56,6 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-20.04
     steps:
-    - uses: hmarr/debug-action@v3
     - uses: actions/checkout@v4
 
     - name: Install asdf
@@ -143,6 +142,7 @@ jobs:
         retention_period="${{env.RETENTION_PERIOD}}"
         subnet_a="${{env.SUBNET_A}}"
         subnet_b="${{env.SUBNET_B}}"
+        loki_tag="${{env.LOKI_TAG}}"
         EOF
 
     - name: Terraform Plan

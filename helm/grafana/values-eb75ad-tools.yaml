@@ -88,9 +88,13 @@ grafana:
           type: loki
           access: proxy
           orgId: 1
-          url: http://sso-loki-gateway
+          url: <replace me>
           basicAuth: false
           isDefault: true
+          jsonData:
+            httpHeaderName1: "Authorization"
+          secureJsonData:
+            httpHeaderValue1: <please-replace-me>
         - name: SSO Aggregator
           type: postgres
           access: proxy
