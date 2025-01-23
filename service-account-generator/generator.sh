@@ -3,7 +3,7 @@ set -e
 
 usage() {
     cat <<EOF
-Creates a service account for the dev test and prod environments of the project with
+Creates a service account for the dev, test, tools and prod environments of the project with
 namespace licence plate arg.
 
 Usages:
