@@ -64,6 +64,22 @@ GitHub CD pipeline scripts are triggered based on the directory that has changed
 
 The terraform account for deployment is restricted to the required resource types for this repository. If adding new resources not currently required, you will get a permission denied error. Expand the permissions on the `sso-dashboard-boundary` as needed.
 
+When doing an initial webhook setup to integrate with [AWS SNS](https://aws.amazon.com/sns) you need to confirm the url you gave is correct. AWS will send a link to the provided URL to confirm. You can find it in the `content_raw.SubscribeURL` parameter to confirm. e.g for rocket chat the script:
+
+``` javascript
+class Script {
+    process_incoming_request({ request }) {
+      return {
+        content:{
+         text: `@here ${JSON.parse(request.content_raw).SubscribeURL}`
+         }
+      };
+    }
+  }
+```
+
+Would output the url to follow.
+
 ## Service accounts
 
 Service accounts are already generated and added to github secrets, see below for the related OC secret to see the token value. If needing to recreate the service account, see the [service-account-generator directory](/service-account-generator/README.md) for how to do so.

@@ -1,5 +1,10 @@
 resource "aws_ecs_cluster" "sso_ecs_cluster" {
   name = "loki-cluster"
+
+  setting {
+    name  = "containerInsights"
+    value = "enhanced"
+  }
 }
 
 resource "aws_ecs_task_definition" "loki_write" {
