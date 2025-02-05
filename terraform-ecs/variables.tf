@@ -58,3 +58,13 @@ variable "retention_period" {
   type = string
   default = "180d"
 }
+
+variable "rc_webhook" {
+  type      = string
+  sensitive = true
+}
+
+variable "rc_prefix" {
+  type = string
+  default = "SANDBOX"
+}

@@ -90,7 +90,7 @@ jobs:
         RETENTION_PERIOD=168h
         SUBNET_A=Web_Dev_aza_net
         SUBNET_B=Web_Dev_azb_net
-
+        RC_PREFIX=SANDBOX
         EOF
 
     - name: Set env to production
@@ -108,7 +108,7 @@ jobs:
         RETENTION_PERIOD=180d
         SUBNET_A=Web_Prod_aza_net
         SUBNET_B=Web_Prod_azb_net
-
+        RC_PREFIX=PRODUCTION
         EOF
 
     - name: Configure AWS Credentials
@@ -143,6 +143,8 @@ jobs:
         subnet_a="${{env.SUBNET_A}}"
         subnet_b="${{env.SUBNET_B}}"
         loki_tag="${{env.LOKI_TAG}}"
+        rc_prefix="${{env.RC_PREFIX}}"
+        rc_webhook="${{secrets.LOKI_WEBHOOK}}"
         EOF
 
     - name: Terraform Plan
