@@ -19,7 +19,7 @@ promtail:
   image:
     registry: docker.io
     repository: grafana/promtail
-    tag: ""
+    tag: ''
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
@@ -93,6 +93,7 @@ promtail:
               event_type: type
               realm_id:
               client_id:
+              timestamp:
 
 persistentVolume:
   size: 100Mi

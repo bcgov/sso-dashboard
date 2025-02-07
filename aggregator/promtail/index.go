@@ -1,6 +1,7 @@
 package promtail
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -45,23 +46,35 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 			clientId    = ""
 			eventType   = ""
 			date        = time.Now()
+			timestamp   = ""
 		)
 
 		for _, v := range ls {
 			switch v.Name {
-			case "environment":
-				environment = v.Value
-			case "realm_id":
-				realmId = v.Value
-			case "client_id":
-				clientId = v.Value
-			case "event_type":
-				eventType = v.Value
-			}
+				case "environment":
+					environment = v.Value
+				case "realm_id":
+					realmId = v.Value
+				case "client_id":
+					clientId = v.Value
+				case "event_type":
+					eventType = v.Value
+				case "timestamp":
+					timestamp = v.Value
+		  }
+	  }
+
+		t, err := time.Parse(time.RFC3339Nano, timestamp)
+
+		if(err != nil) {
+			log.Printf("Error parsing timestamp: %v", err)
 		}
 
+		duration := time.Since(t)
+
 		// only collect event logs, skip the system logs
-		if eventType == "" {
+		// reject logs older than 24 hours
+		if (eventType == "" || duration >= 24*time.Hour) {
 			continue
 		}
 
