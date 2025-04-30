@@ -6,6 +6,7 @@ runs:
   steps:
   - name: prerequisites
     run: sudo apt install -y libreadline-dev
+    shell: bash
 
   - name: Install asdf
     uses: asdf-vm/actions/setup@v3
