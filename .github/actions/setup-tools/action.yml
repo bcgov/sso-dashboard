@@ -4,6 +4,9 @@ description: Setup required tools in the workspace
 runs:
   using: composite
   steps:
+  - name: prerequisites
+    run: sudo apt-get install libreadline-dev
+
   - name: Install asdf
     uses: asdf-vm/actions/setup@v3
 
