@@ -10,6 +10,7 @@ on:
     - aggregator/**
     - helm/aggregator/**
     - .github/workflows/deploy-aggregator.yaml
+    - .github/actions/**
 
 env:
   GITHUB_REGISTRY: ghcr.io
