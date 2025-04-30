@@ -5,7 +5,7 @@ runs:
   using: composite
   steps:
   - name: prerequisites
-    run: sudo apt install -y libreadline-dev
+    run: sudo apt install -y libssl-dev libreadline-dev uuid-dev
     shell: bash
 
   - name: Install asdf
