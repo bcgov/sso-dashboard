@@ -6,7 +6,7 @@ runs:
   steps:
   - name: prerequisites
     run: sudo apt install -y libssl-dev libreadline-dev uuid-dev
-    shell: bash
+    # shell: bash
 
   - name: Install asdf
     uses: asdf-vm/actions/setup@v3
