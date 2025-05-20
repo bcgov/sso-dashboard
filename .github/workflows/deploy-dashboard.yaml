@@ -26,29 +26,8 @@ jobs:
         kam: latest
         oc: 4.18.7
 
-    # - name: Setup Tools
-    #   uses: ./.github/actions/setup-tools
-
-    - name: Install asdf requirements
-      run: |
-        sudo apt-get install -y libssl-dev libreadline-dev uuid-dev
-
-    - name: Install asdf
-      uses: asdf-vm/actions/setup@v3
-
-    - name: Cache tools
-      uses: actions/cache@v4
-      with:
-        path: /home/runner/.asdf
-        key: ${{ runner.os }}-${{ hashFiles('**/.tool-versions') }}
-
-    - name: Install required tools
-      run: |
-        cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin add || true
-        asdf plugin update --all
-        asdf install
-        asdf reshim
-      shell: bash
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
 
     - name: Set env to Sandbox
       # if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
