@@ -20,7 +20,7 @@ grafana:
 
   image:
     repository: grafana/grafana
-    tag: '10.2.2'
+    tag: '11.6.1'
     pullPolicy: IfNotPresent
     pullSecrets: []
 
@@ -68,6 +68,8 @@ grafana:
       icon: signin
       scopes: openid
       empty_scopes: false
+      client_id: <please-replace-me>
+      client_secret: <please-replace-me>
       auth_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
       token_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
       api_url:
