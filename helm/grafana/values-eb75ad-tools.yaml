@@ -12,6 +12,13 @@ grafana:
       auth_url: https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
       token_url: https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
 
+  extraSecretMounts:
+    - name: sso-grafana-env-secret-mount
+      secretName: sso-grafana-env-secret
+      defaultMode: 0440
+      mountPath: /etc/secrets/auth_generic_oauth
+      readOnly: true
+
   datasources:
     datasources.yaml:
       apiVersion: 1
