@@ -11,6 +11,8 @@ grafana:
       name: SSO Pathfinder
       auth_url: https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
       token_url: https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
+      client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
+      client_secret: $__file{/etc/secrets/auth_generic_oauth/client_secret}
 
   extraSecretMounts:
     - name: sso-grafana-env-secret-mount
