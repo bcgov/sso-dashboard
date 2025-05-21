@@ -8,8 +8,6 @@ endif
 
 define arguments
 	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
-	--set grafana."grafana\.ini"."auth\.generic_oauth".client_id=${SSO_CLIENT_ID} \
-	--set grafana."grafana\.ini"."auth\.generic_oauth".client_secret=${SSO_CLIENT_SECRET} \
 	--set grafana.datasources."datasources\.yaml".datasources[0].user=${DS_SSO_LOGS_USERNAME} \
 	--set grafana.datasources."datasources\.yaml".datasources[0].database=${DS_SSO_LOGS_DATABASE} \
 	--set grafana.datasources."datasources\.yaml".datasources[0].secureJsonData.password=${DS_SSO_LOGS_PASSWORD} \
