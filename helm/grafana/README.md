@@ -35,7 +35,7 @@ type: Opaque
 
 You will need to create a separate set of environment values for the sandbox and production grafana instances.  The sandbox grafana instance uses the `dev production 4492` client for authentication and the production grafana instance uses the `prod production 4492` client.
 
-The clien_id and client_secret are no longer referenced through the .env variables.  This allows secrets to be securely referenced.
+The client_id and client_secret are no longer referenced through the .env variables.  This allows secrets to be securely referenced.
 
 
 - create `.env` from `.env.example` and fill the values for the remaining environment variables.
