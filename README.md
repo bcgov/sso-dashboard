@@ -83,6 +83,13 @@ Would output the url to follow.
 ## Service accounts
 
 Service accounts are already generated and added to github secrets, see below for the related OC secret to see the token value. If needing to recreate the service account, see the [service-account-generator directory](/service-account-generator/README.md) for how to do so.
+It continuously deploys the resources in the sandbox and the prod environment based on the repository branch (pr's to dev deploys sandbox, pr's to main deploys prod) that has the new changes.
+GitHub CD pipeline scripts are triggered based on the directory that has changed; there is a recommended deployment order when deploying the resources for the very first time:
+
+1. `Loki`: deploys the `MinIO` and `Loki` resources, `read`, `write`, and `gateway`.
+1. `Aggregator`: deploys the `Aggregator` and `Compactor` with the `Postgres DB`.
+1. `Grafana`: deploys the `Grafana` dashboard with the two `datasources` configured above.
+1. `Promtail`: deploys the `Promtail` in multiple namespaces to collect the Keycloak disk logs.
 
 ## GitHub secrets
 
@@ -91,11 +98,25 @@ The following secrets are set in the GitHub secrets of the repository and can be
 ### Sandbox
 
 - `SANDBOX_OPENSHIFT_SERVER`: the OpenShift online server URL.
-- `SANDBOX_OPENSHIFT_TOKEN`: The OpenShift session token. The token can be found in the sso-dashboard-deployer-e4ca1d-token secret in the prod namespace.
 - `GRAFANA_SANDBOX_ENV`: Contains all secrets necessary to deploy grafana as an env file, see [the example env file](/helm/grafana/.env.example) for the list. The values are saved in the openshift secret sso-grafana-env in the tools namespace for reference.
+- `SANDBOX_OPENSHIFT_TOKEN`: : the OpenShift session token.
+  - please the find the secret in [Sandbox Deployer Secret](https://console.apps.gold.devops.gov.bc.ca/k8s/ns/c6af30-tools/secrets/oc-deployer-token-9tgwm)
+- `SANDBOX_OPENSHIFT_NAMESPACE`: the namespace name to deploy `Grafana`, `Loki`, and `Aggregator`.
+- `SANDBOX_SSO_CLIENT_ID`: the SSO integration credentials, `client id`, to set in `Grafana` and `MinIO` dashboard UI. (now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
+- `SANDBOX_SSO_CLIENT_SECRET`: the SSO integration credentials, `client secret`, to set in `Grafana` and `MinIO` dashboard UI. (now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
+  - please find the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests)
+- `SANDBOX_MINIO_USER`: the username of the initial MinIO admin account.
+- `SANDBOX_MINIO_PASS`: the password of the initial MinIO admin account.
 
 ### Production
 
 - `PROD_OPENSHIFT_SERVER`: the OpenShift online server URL.
-- `PROD_OPENSHIFT_TOKEN`: The OpenShift session token. The token can be found in the sso-dashboard-deployer-eb75ad-token secret in the prod namespace.
 - `GRAFANA_PROD_ENV`: Contains all secrets necessary to deploy grafana as an env file, see [the example env file](/helm/grafana/.env.example) for the list. The values are saved in the openshift secret sso-grafana-env in the tools namespace for reference.
+- `PROD_OPENSHIFT_TOKEN`: : the OpenShift session token.
+  - please the find the secret in [Sandbox Deployer Secret](https://console.apps.gold.devops.gov.bc.ca/k8s/ns/eb75ad-tools/secrets/oc-deployer-token-b99cz)
+- `PROD_OPENSHIFT_NAMESPACE`: the namespace name to deploy `Grafana`, `Loki`, and `Aggregator`.
+- `PROD_SSO_CLIENT_ID`: the SSO integration credentials, `client id`, to set in `Grafana` and `MinIO` dashboard UI.(now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
+- `PROD_SSO_CLIENT_SECRET`: the SSO integration credentials, `client secret`, to set in `Grafana` and `MinIO` dashboard UI.(now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
+  - please find the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests)
+- `PROD_MINIO_USER`: the username of the initial MinIO admin account.
+- `PROD_MINIO_PASS`: the password of the initial MinIO admin account.

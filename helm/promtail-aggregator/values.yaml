@@ -78,9 +78,6 @@ promtail:
           - json:
               expressions:
                 timestamp: '"@timestamp"'
-                level: level
-          - labels:
-              level:
           - timestamp:
               format: RFC3339Nano
               source: timestamp
