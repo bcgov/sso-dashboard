@@ -181,3 +181,29 @@ func TestClientContinue(t *testing.T) {
 		t.Errorf("Expeted all realm requests to be attempted even if one fails")
 	}
 }
+
+func TestNotifyRocketChat(t *testing.T) {
+	var logBuf bytes.Buffer
+	log.SetOutput(&logBuf)
+	defer log.SetOutput(os.Stderr)
+
+	// Run a closed server simulating rocket chat being down
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	server.Close()
+	os.Setenv("RC_WEBHOOK", server.URL)
+
+	rc := &webhooks.RocketChat{}
+
+	// Notify should return error, not throw error
+	err := rc.NotifyRocketChat("Test", "Title", "Body")
+
+	if err == nil {
+		t.Fatal("Expected a returned error when RC Server is down")
+	}
+
+	logOutput := logBuf.String()
+
+	if !strings.Contains(logOutput, "Error sending rocket chat notification") {
+		t.Errorf("Expected log to contain 'Error sending rocket chat notification', got: %s", logOutput)
+	}
+}
