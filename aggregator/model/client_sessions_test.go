@@ -1,24 +1,28 @@
 package model
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 	"time"
 
 	"sso-dashboard.bcgov.com/aggregator/keycloak"
+	"sso-dashboard.bcgov.com/aggregator/webhooks"
 )
 
 type MockRocketChat struct {
 	Messages [][]string
 }
 
-func (m *MockRocketChat) NotifyRocketChat(text string, title string, body string) {
+func (m *MockRocketChat) NotifyRocketChat(text string, title string, body string) error {
 	message := []string{text, title, body}
 	m.Messages = append(m.Messages, message)
+	return nil
 }
 
 func (m *MockRocketChat) ResetMock() {
