@@ -1,4 +1,9 @@
-replicaCount: 10
+replicaCount: 1
+
+image:
+  repository: ghcr.io/bcgov/sso-aggregator
+  tag: main
+  pullPolicy: IfNotPresent
 
 patroni:
   replicaCount: 2
@@ -8,22 +13,7 @@ patroni:
 compactor:
   enabled: true
   retentionPeriod: '6 months'
-  webhookUrl:
-  dev:
-    keycloakUrl:
-    keycloakClientId:
-    keycloakUsername:
-    keycloakPassword:
-  test:
-    keycloakUrl:
-    keycloakClientId:
-    keycloakUsername:
-    keycloakPassword:
-  prod:
-    keycloakUrl:
-    keycloakClientId:
-    keycloakUsername:
-    keycloakPassword:
+  secret: sso-aggregator
 
 autoscaling:
   enabled: true

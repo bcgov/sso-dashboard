@@ -9,8 +9,17 @@ grafana:
       root_url: https://sso-grafana-sandbox.apps.gold.devops.gov.bc.ca
     auth.generic_oauth:
       name: SSO Pathfinder Sandbox
-      auth_url: https://dev.sandbox.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
-      token_url: https://dev.sandbox.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
+      auth_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
+      token_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
+      client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
+      client_secret: $__file{/etc/secrets/auth_generic_oauth/client_secret}
+
+  extraSecretMounts:
+    - name: sso-grafana-env-secret-mount
+      secretName: sso-grafana-env-secret
+      defaultMode: 0440
+      mountPath: /etc/secrets/auth_generic_oauth
+      readOnly: true
 
   datasources:
     datasources.yaml:
@@ -48,7 +57,7 @@ grafana:
             maxOpenConns:
             maxIdleConns: 2
             connMaxLifetime: 14400
-            postgresVersion: 1400
+            postgresVersion: 1500
             timescaledb: false
         - name: SSO Keycloak Test
           type: postgres
@@ -65,7 +74,7 @@ grafana:
             maxOpenConns:
             maxIdleConns: 2
             connMaxLifetime: 14400
-            postgresVersion: 1400
+            postgresVersion: 1500
             timescaledb: false
         - name: SSO Keycloak Prod
           type: postgres
@@ -82,15 +91,19 @@ grafana:
             maxOpenConns:
             maxIdleConns: 2
             connMaxLifetime: 14400
-            postgresVersion: 1400
+            postgresVersion: 1500
             timescaledb: false
         - name: SSO Loki
           type: loki
           access: proxy
           orgId: 1
-          url: http://sso-loki-gateway.e4ca1d-prod.svc.cluster.local
+          url: <replace me>
           basicAuth: false
           isDefault: true
+          jsonData:
+            httpHeaderName1: "Authorization"
+          secureJsonData:
+            httpHeaderValue1: <please-replace-me>
         - name: SSO Aggregator
           type: postgres
           access: proxy

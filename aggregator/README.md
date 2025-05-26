@@ -59,6 +59,8 @@ A lightweight Go server running scheduled jobs. There are two cronjobs it contro
 
    - the entrypoint for `compactor` is `compactor.go`.
 
+1. When running the aggregator server, if you need a version of keycloak and promtail to test the log ingestion, there is containerized environment for them. From the podman directory, run `podman-compose up`. This will start our build of keycloak (see the image tag for specific build), postgres and promtail. Promtail is configured to connect to the local development setup of the aggregator, i.e you can run the aggregator as above with `make dev`. See podman/promtail-config.yaml if you want to test out different configurations, for example increasing the batch time or size. For the configuration used in our deployments, see [the values file's](../helm/promtail-aggregator/values.yaml) ssoScrapeConfigs section.
+
 ## Database migration
 
 It uses `Alembic`, which is a lightweight database migration tool, to migrate database schema. The step to create a migration script is:

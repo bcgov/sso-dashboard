@@ -1,0 +1,20 @@
+promtail:
+  environment: prod
+
+  deployment:
+    replicaCount: 1
+
+  # see https://grafana.com/docs/loki/latest/clients/promtail/configuration/#supported-contents-and-default-values-of-configyaml
+  config:
+    logLevel: info
+    clients:
+      - url: <replace me>
+        tenant_id: sso-team
+        headers:
+          Authorization: <please replace me>
+    snippets:
+      scrapeConfigs: |
+        {{- tpl .Values.ssoScrapeConfigs . }}
+
+persistentVolume:
+  size: 100Mi

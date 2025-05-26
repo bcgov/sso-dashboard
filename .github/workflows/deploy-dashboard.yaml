@@ -1,0 +1,63 @@
+name: Publish SSO Grafana helm chart
+
+on:
+  # workflow_dispatch:
+  push:
+    branches:
+    - main
+    - dev
+    paths:
+    - helm/grafana/**
+    - .github/workflows/deploy-dashboard.yaml
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install CLI tools from OpenShift Mirror
+      uses: redhat-actions/openshift-tools-installer@v1
+      with:
+        source: mirror
+        kam: latest
+        oc: 4.18.7
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Set env to Sandbox
+      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+        OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
+        OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
+        OPENSHIFT_NAMESPACE=e4ca1d-tools
+        ${{ secrets.GRAFANA_SANDBOX_ENV }}
+        EOF
+
+    - name: Set env to Production
+      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
+      run: |
+        cat >> $GITHUB_ENV <<EOF
+        OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
+        OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
+        OPENSHIFT_NAMESPACE=eb75ad-tools
+        ${{ secrets.GRAFANA_PROD_ENV }}
+        EOF
+
+    - name: Authenticate and set context
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
+        openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+
+    - name: Deploy aggregator with Helm chart
+      run: |
+        namespace=${{ env.OPENSHIFT_NAMESPACE }}
+        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}
+      working-directory: ./helm/grafana

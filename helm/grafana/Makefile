@@ -1,4 +1,4 @@
-include /$(PWD)/.env
+-include /$(PWD)/.env
 
 SHELL := /usr/bin/env bash
 
@@ -8,8 +8,6 @@ endif
 
 define arguments
 	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
-	--set grafana."grafana\.ini"."auth\.generic_oauth".client_id=${SSO_CLIENT_ID} \
-	--set grafana."grafana\.ini"."auth\.generic_oauth".client_secret=${SSO_CLIENT_SECRET} \
 	--set grafana.datasources."datasources\.yaml".datasources[0].user=${DS_SSO_LOGS_USERNAME} \
 	--set grafana.datasources."datasources\.yaml".datasources[0].database=${DS_SSO_LOGS_DATABASE} \
 	--set grafana.datasources."datasources\.yaml".datasources[0].secureJsonData.password=${DS_SSO_LOGS_PASSWORD} \
@@ -22,6 +20,8 @@ define arguments
 	--set grafana.datasources."datasources\.yaml".datasources[3].user=${DS_KEYCLOAK_PROD_USERNAME} \
 	--set grafana.datasources."datasources\.yaml".datasources[3].database=${DS_KEYCLOAK_PROD_DATABASE} \
 	--set grafana.datasources."datasources\.yaml".datasources[3].secureJsonData.password=${DS_KEYCLOAK_PROD_PASSWORD} \
+	--set grafana.datasources."datasources\.yaml".datasources[4].secureJsonData.httpHeaderValue1="Bearer ${LOKI_AUTH_TOKEN}" \
+	--set grafana.datasources."datasources\.yaml".datasources[4].url=${API_GATEWAY_URL} \
 	--set grafana.datasources."datasources\.yaml".datasources[5].user=${DS_AGGREGATOR_USERNAME} \
 	--set grafana.datasources."datasources\.yaml".datasources[5].database=${DS_AGGREGATOR_DATABASE} \
 	--set grafana.datasources."datasources\.yaml".datasources[5].secureJsonData.password=${DS_AGGREGATOR_PASSWORD}

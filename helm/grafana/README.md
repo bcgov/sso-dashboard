@@ -19,8 +19,26 @@ envsubst < net-policy-sso-keycloak.yaml | oc apply -f -
 ```
 
 #### Update Helm Values
+Deploying the helm chart in openshift requires an environment secret with the name `sso-grafana-env-secret` and config:
 
-- create `.env` from `.env.example` and fill the values
+```
+kind: Secret
+apiVersion: v1
+metadata:
+  name: sso-grafana-env-secret
+  namespace: <<NAMESPACE>>
+data:
+  client_id: <<ENCODED ID>>
+  client_secret: <<ENCODED SECRET>>
+type: Opaque
+```
+
+You will need to create a separate set of environment values for the sandbox and production grafana instances.  The sandbox grafana instance uses the `dev production 4492` client for authentication and the production grafana instance uses the `prod production 4492` client.
+
+The client_id and client_secret are no longer referenced through the .env variables.  This allows secrets to be securely referenced.
+
+
+- create `.env` from `.env.example` and fill the values for the remaining environment variables.
 
 ### Installing/Upgrading the Chart
 
@@ -29,6 +47,7 @@ make upgrade
 ```
 
 - please find the SSO client credentials of the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests):
+- The variables for LOKI_AUTH_TOKEN and API_GATEWAY_URL can be found in the tools namespace under the loki-auth-token secret
 
 ### Uninstalling the Chart
 

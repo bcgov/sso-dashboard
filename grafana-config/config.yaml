@@ -1,0 +1,92 @@
+auth_enabled: false
+common:
+  path_prefix: /var/loki
+  replication_factor: 3
+  storage:
+    s3:
+      bucketnames: ${S3_BUCKETNAME:-sso-loki}
+      region: ${S3_REGION:-ca-central-1}
+      endpoint: ${S3_ENDPOINT:-s3.ca-central-1.amazonaws.com}
+      s3forcepathstyle: true
+      insecure: true
+  ring:
+    kvstore:
+      store: memberlist
+compactor:
+  compaction_interval: 10m
+  retention_delete_delay: 1h
+  retention_delete_worker_count: 150
+  retention_enabled: true
+  shared_store: s3
+  working_directory: /var/loki/retention
+index_gateway:
+  mode: ring
+ingester:
+  chunk_encoding: snappy
+  chunk_idle_period: 2h
+  chunk_target_size: 5242880
+  max_chunk_age: 2h
+  wal:
+    enabled: true
+    flush_on_shutdown: true
+limits_config:
+  enforce_metric_name: false
+  ingestion_rate_mb: 10
+  max_cache_freshness_per_query: 1m
+  max_entries_limit_per_query: 100000
+  max_global_streams_per_user: 1000000
+  max_query_length: 721h
+  max_query_parallelism: 32
+  max_query_series: 3000
+  query_timeout: 500s
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+  retention_period: ${RETENTION_PERIOD:-180d}
+  split_queries_by_interval: 30m
+memberlist:
+  join_members:
+  - ${JOIN_MEMBERS:-someurl}
+  bind_port: 7946
+  bind_addr: [0.0.0.0]
+  gossip_interval: 5s
+  advertise_port: 7946
+
+query_range:
+  align_queries_with_step: true
+ruler:
+  storage:
+    s3:
+      bucketnames: ${S3_BUCKETNAME}
+    type: s3
+runtime_config:
+  file: /etc/loki/runtime-config/runtime-config.yaml
+schema_config:
+  configs:
+  - from: '2022-12-21'
+    index:
+      period: 24h
+      prefix: index_
+    object_store: s3
+    schema: v11
+    store: boltdb-shipper
+server:
+  http_listen_address: 0.0.0.0
+  grpc_listen_address: 0.0.0.0
+  http_listen_port: 3100
+  grpc_listen_port: 9095
+  grpc_server_max_recv_msg_size: 26214400
+  grpc_server_max_send_msg_size: 26214400
+  http_server_idle_timeout: 500s
+  http_server_read_timeout: 500s
+  http_server_write_timeout: 500s
+  log_level: error
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /var/loki/active
+    cache_location: /var/loki/cache
+    cache_ttl: 24h
+    shared_store: s3
+  hedging:
+    at: 250ms
+    max_per_second: 20
+    up_to: 3

@@ -31,18 +31,58 @@ SSO Keycloak dashboard services provide the ability to monitor real-time statist
 
 1. `Promtail` & `Loki`: collect, transform and load raw log data for the designated time period.
 
-1. `Loki` & `MinIO`: provide the Amazon S3 compatible Object Storage to store/read compacted event data by Loki.
+1. `Loki` & `S3`: provide the Amazon S3 compatible Object Storage to store/read compacted event data by Loki.
 
 1. `Promtail` & `Custom Go server`: collect, and upsert the aggreated event historial data in DB.
 
 1. `Grafana`: connect Loki and the aggregation DB to visualize the logs and stats.
 
-   ![SSO Dashboard Architecture Diagram](assets/sso-dashboard-arch.gif)
+   ![SSO Dashboard Architecture Diagram](assets/sso-dashboard.drawio.svg)
+
+1. Loki in AWS breakdown:
+
+   ![SSO Loki on AWS Diagram](assets/sso-dashboard-aws.drawio.svg)
+
+### Loki in AWS ECS Cluster
+
+Loki has a helm chart for deploying in kubernetes. For the deployment in an ECS cluster there are a few changes to note:
+
+- Service discovery can be used in ECS to replace services in k8s. Since we cannot use this in the BCGov AWS, it has been replaced with a network load balancer. This is necessary to allow read and write tasks to communicate on port 7946. If not working, you will see "empty ring" errors.
+- ECS does not support config maps. To replace this a custom image was built with custom configuration files. Configurations that will be changed at runtime can set their values with the syntax ${ENV_VAR:-default}, and environment variables can be used to configure them. Values consistent across environments can be hardcoded.
+- The helm chart includes a deployment "gateway". This is an nginx reverse proxy which provides path-based routing to the read and write services. It has been replaced with listener rules on the application load balancer.
+- When deploying locally, you will need to use the values from the [terraform workflow file](/.github/workflows/terraform.yaml#97) to populate a var file, refer to the dev or prod block depending on environment. The secret value loki_auth_token can be found in the tools namespace secret loki-auth-token.
 
 <!-- ![image](https://user-images.githubusercontent.com/36021827/211399712-5bbeaa67-2994-460f-a12b-368b13187cdd.png) -->
 
 ## Deployment
 
+The helm charts for the promtail instances and grafana dashboard can be installed with make commands. These automate adding environment variables from .env files in their directories. See the directory readmes for more information. They will deploy on merge to dev for sandbox, and main for production.
+
+The Loki setup is deployed with terraform into AWS. It deploys automatically on merge to dev/main.
+
+GitHub CD pipeline scripts are triggered based on the directory that has changed; When deploying for the first time you should deploy promtail last, as it will give not found errors until the receiving resources (loki and aggregator) are up and running.
+
+The terraform account for deployment is restricted to the required resource types for this repository. If adding new resources not currently required, you will get a permission denied error. Expand the permissions on the `sso-dashboard-boundary` as needed.
+
+When doing an initial webhook setup to integrate with [AWS SNS](https://aws.amazon.com/sns) you need to confirm the url you gave is correct. AWS will send a link to the provided URL to confirm. You can find it in the `content_raw.SubscribeURL` parameter to confirm. e.g for rocket chat the script:
+
+``` javascript
+class Script {
+    process_incoming_request({ request }) {
+      return {
+        content:{
+         text: `@here ${JSON.parse(request.content_raw).SubscribeURL}`
+         }
+      };
+    }
+  }
+```
+
+Would output the url to follow.
+
+## Service accounts
+
+Service accounts are already generated and added to github secrets, see below for the related OC secret to see the token value. If needing to recreate the service account, see the [service-account-generator directory](/service-account-generator/README.md) for how to do so.
 It continuously deploys the resources in the sandbox and the prod environment based on the repository branch (pr's to dev deploys sandbox, pr's to main deploys prod) that has the new changes.
 GitHub CD pipeline scripts are triggered based on the directory that has changed; there is a recommended deployment order when deploying the resources for the very first time:
 
@@ -58,11 +98,12 @@ The following secrets are set in the GitHub secrets of the repository and can be
 ### Sandbox
 
 - `SANDBOX_OPENSHIFT_SERVER`: the OpenShift online server URL.
+- `GRAFANA_SANDBOX_ENV`: Contains all secrets necessary to deploy grafana as an env file, see [the example env file](/helm/grafana/.env.example) for the list. The values are saved in the openshift secret sso-grafana-env in the tools namespace for reference.
 - `SANDBOX_OPENSHIFT_TOKEN`: : the OpenShift session token.
   - please the find the secret in [Sandbox Deployer Secret](https://console.apps.gold.devops.gov.bc.ca/k8s/ns/c6af30-tools/secrets/oc-deployer-token-9tgwm)
 - `SANDBOX_OPENSHIFT_NAMESPACE`: the namespace name to deploy `Grafana`, `Loki`, and `Aggregator`.
-- `SANDBOX_SSO_CLIENT_ID`: the SSO integration credentials, `client id`, to set in `Grafana` and `MinIO` dashboard UI.
-- `SANDBOX_SSO_CLIENT_SECRET`: the SSO integration credentials, `client secret`, to set in `Grafana` and `MinIO` dashboard UI.
+- `SANDBOX_SSO_CLIENT_ID`: the SSO integration credentials, `client id`, to set in `Grafana` and `MinIO` dashboard UI. (now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
+- `SANDBOX_SSO_CLIENT_SECRET`: the SSO integration credentials, `client secret`, to set in `Grafana` and `MinIO` dashboard UI. (now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
   - please find the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests)
 - `SANDBOX_MINIO_USER`: the username of the initial MinIO admin account.
 - `SANDBOX_MINIO_PASS`: the password of the initial MinIO admin account.
@@ -70,11 +111,12 @@ The following secrets are set in the GitHub secrets of the repository and can be
 ### Production
 
 - `PROD_OPENSHIFT_SERVER`: the OpenShift online server URL.
+- `GRAFANA_PROD_ENV`: Contains all secrets necessary to deploy grafana as an env file, see [the example env file](/helm/grafana/.env.example) for the list. The values are saved in the openshift secret sso-grafana-env in the tools namespace for reference.
 - `PROD_OPENSHIFT_TOKEN`: : the OpenShift session token.
   - please the find the secret in [Sandbox Deployer Secret](https://console.apps.gold.devops.gov.bc.ca/k8s/ns/eb75ad-tools/secrets/oc-deployer-token-b99cz)
 - `PROD_OPENSHIFT_NAMESPACE`: the namespace name to deploy `Grafana`, `Loki`, and `Aggregator`.
-- `PROD_SSO_CLIENT_ID`: the SSO integration credentials, `client id`, to set in `Grafana` and `MinIO` dashboard UI.
-- `PROD_SSO_CLIENT_SECRET`: the SSO integration credentials, `client secret`, to set in `Grafana` and `MinIO` dashboard UI.
+- `PROD_SSO_CLIENT_ID`: the SSO integration credentials, `client id`, to set in `Grafana` and `MinIO` dashboard UI.(now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
+- `PROD_SSO_CLIENT_SECRET`: the SSO integration credentials, `client secret`, to set in `Grafana` and `MinIO` dashboard UI.(now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
   - please find the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests)
 - `PROD_MINIO_USER`: the username of the initial MinIO admin account.
 - `PROD_MINIO_PASS`: the password of the initial MinIO admin account.

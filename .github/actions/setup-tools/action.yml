@@ -4,6 +4,10 @@ description: Setup required tools in the workspace
 runs:
   using: composite
   steps:
+  - name: prerequisites
+    run: sudo apt install -y libssl-dev libreadline-dev uuid-dev
+    shell: bash
+
   - name: Install asdf
     uses: asdf-vm/actions/setup@v3
 
@@ -15,8 +19,8 @@ runs:
 
   - name: Install required tools
     run: |
-      cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
-      asdf plugin-update --all
+      cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin add || true
+      asdf plugin update --all
       asdf install
       asdf reshim
     shell: bash

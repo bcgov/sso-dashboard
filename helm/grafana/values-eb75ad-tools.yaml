@@ -11,6 +11,15 @@ grafana:
       name: SSO Pathfinder
       auth_url: https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
       token_url: https://loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
+      client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
+      client_secret: $__file{/etc/secrets/auth_generic_oauth/client_secret}
+
+  extraSecretMounts:
+    - name: sso-grafana-env-secret-mount
+      secretName: sso-grafana-env-secret
+      defaultMode: 0440
+      mountPath: /etc/secrets/auth_generic_oauth
+      readOnly: true
 
   datasources:
     datasources.yaml:
@@ -88,9 +97,13 @@ grafana:
           type: loki
           access: proxy
           orgId: 1
-          url: http://sso-loki-gateway
+          url: <replace me>
           basicAuth: false
           isDefault: true
+          jsonData:
+            httpHeaderName1: "Authorization"
+          secureJsonData:
+            httpHeaderValue1: <please-replace-me>
         - name: SSO Aggregator
           type: postgres
           access: proxy

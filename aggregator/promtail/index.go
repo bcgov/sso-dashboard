@@ -27,6 +27,12 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 	loc := config.LoadTimeLocation()
 
 	var lastErr error
+
+	/*
+		Each unique label combination will have a dedicated stream. The logs associated to that label combination will be in stream.Entries.
+		e.g. if 4 LOGIN events for the same client/realm/env are sent, there will be 1 stream with 4 entries.
+		If multiple label combinations are sent in the same batch they will be in different streams.
+	*/
 	for _, stream := range req.Streams {
 		ls, err := promql_parser.ParseMetric(stream.Labels)
 		if err != nil {
@@ -40,33 +46,45 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 			clientId    = ""
 			eventType   = ""
 			date        = time.Now()
+			timestamp   = ""
 		)
 
 		for _, v := range ls {
 			switch v.Name {
-			case "environment":
-				environment = v.Value
-			case "realm_id":
-				realmId = v.Value
-			case "client_id":
-				clientId = v.Value
-			case "event_type":
-				eventType = v.Value
-			}
+				case "environment":
+					environment = v.Value
+				case "realm_id":
+					realmId = v.Value
+				case "client_id":
+					clientId = v.Value
+				case "event_type":
+					eventType = v.Value
+				case "timestamp":
+					timestamp = v.Value
+		  }
+	  }
+
+		t, err := time.Parse(time.RFC3339Nano, timestamp)
+
+		if(err != nil) {
+			log.Printf("Error parsing timestamp: %v", err)
 		}
 
-		// only collect event logs but system logs
-		if eventType == "" {
+		duration := time.Since(t)
+
+		// only collect event logs, skip the system logs
+		// reject logs older than 24 hours
+		if (eventType == "" || duration >= 24*time.Hour) {
 			continue
 		}
 
+		// For the aggregated count, timestamp is flattened to the date and the count of entries in this batch will be added to the total.
 		for _, entry := range stream.Entries {
 			year, month, day := entry.Timestamp.In(loc).Date()
 			date = time.Date(year, month, day, 0, 0, 0, 0, loc)
 		}
 
-		log.Println(environment, realmId, clientId, eventType, date)
-		go model.UpsertClientEvent(environment, realmId, clientId, eventType, date)
+		go model.UpsertClientEvent(environment, realmId, clientId, eventType, date, len(stream.Entries))
 	}
 
 	if lastErr != nil {

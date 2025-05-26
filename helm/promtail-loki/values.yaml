@@ -1,7 +1,7 @@
 # see https://github.com/grafana/helm-charts/blob/main/charts/promtail/values.yaml
 promtail:
-  nameOverride: sso-promtail
-  fullnameOverride: sso-promtail
+  nameOverride: sso-promtail-aws-loki
+  fullnameOverride: sso-promtail-aws-loki
 
   daemonset:
     enabled: false
@@ -19,7 +19,7 @@ promtail:
   image:
     registry: docker.io
     repository: grafana/promtail
-    tag: null
+    tag: ""
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
@@ -47,7 +47,7 @@ promtail:
   defaultVolumes:
     - name: positions
       persistentVolumeClaim:
-        claimName: sso-promtail-positions
+        claimName: sso-promtail-aws-loki-positions
 
   defaultVolumeMounts:
     - name: positions
