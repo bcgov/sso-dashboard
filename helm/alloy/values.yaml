@@ -14,7 +14,7 @@ alloy:
     create: true
     content: |
       logging {
-        level  = "debug"
+        level  = "info"
         format = "logfmt"
       }
 
@@ -45,7 +45,6 @@ alloy:
 
         stage.json {
             expressions = {
-                level     = "level",
                 timestamp = "\"@timestamp\"",
             }
         }
