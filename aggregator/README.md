@@ -2,7 +2,7 @@
 
 ## Aggregator
 
-A Go HTTP server to host the Keycloak event log aggregation system that receives the log metadata from `Grafana Promtail` and upserts the client-level event statistical data.
+A Go HTTP server to host the Keycloak event log aggregation system that receives the log metadata from `Grafana Alloy` and upserts the client-level event statistical data.
 In order to avoid the custom codebase parsing the requests, it relies on `Grafana Loki`'s public function `ParseRequest` and takes the advantage of code simplicity and reliability.
 
 ## Compactor

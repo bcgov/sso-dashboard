@@ -29,11 +29,11 @@ SSO Keycloak dashboard services provide the ability to monitor real-time statist
 
 ## Architectural Design
 
-1. `Promtail` & `Loki`: collect, transform and load raw log data for the designated time period.
+1. `Alloy` & `Loki`: collect, transform and load raw log data for the designated time period.
 
 1. `Loki` & `S3`: provide the Amazon S3 compatible Object Storage to store/read compacted event data by Loki.
 
-1. `Promtail` & `Custom Go server`: collect, and upsert the aggreated event historial data in DB.
+1. `Alloy` & `Custom Go server`: collect, and upsert the aggreated event historial data in DB.
 
 1. `Grafana`: connect Loki and the aggregation DB to visualize the logs and stats.
 
@@ -56,11 +56,11 @@ Loki has a helm chart for deploying in kubernetes. For the deployment in an ECS 
 
 ## Deployment
 
-The helm charts for the promtail instances and grafana dashboard can be installed with make commands. These automate adding environment variables from .env files in their directories. See the directory readmes for more information. They will deploy on merge to dev for sandbox, and main for production.
+The helm charts for the alloy instance and grafana dashboard can be installed with make commands. These automate adding environment variables from .env files in their directories. See the directory readmes for more information. They will deploy on merge to dev for sandbox, and main for production.
 
 The Loki setup is deployed with terraform into AWS. It deploys automatically on merge to dev/main.
 
-GitHub CD pipeline scripts are triggered based on the directory that has changed; When deploying for the first time you should deploy promtail last, as it will give not found errors until the receiving resources (loki and aggregator) are up and running.
+GitHub CD pipeline scripts are triggered based on the directory that has changed; When deploying for the first time you should deploy alloy last, as it will give not found errors until the receiving resources (loki and aggregator) are up and running.
 
 The terraform account for deployment is restricted to the required resource types for this repository. If adding new resources not currently required, you will get a permission denied error. Expand the permissions on the `sso-dashboard-boundary` as needed.
 

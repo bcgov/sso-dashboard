@@ -6,7 +6,6 @@ on:
     - main
     - dev
     paths:
-    - helm/promtail-aggregator/**
     - helm/alloy/**
     - .github/workflows/deploy-alloy.yaml
 
