@@ -17,7 +17,7 @@ data "aws_subnet" "subnet_b" {
   }
 }
 
-# Open for api gateway to receive traffic from internet, e.g our openshift promtail. Authorization token is checked on all calls
+# Open for api gateway to receive traffic from internet, e.g our openshift alloy. Authorization token is checked on all calls
 resource "aws_security_group" "loki_sg" {
   name        = "loki_sg"
   description = "Security group for loki"

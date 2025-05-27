@@ -1,0 +1,78 @@
+local.file_match "tmplogs" {
+    path_targets = [{"__path__" = "/alloy-logs/*.log"}]
+}
+
+loki.source.file "local_files" {
+    targets    = local.file_match.tmplogs.targets
+    forward_to = [loki.process.aggregator.receiver, loki.process.loki.receiver]
+}
+
+loki.process "loki" {
+    forward_to = [loki.write.loki.receiver]
+
+    stage.static_labels {
+        values = {
+            job = "keycloak",
+            environment = "dev",
+        }
+    }
+
+    stage.json {
+        expressions = {
+            level     = "level",
+            timestamp = "\"@timestamp\"",
+        }
+    }
+
+    stage.timestamp {
+        source = "timestamp"
+        format = "RFC3339Nano"
+    }
+}
+
+loki.process "aggregator" {
+	forward_to = [loki.write.aggregator.receiver]
+
+    stage.static_labels {
+        values = {
+            job = "keycloak",
+            environment = "dev",
+        }
+    }
+
+    stage.json {
+        expressions = {
+            timestamp = "\"@timestamp\"",
+        }
+    }
+
+    stage.timestamp {
+        source = "timestamp"
+        format = "RFC3339Nano"
+    }
+
+    stage.regex {
+        expression = "type=(?P<type>\\S+),.*realmId=(?P<realm_id>\\S+),.*clientId=(?P<client_id>\\S+),"
+    }
+
+    stage.labels {
+        values = {
+            client_id  = null,
+            event_type = "type",
+            realm_id   = null,
+            timestamp  = null,
+        }
+    }
+}
+
+loki.write "aggregator" {
+    endpoint {
+        url = "http://aggregator:8080/api/promtail/push"
+    }
+}
+
+loki.write "loki" {
+    endpoint {
+        url = "http://loki:3100/loki/api/v1/push"
+    }
+}

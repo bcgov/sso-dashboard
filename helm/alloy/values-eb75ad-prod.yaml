@@ -1,0 +1,12 @@
+fullnameOverride: alloy-keycloak
+
+extraConfiguration:
+  environment: "prod"
+  aggregator:
+    url: "http://sso-aggregator.eb75ad-tools.svc.cluster.local:8080/api/promtail/push"
+
+alloy:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi

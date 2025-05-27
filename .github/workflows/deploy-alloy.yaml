@@ -1,4 +1,4 @@
-name: Publish SSO Promtail Instances
+name: Publish SSO Alloy Instance
 
 on:
   push:
@@ -6,12 +6,11 @@ on:
     - main
     - dev
     paths:
-    - helm/promtail-aggregator/**
-    - helm/promtail-loki/**
-    - .github/workflows/deploy-promtail.yaml
+    - helm/alloy/**
+    - .github/workflows/deploy-alloy.yaml
 
 jobs:
-  build-and-push-image:
+  helm-deploy:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -56,16 +55,10 @@ jobs:
         openshift_token: ${{ env.OPENSHIFT_TOKEN }}
         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
 
-    - name: Deploy aggregator-promtail with Helm chart
+    - name: Deploy alloy with Helm chart
       run: |
+        make deps
         make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-dev
         make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-test
         make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-prod
-      working-directory: ./helm/promtail-aggregator
-
-    - name: Deploy loki-promtail with Helm chart
-      run: |
-        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-dev
-        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-test
-        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-prod
-      working-directory: ./helm/promtail-loki
+      working-directory: ./helm/alloy
