@@ -1,0 +1,160 @@
+fullnameOverride: alloy-keycloak
+
+extraConfiguration:
+  environment: ""
+  loki:
+    url: ""
+    bearerToken: ""
+  aggregator:
+    url: ""
+
+
+alloy:
+  configMap:
+    create: true
+    content: |
+      logging {
+        level  = "debug"
+        format = "logfmt"
+      }
+
+      local.file_match "tmplogs" {
+          path_targets = [{"__path__" = "/alloy-logs/*.log"}]
+      }
+
+      loki.source.file "local_files" {
+          targets    = local.file_match.tmplogs.targets
+          forward_to = [loki.process.aggregator.receiver, loki.process.loki.receiver]
+          legacy_positions_file = "/mnt/alloy/positions.yaml"
+      }
+
+      loki.process "loki" {
+        forward_to = [loki.write.loki.receiver]
+
+        stage.drop {
+          older_than          = "10h"
+          drop_counter_reason = "too old"
+        }
+
+        stage.static_labels {
+            values = {
+                job = "keycloak",
+                environment = "{{ .Values.extraConfiguration.environment }}",
+            }
+        }
+
+        stage.json {
+            expressions = {
+                level     = "level",
+                timestamp = "\"@timestamp\"",
+            }
+        }
+
+        stage.timestamp {
+            source = "timestamp"
+            format = "RFC3339Nano"
+        }
+      }
+
+      loki.process "aggregator" {
+        forward_to = [loki.write.aggregator.receiver]
+
+          stage.drop {
+            older_than          = "10h"
+            drop_counter_reason = "too old"
+          }
+
+          stage.static_labels {
+              values = {
+                  job = "keycloak",
+                  environment = "{{ .Values.extraConfiguration.environment }}",
+              }
+          }
+
+          stage.json {
+              expressions = {
+                  timestamp = "\"@timestamp\"",
+              }
+          }
+
+          stage.timestamp {
+              source = "timestamp"
+              format = "RFC3339Nano"
+          }
+
+          stage.regex {
+              expression = "type=(?P<type>\\S+),.*realmId=(?P<realm_id>\\S+),.*clientId=(?P<client_id>\\S+),"
+          }
+
+          stage.labels {
+              values = {
+                  client_id  = null,
+                  event_type = "type",
+                  realm_id   = null,
+                  timestamp  = null,
+              }
+          }
+      }
+
+      loki.write "aggregator" {
+          endpoint {
+              url = "{{ .Values.extraConfiguration.aggregator.url }}"
+          }
+      }
+
+      loki.write "loki" {
+          endpoint {
+              url = "{{ .Values.extraConfiguration.loki.url }}"
+              authorization {
+                type = "Bearer"
+                credentials = "{{ .Values.extraConfiguration.loki.bearerToken }}"
+              }
+          }
+      }
+
+  # -- Path to where Grafana Alloy stores data (for example, the Write-Ahead Log, previously positions in promtail).
+  storagePath: /mnt/alloy
+
+  mounts:
+    # Mount positions to save location between reboots
+    extra:
+      - name: positions
+        mountPath: /mnt/alloy
+        # keeping previous promtail positions to prevent re-sending logs
+        existingClaim: sso-promtail-aggregator-positions
+        readOnly: false
+      - name: keycloak-logs
+        mountPath: /alloy-logs
+        existingClaim: sso-keycloak-logs
+        readOnly: true
+
+  resources:
+    requests:
+      cpu: 150m
+      memory: 256Mi
+
+rbac:
+  create: false
+
+crds:
+  create: false
+
+image:
+  registry: "docker.io"
+  repository: grafana/alloy
+  tag: v1.8.0
+  pullPolicy: IfNotPresent
+
+controller:
+  # -- Type of controller to use for deploying Grafana Alloy in the cluster.
+  # Must be one of 'daemonset', 'deployment', or 'statefulset'.
+  type: 'deployment'
+  replicas: 1
+  volumes:
+    extra:
+      - name: positions
+        persistentVolumeClaim:
+          claimName: sso-promtail-aggregator-positions
+      - name: keycloak-logs
+        persistentVolumeClaim:
+          claimName: sso-keycloak-logs
