@@ -14,6 +14,9 @@ define arguments
 	--set extraConfiguration.loki.url="${API_GATEWAY_URL}/loki/api/v1/push"
 endef
 
+.PHONY: deps
+deps:
+	@helm repo add grafana https://grafana.github.io/helm-charts
 
 .PHONY: install
 install:

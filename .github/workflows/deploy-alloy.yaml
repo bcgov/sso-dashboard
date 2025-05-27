@@ -12,7 +12,7 @@ on:
     - .github/workflows/deploy-alloy.yaml
 
 jobs:
-  build-and-push-image:
+  helm-deploy:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -59,6 +59,7 @@ jobs:
 
     - name: Deploy alloy with Helm chart
       run: |
+        make deps
         make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-dev
         make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-test
         make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}-prod
