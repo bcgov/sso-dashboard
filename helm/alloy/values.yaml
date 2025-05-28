@@ -19,7 +19,7 @@ alloy:
       }
 
       local.file_match "tmplogs" {
-          path_targets = [{"__path__" = "/alloy-logs/*.log"}]
+          path_targets = [{"__path__" = "/keycloak/logs/*.log"}]
       }
 
       loki.source.file "local_files" {
@@ -30,11 +30,6 @@ alloy:
 
       loki.process "loki" {
         forward_to = [loki.write.loki.receiver]
-
-        stage.drop {
-          older_than          = "10h"
-          drop_counter_reason = "too old"
-        }
 
         stage.static_labels {
             values = {
@@ -53,15 +48,15 @@ alloy:
             source = "timestamp"
             format = "RFC3339Nano"
         }
+
+        stage.drop {
+          older_than          = "10h"
+          drop_counter_reason = "too old"
+        }
       }
 
       loki.process "aggregator" {
         forward_to = [loki.write.aggregator.receiver]
-
-          stage.drop {
-            older_than          = "10h"
-            drop_counter_reason = "too old"
-          }
 
           stage.static_labels {
               values = {
@@ -79,6 +74,11 @@ alloy:
           stage.timestamp {
               source = "timestamp"
               format = "RFC3339Nano"
+          }
+
+          stage.drop {
+            older_than          = "10h"
+            drop_counter_reason = "too old"
           }
 
           stage.regex {
@@ -119,12 +119,9 @@ alloy:
     extra:
       - name: positions
         mountPath: /mnt/alloy
-        # keeping previous promtail positions to prevent re-sending logs
-        existingClaim: sso-promtail-aggregator-positions
         readOnly: false
       - name: keycloak-logs
-        mountPath: /alloy-logs
-        existingClaim: sso-keycloak-logs
+        mountPath: /keycloak/logs
         readOnly: true
 
   resources:
