@@ -77,7 +77,7 @@ alloy:
           }
 
           stage.drop {
-            older_than          = "16h"
+            older_than          = "10h"
             drop_counter_reason = "too old"
           }
 
