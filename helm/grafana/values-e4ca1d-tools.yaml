@@ -121,7 +121,23 @@ grafana:
             connMaxLifetime: 14400
             postgresVersion: 1400
             timescaledb: false
-
+        - name: CSS App
+          type: postgres
+          access: proxy
+          orgId: 1
+          url: sso-requests-patroni-readonly.b29129-dev.svc.cluster.local:5432
+          user: <replace me>
+          database: <replace me>
+          basicAuth: false
+          secureJsonData:
+            password: <replace me>
+          jsonData:
+            sslmode: disable
+            maxOpenConns:
+            maxIdleConns: 2
+            connMaxLifetime: 14400
+            postgresVersion: 1400
+            timescaledb: false
 route:
   enabled: true
   host: sso-grafana-sandbox.apps.gold.devops.gov.bc.ca
