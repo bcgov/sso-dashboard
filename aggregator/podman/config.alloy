@@ -52,7 +52,7 @@ loki.process "aggregator" {
     }
 
     stage.regex {
-        expression = "type=(?P<type>\\S+),.*realmId=(?P<realm_id>\\S+),.*clientId=(?P<client_id>\\S+),"
+        expression = "type=(?P<type>\\S+),.*realmId=(?P<realm_id>\\S+),.*clientId=(?P<client_id>\\S+),.*identity_provider=(?P<identity_provider>\\S+),"
     }
 
     stage.labels {

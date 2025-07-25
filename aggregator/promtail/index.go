@@ -45,28 +45,31 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 			realmId     = ""
 			clientId    = ""
 			eventType   = ""
+			idp         = ""
 			date        = time.Now()
 			timestamp   = ""
 		)
 
 		for _, v := range ls {
 			switch v.Name {
-				case "environment":
-					environment = v.Value
-				case "realm_id":
-					realmId = v.Value
-				case "client_id":
-					clientId = v.Value
-				case "event_type":
-					eventType = v.Value
-				case "timestamp":
-					timestamp = v.Value
-		  }
-	  }
+			case "environment":
+				environment = v.Value
+			case "realm_id":
+				realmId = v.Value
+			case "client_id":
+				clientId = v.Value
+			case "event_type":
+				eventType = v.Value
+			case "timestamp":
+				timestamp = v.Value
+			case "identity_provider":
+				idp = v.Value
+			}
+		}
 
 		t, err := time.Parse(time.RFC3339Nano, timestamp)
 
-		if(err != nil) {
+		if err != nil {
 			log.Printf("Error parsing timestamp: %v", err)
 		}
 
@@ -74,7 +77,7 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 
 		// only collect event logs, skip the system logs
 		// reject logs older than 24 hours
-		if (eventType == "" || duration >= 24*time.Hour) {
+		if eventType == "" || duration >= 24*time.Hour {
 			continue
 		}
 
@@ -85,6 +88,7 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		go model.UpsertClientEvent(environment, realmId, clientId, eventType, date, len(stream.Entries))
+		go model.UpsertClientIDPLoginEvent(environment, realmId, clientId, eventType, idp, date, len(stream.Entries))
 	}
 
 	if lastErr != nil {

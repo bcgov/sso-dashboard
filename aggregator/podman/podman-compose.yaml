@@ -95,11 +95,10 @@ services:
       sh -c "chown -R 1000:0 /mnt"
     volumes:
     - keycloak_logs:/mnt
-    restart: no
 
   dev-keycloak:
     container_name: dev-keycloak
-    image: ghcr.io/bcgov/sso:26.0.7-build.1
+    image: ghcr.io/bcgov/sso:26.2.4-build.2
     depends_on:
     - postgres
     - keycloak-init
