@@ -26,7 +26,7 @@ def upgrade() -> None:
     sa.Column('idp',sa.String(length=255), nullable=True),
     sa.Column('date', sa.TIMESTAMP(timezone=True), nullable=False),
     sa.Column('count', sa.Integer(), nullable=False),
-    sa.PrimaryKeyConstraint('environment', 'realm_id', 'client_id', 'date')
+    sa.PrimaryKeyConstraint('environment', 'realm_id', 'client_id', 'event_type', 'date', 'idp')
     )
     # ### end Alembic commands ###
 

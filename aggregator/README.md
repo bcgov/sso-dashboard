@@ -33,20 +33,27 @@ A lightweight Go server running scheduled jobs. There are two cronjobs it contro
 - `PROD_KEYCLOAK_URL`: The prod keycloak base URL
 - `PROD_KEYCLOAK_CLIENT_ID`: The prod keycloak client id
 - `PROD_KEYCLOAK_USERNAME`: The prod keycloak username
-- `PROD_KEYCLOAK_PASSWORD`: The prod keycloak passowrd
+- `PROD_KEYCLOAK_PASSWORD`: The prod keycloak password
 
 ## Local development setup
+
+1. Install the required tools.
+
+   ```sh
+   make install
+   ```
 
 1. start the local `Postgres` database.
 
    ```sh
    make db
    ```
+   If you are using the docker-compose stack for the db, set your env var `DB_PORT` to 5433 (compose is using 5433 to avoid local postgres conflicts) and start up docker-compose before running to make sure to migrate the correct db.
 
 1. if working on the `aggregator` codebase, run:
 
    ```sh
-   make dev
+   make aggregator-dev
    ```
 
    - the entrypoint for `aggregator` is `main.go`.
@@ -54,12 +61,16 @@ A lightweight Go server running scheduled jobs. There are two cronjobs it contro
 1. if working on the `compactor` codebase, run:
 
    ```sh
-   make compactor
+   make compactor-dev
    ```
 
-   - the entrypoint for `compactor` is `compactor.go`.
-
-1. When running the aggregator server, if you need a version of keycloak and alloy to test the log ingestion, there is containerized environment for them. From the podman directory, run `podman-compose up`. This will start our build of keycloak (see the image tag for specific build), postgres and alloy. See podman/config.alloy if you want to test out different configurations, for example increasing the batch time or size. For the configuration used in our deployments, see [the values file's](../helm/alloy/values.yaml) `alloy.configMap.content` section.
+1. When running the aggregator server, if you need a version of the related services to test the log ingestion, there is containerized environment for them. From the localdev directory, run `docker-compose up`. This run the following services:
+   - Our build of keycloak on port 9080
+   - A postgres database for the keycloak instance and aggregator on 5433
+   - Grafana Alloy on port 12345
+   - Grafana loki on port 3100
+   - Grafana dashboard on port 3000, with loki and aggregator datasources configured
+See podman/config.alloy if you want to test out different configurations, for example increasing the batch time or size. For the configuration used in our deployments, see [the values file's](../helm/alloy/values.yaml) `alloy.configMap.content` section.
 
 ## Database migration
 

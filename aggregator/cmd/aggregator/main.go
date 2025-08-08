@@ -15,7 +15,6 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
 	root := mux.NewRouter()
 
 	apiRouter := root.PathPrefix("/api").Subrouter()
