@@ -136,7 +136,7 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 
 		go func() {
 			defer wg.Done()
-			err := model.UpsertClientIDPLoginEvent(environment, realmId, clientId, eventType, idp, date, len(stream.Entries))
+			err := model.UpsertClientEventWithIDP(environment, realmId, clientId, eventType, idp, date, len(stream.Entries))
 			errChan <- err
 		}()
 

@@ -22,11 +22,11 @@ func UpsertClientEvent(environment string, realmID string, clientID string, even
 	return nil
 }
 
-func UpsertClientIDPLoginEvent(environment string, realmID string, clientID string, eventType string, idp string, date time.Time, length int) error {
-	query := `INSERT INTO client_login_events_with_idp (environment, realm_id, client_id, event_type, idp, date, count)
+func UpsertClientEventWithIDP(environment string, realmID string, clientID string, eventType string, idp string, date time.Time, length int) error {
+	query := `INSERT INTO client_events_with_idp (environment, realm_id, client_id, event_type, idp, date, count)
 	VALUES(?,?,?,?,?,?,?6)
 	ON CONFLICT (environment, realm_id, client_id, event_type, idp, date)
-	DO UPDATE SET count = client_login_events_with_idp.count + ?6;`
+	DO UPDATE SET count = client_events_with_idp.count + ?6;`
 
 	_, err := pgdb.Query(nil, query, environment, realmID, clientID, eventType, idp, date, length)
 	if err != nil {
