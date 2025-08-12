@@ -84,7 +84,7 @@ alloy:
 
         stage.logfmt {
             source = "message"
-            mapping = {"type" = "", "realmId" = "", "client_auth_method" = "", "username" = "", "clientId" = ""}
+            mapping = {"type" = "", "realmId" = "", "username" = "", "clientId" = ""}
         }
 
         stage.template {

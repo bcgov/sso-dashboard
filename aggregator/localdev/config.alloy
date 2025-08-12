@@ -54,7 +54,7 @@ loki.process "aggregator" {
 
     stage.logfmt {
         source = "message"
-        mapping = {"type" = "", "realmId" = "", "client_auth_method" = "", "username" = "", "clientId" = ""}
+        mapping = {"type" = "", "realmId" = "", "username" = "", "clientId" = ""}
     }
 
     stage.template {
@@ -64,11 +64,6 @@ loki.process "aggregator" {
 
     stage.template {
         source   = "realmId"
-        template = `{{ TrimSuffix .Value "," }}`
-    }
-
-    stage.template {
-        source   = "client_auth_method"
         template = `{{ TrimSuffix .Value "," }}`
     }
 
@@ -89,7 +84,6 @@ loki.process "aggregator" {
             realmId   = null,
             timestamp  = null,
             username = null,
-            client_auth_method = null,
         }
     }
 }
