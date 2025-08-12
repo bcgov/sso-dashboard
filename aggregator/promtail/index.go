@@ -76,11 +76,11 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 			switch v.Name {
 			case "environment":
 				environment = v.Value
-			case "realm_id":
+			case "realmId":
 				realmId = v.Value
-			case "client_id":
+			case "clientId":
 				clientId = v.Value
-			case "event_type":
+			case "eventType":
 				eventType = v.Value
 			case "timestamp":
 				timestamp = v.Value
