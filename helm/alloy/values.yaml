@@ -82,7 +82,7 @@ alloy:
           }
 
           stage.regex {
-              expression = "type=(?P<type>\\S+),.*realmId=(?P<realm_id>\\S+),.*clientId=(?P<client_id>\\S+),"
+              expression = "type=(?P<type>\\S+),.*realmId=(?P<realm_id>\\S+),.*clientId=(?P<client_id>\\S+),(?:.*username=(?P<username>\\S+),)?"
           }
 
           stage.labels {
@@ -91,6 +91,7 @@ alloy:
                   event_type = "type",
                   realm_id   = null,
                   timestamp  = null,
+                  username = null,
               }
           }
       }

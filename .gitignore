@@ -7,3 +7,5 @@ node_modules
 *.tfstate.backup
 *.tfvars
 loki-authorizer.zip
+tmp
+aggregator/app
