@@ -43,6 +43,7 @@ loki.process "aggregator" {
     stage.json {
         expressions = {
             timestamp = "\"@timestamp\"",
+            message   = "message",
         }
     }
 
@@ -51,17 +52,44 @@ loki.process "aggregator" {
         format = "RFC3339Nano"
     }
 
-    stage.regex {
-        expression = "type=(?P<type>\\S+),.*realmId=(?P<realm_id>\\S+),.*clientId=(?P<client_id>\\S+),(?:.*username=(?P<username>\\S+),)?"
+    stage.logfmt {
+        source = "message"
+        mapping = {"type" = "", "realmId" = "", "client_auth_method" = "", "username" = "", "clientId" = ""}
+    }
+
+    stage.template {
+        source   = "type"
+        template = `{{ TrimSuffix .Value "," }}`
+    }
+
+    stage.template {
+        source   = "realmId"
+        template = `{{ TrimSuffix .Value "," }}`
+    }
+
+    stage.template {
+        source   = "client_auth_method"
+        template = `{{ TrimSuffix .Value "," }}`
+    }
+
+    stage.template {
+        source   = "username"
+        template = `{{ TrimSuffix .Value "," }}`
+    }
+
+    stage.template {
+        source   = "clientId"
+        template = `{{ TrimSuffix .Value "," }}`
     }
 
     stage.labels {
         values = {
-            client_id  = null,
-            event_type = "type",
-            realm_id   = null,
+            clientId  = null,
+            eventType = "type",
+            realmId   = null,
             timestamp  = null,
             username = null,
+            client_auth_method = null,
         }
     }
 }

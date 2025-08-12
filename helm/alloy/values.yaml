@@ -58,42 +58,64 @@ alloy:
       loki.process "aggregator" {
         forward_to = [loki.write.aggregator.receiver]
 
-          stage.static_labels {
-              values = {
-                  job = "keycloak",
-                  environment = "{{ .Values.extraConfiguration.environment }}",
-              }
-          }
+        stage.static_labels {
+            values = {
+                job = "keycloak",
+                environment = "{{ .Values.extraConfiguration.environment }}",
+            }
+        }
 
-          stage.json {
-              expressions = {
-                  timestamp = "\"@timestamp\"",
-              }
-          }
+        stage.json {
+            expressions = {
+                timestamp = "\"@timestamp\"",
+                message   = "message",
+            }
+        }
 
-          stage.timestamp {
-              source = "timestamp"
-              format = "RFC3339Nano"
-          }
+        stage.timestamp {
+            source = "timestamp"
+            format = "RFC3339Nano"
+        }
 
-          stage.drop {
-            older_than          = "10h"
-            drop_counter_reason = "too old"
-          }
+        stage.drop {
+          older_than          = "10h"
+          drop_counter_reason = "too old"
+        }
 
-          stage.regex {
-              expression = "type=(?P<type>\\S+),.*realmId=(?P<realm_id>\\S+),.*clientId=(?P<client_id>\\S+),(?:.*username=(?P<username>\\S+),)?"
-          }
+        stage.logfmt {
+            source = "message"
+            mapping = {"type" = "", "realmId" = "", "client_auth_method" = "", "username" = "", "clientId" = ""}
+        }
 
-          stage.labels {
-              values = {
-                  client_id  = null,
-                  event_type = "type",
-                  realm_id   = null,
-                  timestamp  = null,
-                  username = null,
-              }
-          }
+        stage.template {
+            source   = "type"
+            template = `{{"{{"}} TrimSuffix .Value "," {{"}}"}}`
+        }
+
+        stage.template {
+            source   = "realmId"
+            template = `{{"{{"}} TrimSuffix .Value "," {{"}}"}}`
+        }
+
+        stage.template {
+            source   = "username"
+            template = `{{"{{"}} TrimSuffix .Value "," {{"}}"}}`
+        }
+
+        stage.template {
+            source   = "clientId"
+            template = `{{"{{"}} TrimSuffix .Value "," {{"}}"}}`
+        }
+
+        stage.labels {
+            values = {
+                clientId  = null,
+                eventType = "type",
+                realmId   = null,
+                timestamp  = null,
+                username = null,
+            }
+        }
       }
 
       loki.write "aggregator" {
