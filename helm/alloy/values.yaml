@@ -82,29 +82,20 @@ alloy:
           drop_counter_reason = "too old"
         }
 
-        stage.logfmt {
-            source = "message"
-            mapping = {"type" = "", "realmId" = "", "username" = "", "clientId" = ""}
+        stage.regex {
+            expression = "type=(?P<type>[^,\"]+)[,\"]"
         }
 
-        stage.template {
-            source   = "type"
-            template = `{{"{{"}} TrimSuffix .Value "," {{"}}"}}`
+        stage.regex {
+            expression = "clientId=(?P<clientId>[^,\"]+)[,\"]"
         }
 
-        stage.template {
-            source   = "realmId"
-            template = `{{"{{"}} TrimSuffix .Value "," {{"}}"}}`
+        stage.regex {
+            expression = "realmId=(?P<realmId>[^,\"]+)[,\"]"
         }
 
-        stage.template {
-            source   = "username"
-            template = `{{"{{"}} TrimSuffix .Value "," {{"}}"}}`
-        }
-
-        stage.template {
-            source   = "clientId"
-            template = `{{"{{"}} TrimSuffix .Value "," {{"}}"}}`
+        stage.regex {
+            expression = "username=(?P<username>[^,\"]+)[,\"]"
         }
 
         stage.labels {

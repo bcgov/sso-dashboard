@@ -31,7 +31,7 @@ loki.process "loki" {
 }
 
 loki.process "aggregator" {
-	forward_to = [loki.write.aggregator.receiver]
+    forward_to = [loki.write.aggregator.receiver]
 
     stage.static_labels {
         values = {
@@ -52,29 +52,25 @@ loki.process "aggregator" {
         format = "RFC3339Nano"
     }
 
-    stage.logfmt {
-        source = "message"
-        mapping = {"type" = "", "realmId" = "", "username" = "", "clientId" = ""}
+    stage.drop {
+        older_than          = "10h"
+        drop_counter_reason = "too old"
     }
 
-    stage.template {
-        source   = "type"
-        template = `{{ TrimSuffix .Value "," }}`
+    stage.regex {
+        expression = "type=(?P<type>[^,\"]+)[,\"]"
     }
 
-    stage.template {
-        source   = "realmId"
-        template = `{{ TrimSuffix .Value "," }}`
+    stage.regex {
+        expression = "clientId=(?P<clientId>[^,\"]+)[,\"]"
     }
 
-    stage.template {
-        source   = "username"
-        template = `{{ TrimSuffix .Value "," }}`
+    stage.regex {
+        expression = "realmId=(?P<realmId>[^,\"]+)[,\"]"
     }
 
-    stage.template {
-        source   = "clientId"
-        template = `{{ TrimSuffix .Value "," }}`
+    stage.regex {
+        expression = "username=(?P<username>[^,\"]+)[,\"]"
     }
 
     stage.labels {
