@@ -24,7 +24,10 @@ define arguments
 	--set grafana.datasources."datasources\.yaml".datasources[4].url=${API_GATEWAY_URL} \
 	--set grafana.datasources."datasources\.yaml".datasources[5].user=${DS_AGGREGATOR_USERNAME} \
 	--set grafana.datasources."datasources\.yaml".datasources[5].database=${DS_AGGREGATOR_DATABASE} \
-	--set grafana.datasources."datasources\.yaml".datasources[5].secureJsonData.password=${DS_AGGREGATOR_PASSWORD}
+	--set grafana.datasources."datasources\.yaml".datasources[5].secureJsonData.password=${DS_AGGREGATOR_PASSWORD} \
+	--set grafana.datasources."datasources\.yaml".datasources[6].user=${DS_CSS_USERNAME} \
+	--set grafana.datasources."datasources\.yaml".datasources[6].database=${DS_CSS_DATABASE} \
+	--set grafana.datasources."datasources\.yaml".datasources[6].secureJsonData.password=${DS_CSS_PASSWORD}
 endef
 
 .PHONY: helm-dep

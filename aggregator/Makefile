@@ -4,12 +4,13 @@ SHELL := /usr/bin/env bash
 install:
 	go mod tidy
 	pip install -r requirements.txt
+	sudo apt install reflex
 	asdf reshim
 
 .PHONY: build
 build:
-	go build -o build/aggregator main.go
-	go build -o build/compactor compactor.go
+	go build -o build/aggregator ./cmd/aggregator/main.go
+	go build -o build/compactor ./cmd/compactor/main.go
 
 .PHONY: format
 format:
@@ -19,6 +20,15 @@ format:
 dev: build
 dev:
 	./build/aggregator
+
+.PHONY: aggregator-dev
+aggregator-dev:
+	reflex -r '\.go$$' -s -- sh -c 'go run ./cmd/aggregator'
+
+.PHONY: compactor-dev
+compactor-dev:
+	reflex -r '\.go$$' -s -- sh -c 'go run ./cmd/comapctor'
+
 
 .PHONY: compactor
 compactor: build

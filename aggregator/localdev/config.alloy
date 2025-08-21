@@ -1,0 +1,97 @@
+local.file_match "tmplogs" {
+    path_targets = [{"__path__" = "/alloy-logs/*.log"}]
+}
+
+loki.source.file "local_files" {
+    targets    = local.file_match.tmplogs.targets
+    forward_to = [loki.process.aggregator.receiver, loki.process.loki.receiver]
+}
+
+loki.process "loki" {
+    forward_to = [loki.write.loki.receiver]
+
+    stage.static_labels {
+        values = {
+            job = "keycloak",
+            environment = "dev",
+        }
+    }
+
+    stage.json {
+        expressions = {
+            level     = "level",
+            timestamp = "\"@timestamp\"",
+        }
+    }
+
+    stage.timestamp {
+        source = "timestamp"
+        format = "RFC3339Nano"
+    }
+}
+
+loki.process "aggregator" {
+    forward_to = [loki.write.aggregator.receiver]
+
+    stage.static_labels {
+        values = {
+            job = "keycloak",
+            environment = "dev",
+        }
+    }
+
+    stage.json {
+        expressions = {
+            timestamp = "\"@timestamp\"",
+            message   = "message",
+        }
+    }
+
+    stage.timestamp {
+        source = "timestamp"
+        format = "RFC3339Nano"
+    }
+
+    stage.drop {
+        older_than          = "10h"
+        drop_counter_reason = "too old"
+    }
+
+    stage.regex {
+        expression = "type=(?P<type>[^,\"]+)[,\"]"
+    }
+
+    stage.regex {
+        expression = "clientId=(?P<clientId>[^,\"]+)[,\"]"
+    }
+
+    stage.regex {
+        expression = "realmId=(?P<realmId>[^,\"]+)[,\"]"
+    }
+
+    stage.regex {
+        expression = "username=(?P<username>[^,\"]+)[,\"]"
+    }
+
+    stage.labels {
+        values = {
+            clientId  = null,
+            eventType = "type",
+            realmId   = null,
+            timestamp  = null,
+            username = null,
+        }
+    }
+}
+
+loki.write "aggregator" {
+    endpoint {
+        url = "http://host.docker.internal:8080/api/promtail/push"
+    }
+}
+
+loki.write "loki" {
+    endpoint {
+        url = "http://host.docker.internal:3100/loki/api/v1/push"
+    }
+}
