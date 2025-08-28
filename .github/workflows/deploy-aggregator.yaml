@@ -125,6 +125,7 @@ jobs:
     - name: Deploy aggregator with Helm chart
       run: |
         namespace=${{ env.OPENSHIFT_NAMESPACE }}
+        helm dependency update
         helm upgrade --install sso-aggregator . -n ${namespace} \
         -f values.yaml -f "values-${namespace}.yaml" --set image.tag="${{ needs.set-tag.outputs.tag }}"
       working-directory: ./helm/aggregator
