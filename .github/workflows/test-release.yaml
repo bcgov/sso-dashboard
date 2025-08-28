@@ -1,0 +1,29 @@
+name: Test Release
+on:
+  push:
+    branches:
+    - SSOTEAM-2499-01
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+  IMAGE_NAME: bcgov/sso-aggregator
+
+jobs:
+  create_release:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.release.outputs.tag_name }}
+    steps:
+    - name: Create Release
+      id: release
+      uses: rymndhng/release-on-push-action@v0.28.0
+      with:
+        bump_version_scheme: patch
+        tag_prefix: v
+        use_github_release_notes: 'true'
+        release_name: Release <RELEASE_VERSION>
+        max_commits: 100
