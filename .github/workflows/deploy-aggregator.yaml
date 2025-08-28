@@ -15,12 +15,50 @@ env:
   IMAGE_NAME: bcgov/sso-aggregator
 
 jobs:
+  create_release:
+    # Only release on push to main
+    if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.release.outputs.tag_name }}
+    steps:
+    - name: Create Release
+      id: release
+      uses: rymndhng/release-on-push-action@v0.28.0
+      with:
+        bump_version_scheme: patch
+        tag_prefix: v
+        use_github_release_notes: 'true'
+        release_name: Release <RELEASE_VERSION>
+        max_commits: 100
+
+  set-tag:
+    needs: [create_release]
+    if: always()
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set.outputs.tag }}
+    steps:
+    - name: Set tag based on context
+      id: set
+      run: |
+        if [[ "${GITHUB_REF##*/}" == "main" ]]; then
+          echo "::set-output name=tag::${{ needs.create_release.outputs.tag }}"
+        else
+          echo "::set-output name=tag::dev"
+        fi
+
   build-and-push-image:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
-
+    needs: set-tag
+    if: always()
     steps:
     - uses: actions/checkout@v4
     - name: Install CLI tools from OpenShift Mirror
@@ -41,19 +79,16 @@ jobs:
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
-      uses: docker/metadata-action@v4
+      uses: docker/metadata-action@v5
       with:
         images: ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-          type=ref,event=branch
-          type=sha,format=long
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v3
       with:
         context: aggregator
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: ${{ format('{0}/{1}:{2}', env.GITHUB_REGISTRY, env.IMAGE_NAME, needs.set-tag.outputs.tag) }}
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Set env to Sandbox
@@ -84,5 +119,6 @@ jobs:
     - name: Deploy aggregator with Helm chart
       run: |
         namespace=${{ env.OPENSHIFT_NAMESPACE }}
-        make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}
+        helm upgrade --install sso-aggregator . -n ${namespace} \
+        -f values.yaml -f "values-${namespace}.yaml" --set image.tag="${{ needs.set-tag.outputs.tag }}"
       working-directory: ./helm/aggregator
