@@ -83,7 +83,8 @@ jobs:
       if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
-
+        TF_VAR_subnet_a=Dev-App-A
+        TF_VAR_subnet_b=Dev-App-B
         TERRAFORM_DEPLOY_ROLE_ARN=${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_DEV }}
         LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_DEV }}
         LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_DEV }}
@@ -101,7 +102,8 @@ jobs:
       if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
-
+        TF_VAR_subnet_a=Prod-App-A
+        TF_VAR_subnet_b=Prod-App-B
         TERRAFORM_DEPLOY_ROLE_ARN=${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_PROD }}
         LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_PROD }}
         LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_PROD }}
