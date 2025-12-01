@@ -2,15 +2,14 @@ auth_enabled: false
 common:
   path_prefix: /var/loki
   replication_factor: 3
-  ring:
-    kvstore:
-      store: memberlist
   storage:
+    type: s3
     s3:
       bucketnames: ${S3_BUCKETNAME:-sso-loki}
       region: ${S3_REGION:-ca-central-1}
-      insecure: false
-      s3ForcePathStyle: false
+  ring:
+    kvstore:
+      store: memberlist
 compactor:
   compaction_interval: 10m
   retention_delete_delay: 1h
