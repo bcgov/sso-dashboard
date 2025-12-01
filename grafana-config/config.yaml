@@ -2,13 +2,6 @@ auth_enabled: false
 common:
   path_prefix: /var/loki
   replication_factor: 3
-  storage:
-    s3:
-      bucketnames: ${S3_BUCKETNAME:-sso-loki}
-      region: ${S3_REGION:-ca-central-1}
-      endpoint: ${S3_ENDPOINT:-s3.ca-central-1.amazonaws.com}
-      s3forcepathstyle: true
-      insecure: true
   ring:
     kvstore:
       store: memberlist
@@ -90,3 +83,7 @@ storage_config:
     at: 250ms
     max_per_second: 20
     up_to: 3
+  aws:
+    s3:
+      bucketnames: ${S3_BUCKETNAME:-sso-loki}
+      region: ${S3_REGION:-ca-central-1}
