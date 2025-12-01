@@ -5,6 +5,12 @@ common:
   ring:
     kvstore:
       store: memberlist
+  storage:
+    s3:
+      bucketnames: ${S3_BUCKETNAME:-sso-loki}
+      region: ${S3_REGION:-ca-central-1}
+      insecure: false
+      s3ForcePathStyle: false
 compactor:
   compaction_interval: 10m
   retention_delete_delay: 1h
@@ -83,9 +89,3 @@ storage_config:
     at: 250ms
     max_per_second: 20
     up_to: 3
-  aws:
-    s3:
-      bucketnames: ${S3_BUCKETNAME:-sso-loki}
-      region: ${S3_REGION:-ca-central-1}
-      insecure: false
-      s3ForcePathStyle: false
