@@ -1,13 +1,13 @@
 variable "subnet_a" {
   type        = string
   description = "Value of the name tag for the app subnet in AZ a"
-  default     = "Web_Dev_aza_net"
+  default     = "Dev-App-A"
 }
 
 variable "subnet_b" {
   type        = string
   description = "Value of the name tag for the app subnet in AZ b"
-  default     = "Web_Dev_azb_net"
+  default     = "Dev-App-B"
 }
 
 variable "region" {

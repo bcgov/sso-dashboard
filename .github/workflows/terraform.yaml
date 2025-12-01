@@ -83,7 +83,6 @@ jobs:
       if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
-
         TERRAFORM_DEPLOY_ROLE_ARN=${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_DEV }}
         LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_DEV }}
         LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_DEV }}
@@ -92,8 +91,8 @@ jobs:
         LOKI_READ_CPU=256
         LOKI_READ_MEMORY=512
         RETENTION_PERIOD=168h
-        SUBNET_A=Web_Dev_aza_net
-        SUBNET_B=Web_Dev_azb_net
+        SUBNET_A=Dev-App-A
+        SUBNET_B=Dev-App-B
         RC_PREFIX=SANDBOX
         EOF
 
@@ -101,7 +100,6 @@ jobs:
       if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
       run: |
         cat >> $GITHUB_ENV <<EOF
-
         TERRAFORM_DEPLOY_ROLE_ARN=${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_PROD }}
         LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_PROD }}
         LOKI_BUCKET_NAME=${{ vars.LOKI_BUCKET_NAME_PROD }}
@@ -110,8 +108,8 @@ jobs:
         LOKI_READ_CPU=512
         LOKI_READ_MEMORY=2048
         RETENTION_PERIOD=180d
-        SUBNET_A=Web_Prod_aza_net
-        SUBNET_B=Web_Prod_azb_net
+        SUBNET_A=Prod-App-A
+        SUBNET_B=Prod-App-B
         RC_PREFIX=PRODUCTION
         EOF
 
