@@ -87,3 +87,5 @@ storage_config:
     s3:
       bucketnames: ${S3_BUCKETNAME:-sso-loki}
       region: ${S3_REGION:-ca-central-1}
+      insecure: false
+      s3ForcePathStyle: false
