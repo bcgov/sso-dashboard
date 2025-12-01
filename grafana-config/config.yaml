@@ -3,7 +3,6 @@ common:
   path_prefix: /var/loki
   replication_factor: 3
   storage:
-    type: s3
     s3:
       bucketnames: ${S3_BUCKETNAME:-sso-loki}
       region: ${S3_REGION:-ca-central-1}
