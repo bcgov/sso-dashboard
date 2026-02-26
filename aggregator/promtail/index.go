@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/grafana/dskit/tenant"
@@ -121,32 +120,9 @@ func PromtailPushHandler(w http.ResponseWriter, r *http.Request) {
 		year, month, day := entry.Timestamp.In(loc).Date()
 		date = time.Date(year, month, day, 0, 0, 0, 0, loc)
 
-		// Temporarily running inserts to both tables asynchronously. This is due to rollbacks not being possible
-		// if the new IDP field is added to the existing table and its constraints. After the IDP table has gathered enough
-		// data we can deprecate the old one safely.
-		var wg sync.WaitGroup
-		wg.Add(2)
-		errChan := make(chan error, 2)
-
-		go func() {
-			defer wg.Done()
-			err := model.UpsertClientEvent(environment, realmId, clientId, eventType, date, len(stream.Entries))
-			errChan <- err
-		}()
-
-		go func() {
-			defer wg.Done()
-			err := model.UpsertClientEventWithIDP(environment, realmId, clientId, eventType, idp, date, len(stream.Entries))
-			errChan <- err
-		}()
-
-		wg.Wait()
-		close(errChan)
-
-		for err := range errChan {
-			if err != nil {
-				log.Println("Upsert error:", err)
-			}
+		err = model.UpsertClientEventWithIDP(environment, realmId, clientId, eventType, idp, date, len(stream.Entries))
+		if err != nil {
+			log.Println("Upsert error:", err)
 		}
 	}
 
