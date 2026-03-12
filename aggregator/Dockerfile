@@ -5,12 +5,12 @@ WORKDIR /app
 COPY . .
 RUN make build
 
-FROM python:3.11.1-slim-bullseye
+FROM python:3.14.3-slim-trixie
 
 RUN apt-get update -q && \
   apt-get install -y --no-install-recommends apt-utils && \
   apt-get install -yqq \
-  netcat \
+  netcat-openbsd \
   build-essential && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
