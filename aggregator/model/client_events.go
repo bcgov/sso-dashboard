@@ -9,19 +9,6 @@ import (
 	"sso-dashboard.bcgov.com/aggregator/utils"
 )
 
-func UpsertClientEvent(environment string, realmID string, clientID string, eventType string, date time.Time, length int) error {
-	query := `INSERT INTO client_events (environment, realm_id, client_id, event_type, date, count)
-	 VALUES(?,?,?,?,?,?5)
-	 ON CONFLICT (environment, realm_id, client_id, event_type, date)
-	 DO UPDATE SET count = client_events.count + ?5;`
-	_, err := pgdb.Query(nil, query, environment, realmID, clientID, eventType, date, length)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func UpsertClientEventWithIDP(environment string, realmID string, clientID string, eventType string, idp string, date time.Time, length int) error {
 	query := `INSERT INTO client_events_with_idp (environment, realm_id, client_id, event_type, idp, date, count)
 	VALUES(?,?,?,?,?,?,?6)
