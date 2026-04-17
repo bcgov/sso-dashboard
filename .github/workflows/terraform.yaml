@@ -62,8 +62,8 @@ jobs:
       run: |
         sudo apt-get install -y libssl-dev libreadline-dev uuid-dev
 
-    - name: Install asdf
-      uses: asdf-vm/actions/setup@v3
+    - name: Setup asdf
+      uses: asdf-vm/actions/setup@v4
 
     - name: Cache tools
       uses: actions/cache@v4
@@ -71,13 +71,8 @@ jobs:
         path: /home/runner/.asdf
         key: ${{ runner.os }}-${{ hashFiles('**/.tool-versions') }}
 
-    - name: Install required tools
-      run: |
-        cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin add || true
-        asdf plugin update --all
-        asdf install
-        asdf reshim
-      shell: bash
+    - name: Install asdf
+      uses: asdf-vm/actions/install@v4
 
     - name: Set env to development
       if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
