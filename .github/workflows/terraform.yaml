@@ -75,7 +75,12 @@ jobs:
       uses: asdf-vm/actions/install@v4
 
     - name: Set env to development
-      if: (github.ref == 'refs/heads/dev' && github.event_name == 'push')
+      if: |
+        github.ref == 'refs/heads/dev' &&
+        (
+          github.event_name == 'push' ||
+          github.event_name == 'workflow_dispatch'
+        )
       run: |
         cat >> $GITHUB_ENV <<EOF
         TERRAFORM_DEPLOY_ROLE_ARN=${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_DEV }}
