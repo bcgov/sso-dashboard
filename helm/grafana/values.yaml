@@ -1,7 +1,7 @@
-# see https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+# see https://github.com/grafana-community/helm-charts/blob/main/charts/grafana/values.yaml
 grafana:
-  nameOverride: sso-grafana
-  fullnameOverride: sso-grafana
+  fullname: sso-grafana
+  name: sso-grafana
   imagePullSecrets: []
 
   rbac:
@@ -20,7 +20,7 @@ grafana:
 
   image:
     repository: grafana/grafana
-    tag: '11.6.1'
+    tag: '13.0.1'
     pullPolicy: IfNotPresent
     pullSecrets: []
 
@@ -47,9 +47,6 @@ grafana:
 
   initChownData:
     enabled: false
-
-  sidecar:
-    securityContext:
 
   adminUser: admin
   # adminPassword: strongpassword
@@ -90,3 +87,28 @@ route:
   enabled: true
   host:
   serviceName: sso-grafana
+
+gitSync:
+  enabled: true
+  repo: <please-replace-me>
+  branch: main
+  depth: 1
+  period: 60
+  image:
+    repository: k8s.gcr.io/git-sync/git-sync
+    tag: v3.4.0
+    pullPolicy: IfNotPresent
+  githubApp:
+    appId: <please-replace-me>
+    installationId: <please-replace-me>
+    privateKeySecretKey: <please-replace-me>
+  persistence:
+    storageClassName: netapp-file-standard
+    size: 256Mi
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
