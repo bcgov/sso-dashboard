@@ -87,28 +87,3 @@ route:
   enabled: true
   host:
   serviceName: sso-grafana
-
-gitSync:
-  enabled: true
-  repo: <please-replace-me>
-  branch: main
-  depth: 1
-  period: 60
-  image:
-    repository: k8s.gcr.io/git-sync/git-sync
-    tag: v3.4.0
-    pullPolicy: IfNotPresent
-  githubApp:
-    appId: <please-replace-me>
-    installationId: <please-replace-me>
-    privateKeySecretKey: <please-replace-me>
-  persistence:
-    storageClassName: netapp-file-standard
-    size: 256Mi
-  resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
-    requests:
-      cpu: 50m
-      memory: 64Mi
