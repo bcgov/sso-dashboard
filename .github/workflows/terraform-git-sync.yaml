@@ -22,7 +22,9 @@ env:
 
 jobs:
   terraform:
-    permissions: write-all
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v6
@@ -34,7 +36,7 @@ jobs:
 
     - name: Configure Common Variables
       run: |
-        echo "GITHUB_REPO_URL="https://github.com/bcgov/sso-grafana-dashboards"" >> $GITHUB_ENV
+        echo "GITHUB_REPO_URL=https://github.com/bcgov/sso-grafana-dashboards" >> $GITHUB_ENV
         echo "GITHUB_REPO_BRANCH=main" >> $GITHUB_ENV
 
     - name: Configure Sandbox Variables
@@ -44,7 +46,7 @@ jobs:
         echo "S3_BACKEND_NAME=grafana-git-sync-sandbox-tfstate" >> $GITHUB_ENV
         echo "GITHUB_REPO_PATH=/apps/sso/environments/sandbox" >> $GITHUB_ENV
         echo "GITHUB_REPO_SYNC_INTERVAL_SECONDS=3600" >> $GITHUB_ENV
-        echo "GRAFANA_URL="https://sso-grafana-sandbox.apps.gold.devops.gov.bc.ca"" >> $GITHUB_ENV
+        echo "GRAFANA_URL=https://sso-grafana-sandbox.apps.gold.devops.gov.bc.ca" >> $GITHUB_ENV
         echo "GRAFANA_SERVICE_ACCOUNT_TOKEN=${{ secrets.SANDBOX_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN }}" >> $GITHUB_ENV
 
     - name: Configure Production Variables
@@ -54,7 +56,7 @@ jobs:
         echo "S3_BACKEND_NAME=grafana-git-sync-production-tfstate" >> $GITHUB_ENV
         echo "GITHUB_REPO_PATH=/apps/sso/environments/production" >> $GITHUB_ENV
         echo "GITHUB_REPO_SYNC_INTERVAL_SECONDS=3600" >> $GITHUB_ENV
-        echo "GRAFANA_URL="https://sso-grafana.apps.gold.devops.gov.bc.ca"" >> $GITHUB_ENV
+        echo "GRAFANA_URL=https://sso-grafana.apps.gold.devops.gov.bc.ca" >> $GITHUB_ENV
         echo "GRAFANA_SERVICE_ACCOUNT_TOKEN=${{ secrets.PROD_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN }}" >> $GITHUB_ENV
 
     - name: Configure AWS Credentials
