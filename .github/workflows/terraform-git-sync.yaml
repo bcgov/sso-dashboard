@@ -19,6 +19,14 @@ on:
     - .github/terraform-git-sync/**
 env:
   TF_VERSION: 1.15.5
+  TERRAFORM_DEPLOY_ROLE_ARN: ''
+  S3_BACKEND_NAME: ''
+  GITHUB_REPO_URL: ''
+  GITHUB_REPO_BRANCH: ''
+  GITHUB_REPO_PATH: "'"
+  GITHUB_REPO_SYNC_INTERVAL_SECONDS: ''
+  GRAFANA_URL: ''
+  GRAFANA_SERVICE_ACCOUNT_TOKEN: ''
 
 jobs:
   terraform:
@@ -80,12 +88,16 @@ jobs:
         terraform init -backend-config=backend.hcl
 
     - name: Terraform Variables
+      env:
+        GIT_SYNC_GITHUB_APP_ID: ${{ secrets.GIT_SYNC_GITHUB_APP_ID }}
+        GIT_SYNC_GITHUB_APP_INSTALLATION_ID: ${{ secrets.GIT_SYNC_GITHUB_APP_INSTALLATION_ID }}
+        GIT_SYNC_GITHUB_APP_PRIVATE_KEY_B64_ENCODED: ${{ secrets.GIT_SYNC_GITHUB_APP_PRIVATE_KEY_B64_ENCODED }}
       working-directory: ./grafana/git-sync/terraform
       run: |
         cat >"ci.auto.tfvars" <<EOF
-          github_app_id = "${{ secrets.GIT_SYNC_GITHUB_APP_ID }}"
-          github_app_installation_id = "${{ secrets.GIT_SYNC_GITHUB_APP_INSTALLATION_ID }}"
-          github_app_private_key_b64_encoded = "${{ secrets.GIT_SYNC_GITHUB_APP_PRIVATE_KEY_B64_ENCODED }}"
+          github_app_id = "${{ env.GIT_SYNC_GITHUB_APP_ID }}"
+          github_app_installation_id = "${{ env.GIT_SYNC_GITHUB_APP_INSTALLATION_ID }}"
+          github_app_private_key_b64_encoded = "${{ env.GIT_SYNC_GITHUB_APP_PRIVATE_KEY_B64_ENCODED }}"
           repo_url = "${{ env.GITHUB_REPO_URL }}"
           repo_branch = "${{ env.GITHUB_REPO_BRANCH }}"
           repo_path = "${{ env.GITHUB_REPO_PATH }}"
