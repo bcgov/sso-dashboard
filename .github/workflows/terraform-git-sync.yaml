@@ -35,10 +35,10 @@ jobs:
       packages: write
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
     - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v4
+      uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e
       with:
         terraform_version: ${{ env.TF_VERSION }}
 
@@ -49,26 +49,32 @@ jobs:
 
     - name: Configure Sandbox Variables
       if: github.event.inputs.environment == 'sandbox'
+      env:
+        TERRAFORM_DEPLOY_ROLE_ARN_DEV: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_DEV }}
+        SANDBOX_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN: ${{ secrets.SANDBOX_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN }}
       run: |
-        echo "TERRAFORM_DEPLOY_ROLE_ARN=${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_DEV }}" >> $GITHUB_ENV
+        echo "TERRAFORM_DEPLOY_ROLE_ARN=${{ env.TERRAFORM_DEPLOY_ROLE_ARN_DEV }}" >> $GITHUB_ENV
         echo "S3_BACKEND_NAME=grafana-git-sync-sandbox" >> $GITHUB_ENV
         echo "GITHUB_REPO_PATH=/apps/sso/environments/sandbox" >> $GITHUB_ENV
         echo "GITHUB_REPO_SYNC_INTERVAL_SECONDS=3600" >> $GITHUB_ENV
         echo "GRAFANA_URL=https://sso-grafana-sandbox.apps.gold.devops.gov.bc.ca" >> $GITHUB_ENV
-        echo "GRAFANA_SERVICE_ACCOUNT_TOKEN=${{ secrets.SANDBOX_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN }}" >> $GITHUB_ENV
+        echo "GRAFANA_SERVICE_ACCOUNT_TOKEN=${{ env.SANDBOX_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN }}" >> $GITHUB_ENV
 
     - name: Configure Production Variables
       if: github.event.inputs.environment == 'production'
+      env:
+        TERRAFORM_DEPLOY_ROLE_ARN_PROD: ${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_PROD }}
+        PROD_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN: ${{ secrets.PROD_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN }}
       run: |
-        echo "TERRAFORM_DEPLOY_ROLE_ARN=${{ secrets.TERRAFORM_DEPLOY_ROLE_ARN_PROD }}" >> $GITHUB_ENV
+        echo "TERRAFORM_DEPLOY_ROLE_ARN=${{ env.TERRAFORM_DEPLOY_ROLE_ARN_PROD }}" >> $GITHUB_ENV
         echo "S3_BACKEND_NAME=grafana-git-sync-production" >> $GITHUB_ENV
         echo "GITHUB_REPO_PATH=/apps/sso/environments/production" >> $GITHUB_ENV
         echo "GITHUB_REPO_SYNC_INTERVAL_SECONDS=3600" >> $GITHUB_ENV
         echo "GRAFANA_URL=https://sso-grafana.apps.gold.devops.gov.bc.ca" >> $GITHUB_ENV
-        echo "GRAFANA_SERVICE_ACCOUNT_TOKEN=${{ secrets.PROD_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN }}" >> $GITHUB_ENV
+        echo "GRAFANA_SERVICE_ACCOUNT_TOKEN=${{ env.PROD_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN }}" >> $GITHUB_ENV
 
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v6
+      uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b
       with:
         role-to-assume: ${{ env.TERRAFORM_DEPLOY_ROLE_ARN }}
         aws-region: ca-central-1
