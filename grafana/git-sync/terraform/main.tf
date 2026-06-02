@@ -11,13 +11,13 @@ resource "grafana_apps_provisioning_connection_v0alpha1" "github_app" {
 
     github {
       app_id          = var.github_app_id
-      installation_id = var.github_installation_id
+      installation_id = var.github_app_installation_id
     }
   }
 
   secure {
     private_key = {
-      create = var.github_private_key_b64_encoded
+      create = var.github_app_private_key_b64_encoded
     }
   }
   secure_version = 1

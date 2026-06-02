@@ -33,12 +33,12 @@ variable "github_app_id" {
   default = "<replace me>"
 }
 
-variable "github_installation_id" {
+variable "github_app_installation_id" {
   type    = string
   default = "<replace me>"
 }
 
-variable "github_private_key_b64_encoded" {
+variable "github_app_private_key_b64_encoded" {
   type    = string
-  default = ""
+  default = "<replace me>"
 }
