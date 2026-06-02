@@ -49,7 +49,7 @@ jobs:
       run: |
         echo "TERRAFORM_DEPLOY_ROLE_ARN=${{ env.TERRAFORM_DEPLOY_ROLE_ARN_DEV }}" >> $GITHUB_ENV
         echo "S3_BACKEND_NAME=grafana-git-sync-sandbox" >> $GITHUB_ENV
-        echo "GITHUB_REPO_PATH=/apps/sso/environments/sandbox" >> $GITHUB_ENV
+        echo "GITHUB_REPO_PATH=apps/sso/environments/sandbox" >> $GITHUB_ENV
         echo "GITHUB_REPO_SYNC_INTERVAL_SECONDS=3600" >> $GITHUB_ENV
         echo "GRAFANA_URL=https://sso-grafana-sandbox.apps.gold.devops.gov.bc.ca" >> $GITHUB_ENV
         echo "GRAFANA_SERVICE_ACCOUNT_TOKEN=${{ env.SANDBOX_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN }}" >> $GITHUB_ENV
@@ -62,7 +62,7 @@ jobs:
       run: |
         echo "TERRAFORM_DEPLOY_ROLE_ARN=${{ env.TERRAFORM_DEPLOY_ROLE_ARN_PROD }}" >> $GITHUB_ENV
         echo "S3_BACKEND_NAME=grafana-git-sync-production" >> $GITHUB_ENV
-        echo "GITHUB_REPO_PATH=/apps/sso/environments/production" >> $GITHUB_ENV
+        echo "GITHUB_REPO_PATH=apps/sso/environments/production" >> $GITHUB_ENV
         echo "GITHUB_REPO_SYNC_INTERVAL_SECONDS=3600" >> $GITHUB_ENV
         echo "GRAFANA_URL=https://sso-grafana.apps.gold.devops.gov.bc.ca" >> $GITHUB_ENV
         echo "GRAFANA_SERVICE_ACCOUNT_TOKEN=${{ env.PROD_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN }}" >> $GITHUB_ENV
