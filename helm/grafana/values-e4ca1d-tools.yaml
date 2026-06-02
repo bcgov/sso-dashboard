@@ -142,7 +142,7 @@ grafana:
           type: postgres
           access: proxy
           orgId: 1
-          url: realm-registry-patroni-readonly.c6af30-dev.svc.cluster.local:5432
+          url: realm-registry-patroni.c6af30-dev.svc.cluster.local:5432
           user: <replace me>
           basicAuth: false
           secureJsonData:
