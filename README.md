@@ -80,43 +80,51 @@ class Script {
 
 Would output the url to follow.
 
+### Grafana Git Sync
+
+Grafana's native Git Sync feature connects a Grafana instance to a GitHub repository so that dashboards are version-controlled. Dashboard changes must go through a pull request and be approved before they are applied to Grafana.
+
+**How it works**
+
+- Grafana polls the configured repository branch at a set interval (currently `3600` seconds).
+- A GitHub App installed on the target repository (`bcgov/sso-grafana-dashboards`) authenticates the connection. The DevOps team provides the App ID, Installation ID, and private key.
+- The Terraform configuration in [`grafana/git-sync/terraform/`](/grafana/git-sync/terraform/) manages the Git Sync settings via the Grafana API (repository URL, branch, sync path, and sync interval).
+
+**Repository layout**
+
+| Environment | Grafana URL | Repo path synced |
+|---|---|---|
+| Sandbox | `https://sso-grafana-sandbox.apps.gold.devops.gov.bc.ca` | `apps/sso/environments/sandbox` |
+| Production | `https://sso-grafana.apps.gold.devops.gov.bc.ca` | `apps/sso/environments/production` |
+
+**Initial setup steps**
+
+1. **Obtain GitHub App credentials** from the DevOps team:
+   - App ID
+   - Installation ID
+   - Private key (PEM file)
+
+2. **Store the credentials as GitHub Actions secrets** in this repository:
+   | Secret name | Value |
+   |---|---|
+   | `SANDBOX_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN` | Grafana service account token for sandbox |
+   | `PROD_SSO_GRAFANA_SERVICE_ACCOUNT_TOKEN` | Grafana service account token for production |
+   | `TERRAFORM_DEPLOY_ROLE_ARN_DEV` | AWS IAM role ARN for sandbox Terraform state |
+   | `TERRAFORM_DEPLOY_ROLE_ARN_PROD` | AWS IAM role ARN for production Terraform state |
+
+3. **Run the GitHub Action** at [`.github/workflows/terraform-git-sync.yaml`](/.github/workflows/terraform-git-sync.yaml):
+   - Navigate to **Actions → Terraform For Git Sync → Run workflow**.
+   - Select the target environment (`sandbox` or `production`).
+   - The workflow authenticates to AWS, initialises Terraform against the S3 backend, and applies the Git Sync configuration to the chosen Grafana instance.
+
+4. **Verify** by opening the Grafana instance, navigating to **Administration → Provisioning**, and confirming the repository is connected and the last sync succeeded.
+
+**Making dashboard changes**
+
+1. Edit or add dashboard JSON files in `bcgov/sso-grafana-dashboards` under the appropriate environment path.
+2. Open a pull request targeting the `main` branch.
+3. Once approved and merged, Grafana will pick up the changes on the next sync cycle (within 1 hour).
+
 ## Service accounts
 
-Service accounts are already generated and added to github secrets, see below for the related OC secret to see the token value. If needing to recreate the service account, see the [service-account-generator directory](/service-account-generator/README.md) for how to do so.
-It continuously deploys the resources in the sandbox and the prod environment based on the repository branch (pr's to dev deploys sandbox, pr's to main deploys prod) that has the new changes.
-GitHub CD pipeline scripts are triggered based on the directory that has changed; there is a recommended deployment order when deploying the resources for the very first time:
-
-1. `Loki`: deploys the `MinIO` and `Loki` resources, `read`, `write`, and `gateway`.
-1. `Aggregator`: deploys the `Aggregator` and `Compactor` with the `Postgres DB`.
-1. `Grafana`: deploys the `Grafana` dashboard with the two `datasources` configured above.
-1. `Promtail`: deploys the `Promtail` in multiple namespaces to collect the Keycloak disk logs.
-
-## GitHub secrets
-
-The following secrets are set in the GitHub secrets of the repository and can be found in [OCP secret](https://console.apps.silver.devops.gov.bc.ca/k8s/ns/6d70e7-tools/secrets/sso-team-sso-dashboard-github-secrets)
-
-### Sandbox
-
-- `SANDBOX_OPENSHIFT_SERVER`: the OpenShift online server URL.
-- `GRAFANA_SANDBOX_ENV`: Contains all secrets necessary to deploy grafana as an env file, see [the example env file](/helm/grafana/.env.example) for the list. The values are saved in the openshift secret sso-grafana-env in the tools namespace for reference.
-- `SANDBOX_OPENSHIFT_TOKEN`: : the OpenShift session token.
-  - please the find the secret in [Sandbox Deployer Secret](https://console.apps.gold.devops.gov.bc.ca/k8s/ns/c6af30-tools/secrets/oc-deployer-token-9tgwm)
-- `SANDBOX_OPENSHIFT_NAMESPACE`: the namespace name to deploy `Grafana`, `Loki`, and `Aggregator`.
-- `SANDBOX_SSO_CLIENT_ID`: the SSO integration credentials, `client id`, to set in `Grafana` and `MinIO` dashboard UI. (now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
-- `SANDBOX_SSO_CLIENT_SECRET`: the SSO integration credentials, `client secret`, to set in `Grafana` and `MinIO` dashboard UI. (now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
-  - please find the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests)
-- `SANDBOX_MINIO_USER`: the username of the initial MinIO admin account.
-- `SANDBOX_MINIO_PASS`: the password of the initial MinIO admin account.
-
-### Production
-
-- `PROD_OPENSHIFT_SERVER`: the OpenShift online server URL.
-- `GRAFANA_PROD_ENV`: Contains all secrets necessary to deploy grafana as an env file, see [the example env file](/helm/grafana/.env.example) for the list. The values are saved in the openshift secret sso-grafana-env in the tools namespace for reference.
-- `PROD_OPENSHIFT_TOKEN`: : the OpenShift session token.
-  - please the find the secret in [Sandbox Deployer Secret](https://console.apps.gold.devops.gov.bc.ca/k8s/ns/eb75ad-tools/secrets/oc-deployer-token-b99cz)
-- `PROD_OPENSHIFT_NAMESPACE`: the namespace name to deploy `Grafana`, `Loki`, and `Aggregator`.
-- `PROD_SSO_CLIENT_ID`: the SSO integration credentials, `client id`, to set in `Grafana` and `MinIO` dashboard UI.(now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
-- `PROD_SSO_CLIENT_SECRET`: the SSO integration credentials, `client secret`, to set in `Grafana` and `MinIO` dashboard UI.(now stored as a mounted secret sso-grafana-env-secret accessed by the helm chart)
-  - please find the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests)
-- `PROD_MINIO_USER`: the username of the initial MinIO admin account.
-- `PROD_MINIO_PASS`: the password of the initial MinIO admin account.
+Service accounts are already generated and added to github secrets. If needing to recreate the service account, see the [service-account-generator directory](/service-account-generator/README.md) for how to do so

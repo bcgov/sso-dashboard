@@ -1,13 +1,12 @@
 fullnameOverride: alloy-keycloak
 
 extraConfiguration:
-  environment: ""
+  environment: ''
   loki:
-    url: ""
-    bearerToken: ""
+    url: ''
+    bearerToken: ''
   aggregator:
-    url: ""
-
+    url: ''
 
 alloy:
   configMap:
@@ -150,9 +149,9 @@ crds:
   create: false
 
 image:
-  registry: "docker.io"
+  registry: 'docker.io'
   repository: grafana/alloy
-  tag: v1.8.0
+  tag: v1.16.2
   pullPolicy: IfNotPresent
 
 controller:
