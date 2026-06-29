@@ -152,8 +152,8 @@ crds:
 image:
   registry: "docker.io"
   repository: grafana/alloy
-  tag: v1.8.0
-  pullPolicy: IfNotPresent
+  tag: v1.17.0
+  pullPolicy: Always
 
 controller:
   # -- Type of controller to use for deploying Grafana Alloy in the cluster.
