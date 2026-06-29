@@ -31,11 +31,11 @@ grafana:
           orgId: 1
           url: kc-cron-patroni-readonly:5432
           user: <please-replace-me>
-          database: <please-replace-me>
           basicAuth: false
           secureJsonData:
             password: <please-replace-me>
           jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -48,11 +48,11 @@ grafana:
           orgId: 1
           url: sso-patroni-readonly.e4ca1d-dev.svc.cluster.local:5432
           user: <please-replace-me>
-          database: <please-replace-me>
           basicAuth: false
           secureJsonData:
             password: <please-replace-me>
           jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -65,11 +65,11 @@ grafana:
           orgId: 1
           url: sso-patroni-readonly.e4ca1d-test.svc.cluster.local:5432
           user: <please-replace-me>
-          database: <please-replace-me>
           basicAuth: false
           secureJsonData:
             password: <please-replace-me>
           jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -82,11 +82,11 @@ grafana:
           orgId: 1
           url: sso-patroni-readonly.e4ca1d-prod.svc.cluster.local:5432
           user: <please-replace-me>
-          database: <please-replace-me>
           basicAuth: false
           secureJsonData:
             password: <please-replace-me>
           jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -101,7 +101,7 @@ grafana:
           basicAuth: false
           isDefault: true
           jsonData:
-            httpHeaderName1: "Authorization"
+            httpHeaderName1: 'Authorization'
           secureJsonData:
             httpHeaderValue1: <please-replace-me>
         - name: SSO Aggregator
@@ -110,11 +110,11 @@ grafana:
           orgId: 1
           url: sso-aggregator-patroni-readonly.e4ca1d-prod.svc.cluster.local:5432
           user: <please-replace-me>
-          database: <please-replace-me>
           basicAuth: false
           secureJsonData:
             password: <please-replace-me>
           jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -127,11 +127,28 @@ grafana:
           orgId: 1
           url: sso-requests-patroni-readonly.b29129-dev.svc.cluster.local:5432
           user: <replace me>
-          database: <replace me>
           basicAuth: false
           secureJsonData:
             password: <replace me>
           jsonData:
+            database: <replace me>
+            sslmode: disable
+            maxOpenConns:
+            maxIdleConns: 2
+            connMaxLifetime: 14400
+            postgresVersion: 1400
+            timescaledb: false
+        - name: Realm Registry
+          type: postgres
+          access: proxy
+          orgId: 1
+          url: realm-registry-patroni.c6af30-dev.svc.cluster.local:5432
+          user: <replace me>
+          basicAuth: false
+          secureJsonData:
+            password: <replace me>
+          jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2

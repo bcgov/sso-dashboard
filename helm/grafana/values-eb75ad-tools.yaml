@@ -31,11 +31,11 @@ grafana:
           orgId: 1
           url: kc-cron-patroni-readonly:5432
           user: <please-replace-me>
-          database: <please-replace-me>
           basicAuth: false
           secureJsonData:
             password: <please-replace-me>
           jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -48,16 +48,16 @@ grafana:
           orgId: 1
           url: sso-patroni-readonly.eb75ad-dev.svc.cluster.local:5432
           user: <please-replace-me>
-          database: <please-replace-me>
           basicAuth: false
           secureJsonData:
             password: <please-replace-me>
           jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
             connMaxLifetime: 14400
-            postgresVersion: 1400
+            postgresVersion: 1500
             timescaledb: false
         - name: SSO Keycloak Test
           type: postgres
@@ -65,16 +65,16 @@ grafana:
           orgId: 1
           url: sso-patroni-readonly.eb75ad-test.svc.cluster.local:5432
           user: <please-replace-me>
-          database: <please-replace-me>
           basicAuth: false
           secureJsonData:
             password: <please-replace-me>
           jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
             connMaxLifetime: 14400
-            postgresVersion: 1400
+            postgresVersion: 1500
             timescaledb: false
         - name: SSO Keycloak Prod
           type: postgres
@@ -82,16 +82,16 @@ grafana:
           orgId: 1
           url: sso-patroni-readonly.eb75ad-prod.svc.cluster.local:5432
           user: <please-replace-me>
-          database: <please-replace-me>
           basicAuth: false
           secureJsonData:
             password: <please-replace-me>
           jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
             connMaxLifetime: 14400
-            postgresVersion: 1400
+            postgresVersion: 1500
             timescaledb: false
         - name: SSO Loki
           type: loki
@@ -101,7 +101,7 @@ grafana:
           basicAuth: false
           isDefault: true
           jsonData:
-            httpHeaderName1: "Authorization"
+            httpHeaderName1: 'Authorization'
           secureJsonData:
             httpHeaderValue1: <please-replace-me>
         - name: SSO Aggregator
@@ -110,11 +110,11 @@ grafana:
           orgId: 1
           url: sso-aggregator-patroni-readonly:5432
           user: <please-replace-me>
-          database: <please-replace-me>
           basicAuth: false
           secureJsonData:
             password: <please-replace-me>
           jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -127,11 +127,28 @@ grafana:
           orgId: 1
           url: sso-requests-patroni-readonly.b29129-prod.svc.cluster.local:5432
           user: <replace me>
-          database: <replace me>
           basicAuth: false
           secureJsonData:
             password: <replace me>
           jsonData:
+            database: <replace me>
+            sslmode: disable
+            maxOpenConns:
+            maxIdleConns: 2
+            connMaxLifetime: 14400
+            postgresVersion: 1400
+            timescaledb: false
+        - name: Realm Registry
+          type: postgres
+          access: proxy
+          orgId: 1
+          url: realm-registry-patroni.c6af30-prod.svc.cluster.local:5432
+          user: <replace me>
+          basicAuth: false
+          secureJsonData:
+            password: <replace me>
+          jsonData:
+            database: <replace me>
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2

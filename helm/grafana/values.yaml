@@ -1,7 +1,7 @@
-# see https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+# see https://github.com/grafana-community/helm-charts/blob/main/charts/grafana/values.yaml
 grafana:
-  nameOverride: sso-grafana
-  fullnameOverride: sso-grafana
+  fullname: sso-grafana
+  name: sso-grafana
   imagePullSecrets: []
 
   rbac:
@@ -20,7 +20,7 @@ grafana:
 
   image:
     repository: grafana/grafana
-    tag: '11.6.1'
+    tag: '13.0.1'
     pullPolicy: IfNotPresent
     pullSecrets: []
 
@@ -47,9 +47,6 @@ grafana:
 
   initChownData:
     enabled: false
-
-  sidecar:
-    securityContext:
 
   adminUser: admin
   # adminPassword: strongpassword
