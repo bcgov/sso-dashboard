@@ -152,7 +152,7 @@ image:
   registry: 'docker.io'
   repository: grafana/alloy
   tag: v1.17.0
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 controller:
   # -- Type of controller to use for deploying Grafana Alloy in the cluster.
