@@ -151,7 +151,7 @@ crds:
 image:
   registry: 'docker.io'
   repository: grafana/alloy
-  tag: v1.16.2
+  tag: v1.17.0
   pullPolicy: IfNotPresent
 
 controller:

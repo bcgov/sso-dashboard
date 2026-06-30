@@ -9,7 +9,7 @@ $(error NAMESPACE is not set)
 endif
 
 define arguments
-	"${NAME}" -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" grafana/alloy --version 1.0.2 \
+	"${NAME}" -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" grafana/alloy --version 1.8.2 \
 	--set extraConfiguration.loki.bearerToken="${LOKI_AUTH_TOKEN}" \
 	--set extraConfiguration.loki.url="${API_GATEWAY_URL}/loki/api/v1/push"
 endef
