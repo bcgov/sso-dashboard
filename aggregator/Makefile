@@ -48,3 +48,7 @@ endef
 db:
 	$(call db-start) || true
 	$(call db-setup)
+
+.PHONY: db-setup
+db-setup:
+	$(call db-setup)
