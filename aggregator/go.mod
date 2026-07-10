@@ -154,7 +154,7 @@ require (
 	google.golang.org/protobuf v1.35.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	mellium.im/sasl v0.3.0 // indirect
+	mellium.im/sasl v0.3.1 // indirect
 )
 
 replace github.com/go-kit/log => github.com/dannykopping/go-kit-log v0.2.2-0.20221002180827-5591c1641b6b
