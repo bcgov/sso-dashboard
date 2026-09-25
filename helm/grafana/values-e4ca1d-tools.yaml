@@ -155,6 +155,18 @@ grafana:
             connMaxLifetime: 14400
             postgresVersion: 1400
             timescaledb: false
+        - name: SIEM Trino
+          type: trino-datasource
+          access: proxy
+          orgId: 1
+          url: <replace me>
+          basicAuth: true
+          basicAuthUser: <replace me>
+          isDefault: false
+          secureJsonData:
+            basicAuthPassword: <replace me>
+          jsonData:
+            withCredentials: false
 route:
   enabled: true
   host: sso-grafana-sandbox.apps.gold.devops.gov.bc.ca

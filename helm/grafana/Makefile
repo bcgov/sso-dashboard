@@ -30,7 +30,10 @@ define arguments
 	--set grafana.datasources."datasources\.yaml".datasources[6].secureJsonData.password=${DS_CSS_PASSWORD} \
 	--set grafana.datasources."datasources\.yaml".datasources[7].user=${DS_REALM_REGISTRY_USERNAME} \
 	--set grafana.datasources."datasources\.yaml".datasources[7].jsonData.database=${DS_REALM_REGISTRY_DATABASE} \
-	--set grafana.datasources."datasources\.yaml".datasources[7].secureJsonData.password=${DS_REALM_REGISTRY_PASSWORD}
+	--set grafana.datasources."datasources\.yaml".datasources[7].secureJsonData.password=${DS_REALM_REGISTRY_PASSWORD} \
+	--set grafana.datasources."datasources\.yaml".datasources[8].basicAuthUser=${DS_TRINO_USERNAME} \
+	--set grafana.datasources."datasources\.yaml".datasources[8].secureJsonData.basicAuthPassword=${DS_TRINO_PASSWORD} \
+	--set grafana.datasources."datasources\.yaml".datasources[8].url=${DS_TRINO_URL}
 endef
 
 .PHONY: helm-dep

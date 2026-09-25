@@ -56,7 +56,7 @@ jobs:
         openshift_token: ${{ env.OPENSHIFT_TOKEN }}
         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
 
-    - name: Deploy aggregator with Helm chart
+    - name: Deploy grafana with Helm chart
       run: |
         namespace=${{ env.OPENSHIFT_NAMESPACE }}
         make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}
