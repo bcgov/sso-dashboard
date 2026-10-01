@@ -1,13 +1,13 @@
 name: Publish SSO Alloy Instance
 
 on:
-  push:
-    branches:
-    - main
-    - dev
-    paths:
-    - helm/alloy/**
-    - .github/workflows/deploy-alloy.yaml
+  # push:
+  #   branches:
+  #   - main
+  #   - dev
+  #   paths:
+  #   - helm/alloy/**
+  #   - .github/workflows/deploy-alloy.yaml
 
 jobs:
   helm-deploy:
