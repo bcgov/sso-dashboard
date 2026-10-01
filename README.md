@@ -1,4 +1,4 @@
-# sso-dashboard
+# SSO Dashboard
 
 SSO Keycloak dashboard services provide the ability to monitor real-time statistical data and event logs.
 
