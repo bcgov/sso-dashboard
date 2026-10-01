@@ -35,7 +35,10 @@ jobs:
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
         OPENSHIFT_NAMESPACE=e4ca1d
-        ${{ secrets.GRAFANA_SANDBOX_ENV }}
+        NAMESPACE=e4ca1d-tools
+        NAME=alloy
+        LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_DEV }}
+        API_GATEWAY_URL=${{ secrets.LOKI_GATEWAY_URL_DEV }}
         EOF
 
     - name: Set env to Production
@@ -45,7 +48,10 @@ jobs:
         OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
         OPENSHIFT_NAMESPACE=eb75ad
-        ${{ secrets.GRAFANA_PROD_ENV }}
+        NAMESPACE=eb75ad-tools
+        NAME=alloy
+        LOKI_AUTH_TOKEN=${{ secrets.LOKI_AUTH_TOKEN_PROD }}
+        API_GATEWAY_URL=${{ secrets.LOKI_GATEWAY_URL_PROD }}
         EOF
 
     - name: Authenticate and set context
