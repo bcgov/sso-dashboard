@@ -64,13 +64,36 @@ A lightweight Go server running scheduled jobs. There are two cronjobs it contro
    make compactor-dev
    ```
 
-1. When running the aggregator server, if you need a version of the related services to test the log ingestion, there is containerized environment for them. From the localdev directory, run `docker-compose up`. This run the following services:
+## Local development using docker compose
+
+When running the aggregator server, if you need a version of the related services to test the log ingestion, there is containerized environment for them.
+
+1. Set your env var `DB_PORT` to 5433
+
+1. `pg_ctl stop` since it will be using the docker compose db
+
+1. From the localdev directory, run `docker-compose up`. This run the following services:
    - Our build of keycloak on port 9080
    - A postgres database for the keycloak instance and aggregator on 5433
    - Grafana Alloy on port 12345
    - Grafana loki on port 3100
    - Grafana dashboard on port 3000, with loki and aggregator datasources configured
 See podman/config.alloy if you want to test out different configurations, for example increasing the batch time or size. For the configuration used in our deployments, see [the values file's](../helm/alloy/values.yaml) `alloy.configMap.content` section.
+
+1. In the aggregator directory run: `make install`
+
+1. In the aggregator directory run: `make db-setup`
+
+1. In the aggregator directory run: `make aggregator-dev`
+
+To test that the service is working log into the keycloak instance running on port 9080, then use grafana to query the Aggregator database with the command:
+
+```
+select * from client_events_with_idp;
+```
+The login event should be returned.
+
+
 
 ## Database migration
 

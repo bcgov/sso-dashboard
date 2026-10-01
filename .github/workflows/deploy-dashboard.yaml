@@ -36,7 +36,6 @@ jobs:
         OPENSHIFT_TOKEN=${{ secrets.SANDBOX_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.SANDBOX_OPENSHIFT_SERVER }}
         OPENSHIFT_NAMESPACE=e4ca1d-tools
-        ${{ secrets.GRAFANA_SANDBOX_ENV }}
         EOF
 
     - name: Set env to Production
@@ -46,7 +45,6 @@ jobs:
         OPENSHIFT_TOKEN=${{ secrets.PROD_OPENSHIFT_TOKEN }}
         OPENSHIFT_SERVER=${{ secrets.PROD_OPENSHIFT_SERVER }}
         OPENSHIFT_NAMESPACE=eb75ad-tools
-        ${{ secrets.GRAFANA_PROD_ENV }}
         EOF
 
     - name: Authenticate and set context
@@ -56,7 +54,22 @@ jobs:
         openshift_token: ${{ env.OPENSHIFT_TOKEN }}
         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
 
-    - name: Deploy aggregator with Helm chart
+    - name: Load Grafana secrets from OpenShift
+      run: |
+        set -euo pipefail
+        secret_json=$(oc get secret sso-grafana-ghaction-env \
+          -n "${{ env.OPENSHIFT_NAMESPACE }}" -o json)
+
+        for key in $(jq -r '.data | keys[]' <<< "$secret_json"); do
+          value=$(jq -r --arg k "$key" '.data[$k]' <<< "$secret_json" | base64 -d)
+          # Mask before it ever hits stdout/GITHUB_ENV so it can't leak into logs
+          echo "::add-mask::${value}"
+          echo "${key}=${value}" >> "$GITHUB_ENV"
+        done
+
+        unset secret_json value
+
+    - name: Deploy grafana with Helm chart
       run: |
         namespace=${{ env.OPENSHIFT_NAMESPACE }}
         make upgrade NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}

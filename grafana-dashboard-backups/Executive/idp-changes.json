@@ -1,0 +1,178 @@
+{
+  "annotations": [
+    {
+      "kind": "AnnotationQuery",
+      "spec": {
+        "builtIn": true,
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "query": {
+          "datasource": {
+            "name": "-- Grafana --"
+          },
+          "group": "grafana",
+          "kind": "DataQuery",
+          "spec": {},
+          "version": "v0"
+        }
+      }
+    }
+  ],
+  "cursorSync": "Off",
+  "description": "Show how clients in productions have added and removed identity providers over time. Note this shows the updates, not the initial requested on the create event. It also shows historic changes for clients in production at the time of query, e.g. if they altered many times in dev before going to production.",
+  "editable": true,
+  "elements": {
+    "panel-1": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "P24BB1063C80D1A5B"
+                    },
+                    "group": "grafana-postgresql-datasource",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "ssorequests",
+                      "editorMode": "code",
+                      "format": "table",
+                      "rawQuery": true,
+                      "rawSql": "WITH production_requests AS (\r\n  SELECT\r\n    r.id AS request_id,\r\n    r.project_name\r\n  FROM requests r\r\n  WHERE 'prod' = ANY(r.environments)\r\n  and r.project_name not ilike '%tian''s testing%'\r\n  and r.project_name not ilike '%TestMarcoOm%'\r\n  and r.project_name not ilike '%tian''s testing%'\r\n),\r\n\r\nnormalized_changes AS (\r\n  SELECT\r\n    e.id AS event_id,\r\n    e.request_id,\r\n    pr.project_name,\r\n    e.created_at,\r\n    e.idir_userid,\r\n\r\n    -- Case required, as change can be an array rearrangement (A), or a full field edit/delete (D/E)\r\n    CASE\r\n      WHEN change->>'kind' = 'A'\r\n       AND change->'item'->>'kind' IN ('D', 'E')\r\n        THEN change->'item'->>'lhs'\r\n      WHEN change->>'kind' IN ('D', 'E')\r\n        THEN change->>'lhs'\r\n    END AS old_idp,\r\n\r\n    CASE\r\n      WHEN change->>'kind' = 'A'\r\n       AND change->'item'->>'kind' IN ('N', 'E')\r\n        THEN change->'item'->>'rhs'\r\n      WHEN change->>'kind' IN ('N', 'E')\r\n        THEN change->>'rhs'\r\n    END AS new_idp\r\n\r\n  FROM production_requests pr\r\n  JOIN events e\r\n    ON e.request_id = pr.request_id\r\n  CROSS JOIN LATERAL jsonb_array_elements(\r\n    COALESCE(e.details->'changes', '[]'::jsonb)\r\n  ) AS change\r\n  WHERE e.event_code = 'request-update-success'\r\n    AND change->'path'->>0 = 'devIdps'\r\n),\r\n\r\nevent_changes AS (\r\n  SELECT DISTINCT\r\n    event_id,\r\n    request_id,\r\n    project_name,\r\n    created_at,\r\n    idir_userid\r\n  FROM normalized_changes\r\n),\r\n\r\nidp_changes AS (\r\n  SELECT\r\n    ec.event_id,\r\n    ec.request_id,\r\n    ec.project_name,\r\n    ec.created_at,\r\n    ec.idir_userid,\r\n\r\n-- Need to except old idps, as array rearrangements can lead to \"old_idp\" just being moved in the array. e.g:\r\n--     old_idp      new_idp\r\n-- ------------ -----------\r\n-- azureidir    idir\r\n-- githubbcgov  azureidir\r\n-- NULL         githubbcgov\r\n-- needs to show that only idir was added \r\n    ARRAY(\r\n      SELECT nc.new_idp\r\n      FROM normalized_changes nc\r\n      WHERE nc.event_id = ec.event_id\r\n        AND nc.new_idp IS NOT NULL\r\n\r\n      EXCEPT\r\n\r\n      SELECT nc.old_idp\r\n      FROM normalized_changes nc\r\n      WHERE nc.event_id = ec.event_id\r\n        AND nc.old_idp IS NOT NULL\r\n    ) AS added_idps,\r\n\r\n    ARRAY(\r\n      SELECT nc.old_idp\r\n      FROM normalized_changes nc\r\n      WHERE nc.event_id = ec.event_id\r\n        AND nc.old_idp IS NOT NULL\r\n\r\n      EXCEPT\r\n\r\n      SELECT nc.new_idp\r\n      FROM normalized_changes nc\r\n      WHERE nc.event_id = ec.event_id\r\n        AND nc.new_idp IS NOT NULL\r\n    ) AS removed_idps\r\n\r\n  FROM event_changes ec\r\n)\r\n\r\nSELECT\r\n  created_at \"Timestamp\",\r\n  project_name as \"Project Name\",\r\n  NULLIF(array_to_string(added_idps, ', '), '') AS \"Added Identity Providers\",\r\n  NULLIF(array_to_string(removed_idps, ', '), '') AS \"Removed Identity Providers\"\r\nFROM idp_changes\r\nWHERE (cardinality(added_idps) > 0\r\n   OR cardinality(removed_idps) > 0)\r\n   AND $__timeFilter(created_at) \r\nORDER BY created_at DESC, request_id;",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ],
+                        "limit": 50
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Show how clients in production have added and removed identity providers over time. Note this shows the updates, not the initially requested idps on the create event. It also shows historic changes for clients in production at the time of query, e.g. if they altered many times in dev before going to production.",
+        "id": 1,
+        "links": [],
+        "title": "IDP Changes",
+        "vizConfig": {
+          "group": "table",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "footer": {
+                    "reducers": []
+                  },
+                  "inspect": false
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "options": {
+              "cellHeight": "sm",
+              "showHeader": true
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    }
+  },
+  "layout": {
+    "kind": "GridLayout",
+    "spec": {
+      "items": [
+        {
+          "kind": "GridLayoutItem",
+          "spec": {
+            "element": {
+              "kind": "ElementReference",
+              "name": "panel-1"
+            },
+            "height": 11,
+            "width": 24,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ]
+    }
+  },
+  "links": [],
+  "liveNow": false,
+  "preferences": {
+    "layout": {
+      "kind": "GridLayout",
+      "spec": {
+        "items": []
+      }
+    }
+  },
+  "preload": false,
+  "tags": [],
+  "timeSettings": {
+    "autoRefresh": "",
+    "autoRefreshIntervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "fiscalYearStartMonth": 0,
+    "from": "now-1y",
+    "hideTimepicker": false,
+    "timezone": "browser",
+    "to": "now"
+  },
+  "title": "IDP Changes ",
+  "variables": []
+}
