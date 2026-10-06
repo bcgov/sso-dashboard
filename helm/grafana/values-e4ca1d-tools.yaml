@@ -11,12 +11,12 @@ grafana:
       name: SSO Pathfinder Sandbox
       auth_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/auth
       token_url: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/token
-      client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
-      client_secret: $__file{/etc/secrets/auth_generic_oauth/client_secret}
+      client_id: $__file{/etc/secrets/auth_generic_oauth/SSO_CLIENT_ID}
+      client_secret: $__file{/etc/secrets/auth_generic_oauth/SSO_CLIENT_SECRET}
 
   extraSecretMounts:
     - name: sso-grafana-env-secret-mount
-      secretName: sso-grafana-env-secret
+      secretName: sso-grafana-ghaction-env
       defaultMode: 0440
       mountPath: /etc/secrets/auth_generic_oauth
       readOnly: true
@@ -30,12 +30,12 @@ grafana:
           access: proxy
           orgId: 1
           url: sso-patroni-readonly.e4ca1d-dev.svc.cluster.local:5432
-          user: <please-replace-me>
+          user:  $__file{/etc/secrets/auth_generic_oauth/DS_KEYCLOAK_DEV_USERNAME}
           basicAuth: false
           secureJsonData:
-            password: <please-replace-me>
+            password: $__file{/etc/secrets/auth_generic_oauth/DS_KEYCLOAK_DEV_PASSWORD}
           jsonData:
-            database: <replace me>
+            database: $__file{/etc/secrets/auth_generic_oauth/DS_KEYCLOAK_DEV_DATABASE}
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -47,12 +47,12 @@ grafana:
           access: proxy
           orgId: 1
           url: sso-patroni-readonly.e4ca1d-test.svc.cluster.local:5432
-          user: <please-replace-me>
+          user:  $__file{/etc/secrets/auth_generic_oauth/DS_KEYCLOAK_TEST_USERNAME}
           basicAuth: false
           secureJsonData:
-            password: <please-replace-me>
+            password: $__file{/etc/secrets/auth_generic_oauth/DS_KEYCLOAK_TEST_PASSWORD}
           jsonData:
-            database: <replace me>
+            database: $__file{/etc/secrets/auth_generic_oauth/DS_KEYCLOAK_TEST_DATABASE}
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -64,12 +64,12 @@ grafana:
           access: proxy
           orgId: 1
           url: sso-patroni-readonly.e4ca1d-prod.svc.cluster.local:5432
-          user: <please-replace-me>
+          user:  $__file{/etc/secrets/auth_generic_oauth/DS_KEYCLOAK_PROD_USERNAME}
           basicAuth: false
           secureJsonData:
-            password: <please-replace-me>
+            password: $__file{/etc/secrets/auth_generic_oauth/DS_KEYCLOAK_PROD_PASSWORD}
           jsonData:
-            database: <replace me>
+            database: $__file{/etc/secrets/auth_generic_oauth/DS_KEYCLOAK_PROD_DATABASE}
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -80,24 +80,24 @@ grafana:
           type: loki
           access: proxy
           orgId: 1
-          url: <replace me>
+          url: $__file{/etc/secrets/auth_generic_oauth/API_GATEWAY_URL}
           basicAuth: false
           isDefault: true
           jsonData:
             httpHeaderName1: 'Authorization'
           secureJsonData:
-            httpHeaderValue1: <please-replace-me>
+            httpHeaderValue1: $__file{/etc/secrets/auth_generic_oauth/LOKI_AUTH_TOKEN} #This needs to be modified to be Bearer LOKI....
         - name: SSO Aggregator
           type: postgres
           access: proxy
           orgId: 1
           url: sso-aggregator-patroni-readonly.e4ca1d-prod.svc.cluster.local:5432
-          user: <please-replace-me>
+          user: $__file{/etc/secrets/auth_generic_oauth/DS_AGGREGATOR_USERNAME}
           basicAuth: false
           secureJsonData:
-            password: <please-replace-me>
+            password: $__file{/etc/secrets/auth_generic_oauth/DS_AGGREGATOR_PASSWORD}
           jsonData:
-            database: <replace me>
+            database: $__file{/etc/secrets/auth_generic_oauth/DS_AGGREGATOR_DATABASE}
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -109,12 +109,12 @@ grafana:
           access: proxy
           orgId: 1
           url: sso-requests-patroni-readonly.b29129-dev.svc.cluster.local:5432
-          user: <replace me>
+          user: $__file{/etc/secrets/auth_generic_oauth/DS_CSS_USERNAME}
           basicAuth: false
           secureJsonData:
-            password: <replace me>
+            password: $__file{/etc/secrets/auth_generic_oauth/DS_CSS_PASSWORD}
           jsonData:
-            database: <replace me>
+            database: $__file{/etc/secrets/auth_generic_oauth/DS_CSS_DATABASE}
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -126,12 +126,12 @@ grafana:
           access: proxy
           orgId: 1
           url: realm-registry-patroni.c6af30-dev.svc.cluster.local:5432
-          user: <replace me>
+          user: $__file{/etc/secrets/auth_generic_oauth/DS_REALM_REGISTRY_USERNAME}
           basicAuth: false
           secureJsonData:
-            password: <replace me>
+            password: $__file{/etc/secrets/auth_generic_oauth/DS_REALM_REGISTRY_PASSWORD}
           jsonData:
-            database: <replace me>
+            database: $__file{/etc/secrets/auth_generic_oauth/DS_REALM_REGISTRY_DATABASE}
             sslmode: disable
             maxOpenConns:
             maxIdleConns: 2
@@ -142,12 +142,12 @@ grafana:
           type: trino-datasource
           access: proxy
           orgId: 1
-          url: <replace me>
+          url: $__file{/etc/secrets/auth_generic_oauth/DS_TRINO_URL}
           basicAuth: true
-          basicAuthUser: <replace me>
+          basicAuthUser: $__file{/etc/secrets/auth_generic_oauth/DS_TRINO_USERNAME}
           isDefault: false
           secureJsonData:
-            basicAuthPassword: <replace me>
+            basicAuthPassword: $__file{/etc/secrets/auth_generic_oauth/DS_TRINO_PASSWORD}
           jsonData:
             withCredentials: false
 route:
