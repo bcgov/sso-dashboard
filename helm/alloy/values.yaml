@@ -23,35 +23,8 @@ alloy:
 
       loki.source.file "local_files" {
           targets    = local.file_match.tmplogs.targets
-          forward_to = [loki.process.aggregator.receiver, loki.process.loki.receiver]
+          forward_to = [loki.process.aggregator.receiver]
           legacy_positions_file = "/mnt/alloy/positions.yaml"
-      }
-
-      loki.process "loki" {
-        forward_to = [loki.write.loki.receiver]
-
-        stage.static_labels {
-            values = {
-                job = "keycloak",
-                environment = "{{ .Values.extraConfiguration.environment }}",
-            }
-        }
-
-        stage.json {
-            expressions = {
-                timestamp = "\"@timestamp\"",
-            }
-        }
-
-        stage.timestamp {
-            source = "timestamp"
-            format = "RFC3339Nano"
-        }
-
-        stage.drop {
-          older_than          = "10h"
-          drop_counter_reason = "too old"
-        }
       }
 
       loki.process "aggregator" {
@@ -111,16 +84,6 @@ alloy:
       loki.write "aggregator" {
           endpoint {
               url = "{{ .Values.extraConfiguration.aggregator.url }}"
-          }
-      }
-
-      loki.write "loki" {
-          endpoint {
-              url = "{{ .Values.extraConfiguration.loki.url }}"
-              authorization {
-                type = "Bearer"
-                credentials = "{{ .Values.extraConfiguration.loki.bearerToken }}"
-              }
           }
       }
 
