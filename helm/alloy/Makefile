@@ -1,7 +1,7 @@
 -include /$(PWD)/.env
 
 SHELL := /usr/bin/env bash
-NAMESPACE="e4ca1d-prod"
+NAMESPACE=""
 NAME=alloy
 
 ifndef NAMESPACE
