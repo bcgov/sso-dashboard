@@ -10,12 +10,13 @@ on:
     - helm/grafana/**
     - .github/workflows/deploy-dashboard.yaml
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   helm-deploy:
     runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-      packages: write
 
     steps:
     - uses: actions/checkout@v4

@@ -21,12 +21,13 @@ env:
   GRAFANA_URL: ''
   GRAFANA_SERVICE_ACCOUNT_TOKEN: ''
 
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
 jobs:
   terraform:
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
