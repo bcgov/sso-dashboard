@@ -6,6 +6,9 @@ on:
     - aggregator/**
     - .github/workflows/test.yaml
 
+permissions:
+  contents: read
+  packages: read
 
 defaults:
   run:

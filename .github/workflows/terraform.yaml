@@ -17,6 +17,10 @@ env:
   GITHUB_REGISTRY: ghcr.io
   IMAGE_NAME: bcgov/sso-loki
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   build-and-push-image:
     runs-on: ubuntu-24.04
@@ -53,7 +57,9 @@ jobs:
 
   terraform:
     needs: build-and-push-image
-    permissions: write-all
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
