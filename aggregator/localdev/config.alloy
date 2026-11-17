@@ -4,30 +4,7 @@ local.file_match "tmplogs" {
 
 loki.source.file "local_files" {
     targets    = local.file_match.tmplogs.targets
-    forward_to = [loki.process.aggregator.receiver, loki.process.loki.receiver]
-}
-
-loki.process "loki" {
-    forward_to = [loki.write.loki.receiver]
-
-    stage.static_labels {
-        values = {
-            job = "keycloak",
-            environment = "dev",
-        }
-    }
-
-    stage.json {
-        expressions = {
-            level     = "level",
-            timestamp = "\"@timestamp\"",
-        }
-    }
-
-    stage.timestamp {
-        source = "timestamp"
-        format = "RFC3339Nano"
-    }
+    forward_to = [loki.process.aggregator.receiver]
 }
 
 loki.process "aggregator" {
@@ -87,11 +64,5 @@ loki.process "aggregator" {
 loki.write "aggregator" {
     endpoint {
         url = "http://host.docker.internal:8080/api/promtail/push"
-    }
-}
-
-loki.write "loki" {
-    endpoint {
-        url = "http://host.docker.internal:3100/loki/api/v1/push"
     }
 }
