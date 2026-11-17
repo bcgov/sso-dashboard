@@ -47,7 +47,7 @@ make upgrade
 ```
 
 - please find the SSO client credentials of the integration `#4492 SSO Dashboard` via [CSS app](https://bcgov.github.io/sso-requests):
-- The variables for LOKI_AUTH_TOKEN and API_GATEWAY_URL can be found in the tools namespace under the loki-auth-token secret
+- Grafana is configured with the `SIEM Trino` datasource for log search. Trino connection credentials are provided through the Grafana environment secret.
 
 ### Uninstalling the Chart
 

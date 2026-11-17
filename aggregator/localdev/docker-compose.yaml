@@ -26,16 +26,6 @@ services:
       cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
       apiVersion: 1
       datasources:
-      - name: Loki
-        type: loki
-        access: proxy
-        orgId: 1
-        url: http://loki:3100
-        basicAuth: false
-        isDefault: false
-        version: 1
-        editable: false
-
       - name: SSO Aggregator
         type: postgres
         access: proxy
@@ -54,12 +44,6 @@ services:
     image: grafana/grafana:11.0.0
     ports:
     - 3000:3000
-
-  loki:
-    image: grafana/loki:2.9.2
-    ports:
-    - 3100:3100
-    command: -config.file=/etc/loki/local-config.yaml
 
   alloy:
     image: grafana/alloy:v1.8.0

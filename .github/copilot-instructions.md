@@ -7,9 +7,8 @@ main Go service (`aggregator/`) plus supporting infra/config directories
 
 ## Architecture
 
-Log flow: **Grafana Alloy** (log collector on Keycloak) → **Loki** (log
-store, backed by S3) → **aggregator** (Go HTTP server) → **Postgres** →
-**Grafana** (dashboards, queries both Loki and the aggregator's Postgres DB).
+Log flow: **Grafana Alloy** (log collector on Keycloak) → **aggregator**
+(Go HTTP server) → **Postgres**.
 
 `aggregator/` contains two independently-deployed Go binaries sharing the same
 module and `model` package:
@@ -74,8 +73,8 @@ CI (`test.yaml`) triggers only on changes under `aggregator/**` and pins Go
 via `go-version: ^1.21.0` in the workflow — keep that in sync if the `go`
 directive in `go.mod` changes.
 
-Local Postgres/full-stack dev environment (Keycloak, Postgres, Alloy, Loki,
-Grafana) is provisioned via `aggregator/localdev/docker-compose.yaml` — see
+Local Postgres/full-stack dev environment (Keycloak, Postgres, Alloy, Grafana) is provisioned via
+`aggregator/localdev/docker-compose.yaml` — see
 `aggregator/README.md` for the full setup sequence and required `DB_PORT`
 env var when using docker-compose (`5433` vs local Postgres default).
 
@@ -83,10 +82,11 @@ env var when using docker-compose (`5433` vs local Postgres default).
 
 - Do not ignore the /plan command when running copilot queries.
 
-- **Dependency pinning quirks**: `github.com/grafana/loki` is imported at a
-  pre-v1-module-path pseudo-version (Loki's own go.mod doesn't use semantic
-  import versioning even past v1, so bumping it means resolving a specific
-  commit SHA via `go get github.com/grafana/loki@<sha>`, not a `vX.Y.Z` tag
+- **Dependency pinning quirks**: `github.com/grafana/loki` is imported only
+  for its push-payload parser and is pinned at a pre-v1-module-path
+  pseudo-version (Loki's own go.mod doesn't use semantic import versioning
+  even past v1, so bumping it means resolving a specific commit SHA via
+  `go get github.com/grafana/loki@<sha>`, not a `vX.Y.Z` tag
   directly — the target tag's commit must be looked up first). The
   `github.com/grafana/loki/pkg/push` submodule must be pinned to the exact
   same commit as the main `loki` module or the build breaks
