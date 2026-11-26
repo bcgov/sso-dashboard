@@ -10,13 +10,13 @@ This chart includes two different deployments, running the same dockerfile. The 
 
 ### Pre-Requisites
 
-- Ensure below network policy exists in the namespace where loki is being deployed
+- Ensure the namespace network policy allows ingress from the Alloy deployment to the aggregator.
 
 ```yaml
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: allow-sso-promtail
+  name: allow-sso-alloy
   namespace: xxxx-xxxx
 spec:
   podSelector: {}
@@ -27,7 +27,7 @@ spec:
               name: xxxx
         - podSelector:
             matchLabels:
-              app.kubernetes.io/name: promtail
+              app.kubernetes.io/name: alloy
   policyTypes:
     - Ingress
 status: {}

@@ -2,8 +2,7 @@
 
 ## Aggregator
 
-A Go HTTP server to host the Keycloak event log aggregation system that receives the log metadata from `Grafana Alloy` and upserts the client-level event statistical data.
-In order to avoid the custom codebase parsing the requests, it relies on `Grafana Loki`'s public function `ParseRequest` and takes the advantage of code simplicity and reliability.
+A Go HTTP server for Keycloak event log aggregation. It receives log metadata pushed by `Grafana Alloy` and upserts client-level event statistics. The push payload is parsed with Grafana Loki's `ParseRequest` library; this is a protocol/parser dependency and does not require a Loki service.
 
 ## Compactor
 
@@ -76,8 +75,9 @@ When running the aggregator server, if you need a version of the related service
    - Our build of keycloak on port 9080
    - A postgres database for the keycloak instance and aggregator on 5433
    - Grafana Alloy on port 12345
-   - Grafana loki on port 3100
-   - Grafana dashboard on port 3000, with loki and aggregator datasources configured
+   - Grafana dashboard on port 3000, with the aggregator Postgres datasource configured
+
+The local development stack does not include Loki. Alloy sends event data to the aggregator; deployed log search uses the SIEM Trino datasource.
 See podman/config.alloy if you want to test out different configurations, for example increasing the batch time or size. For the configuration used in our deployments, see [the values file's](../helm/alloy/values.yaml) `alloy.configMap.content` section.
 
 1. In the aggregator directory run: `make install`
