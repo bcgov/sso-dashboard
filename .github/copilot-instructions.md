@@ -2,7 +2,7 @@
 
 This repo aggregates Keycloak event logs for the BC Gov SSO service. It has one
 main Go service (`aggregator/`) plus supporting infra/config directories
-(`helm/`, `grafana/`, `loki-authorizer/`, `service-account-generator/`,
+(`helm/`, `grafana/`, `service-account-generator/`,
 `scripts/`). Most day-to-day code work happens in `aggregator/`.
 
 ## Architecture
